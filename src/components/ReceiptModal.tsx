@@ -2,21 +2,39 @@
 
 import { useState } from 'react';
 import { Check, Copy, ExternalLink, MessageCircle, Printer, X } from 'lucide-react';
+import { useStoreSettings } from '../contexts/useStoreSettings';
+import { useThemeLang } from '../contexts/useThemeLang';
 import type { ReceiptModalData } from '../types/pos';
 import { STORE_INFO, formatRupiah } from '../utils/format';
-import ReceiptContent from './ReceiptContent';
+import ReceiptContent, { type ReceiptStoreInfo } from './ReceiptContent';
 
 export interface ReceiptModalProps {
   receiptData: ReceiptModalData | null;
   onClose: () => void;
+  storeInfo?: ReceiptStoreInfo | null;
 }
 
-export default function ReceiptModal({ receiptData, onClose }: ReceiptModalProps) {
+export default function ReceiptModal({
+  receiptData,
+  onClose,
+  storeInfo,
+}: ReceiptModalProps) {
   const [copied, setCopied] = useState(false);
+  const { settings } = useStoreSettings();
+  const { dict } = useThemeLang();
+  const r = dict.receipt;
 
   if (!receiptData?.transaction) return null;
 
   const { transaction, items } = receiptData;
+  const effectiveStore: ReceiptStoreInfo = storeInfo ?? settings;
+  const storeName =
+    effectiveStore?.store_name?.trim() || effectiveStore?.name?.trim() || STORE_INFO.name;
+  const footerNote =
+    effectiveStore?.footer_note?.trim() ||
+    effectiveStore?.footerNote?.trim() ||
+    STORE_INFO.footerNote;
+
   const receiptPath = `/receipt/${encodeURIComponent(transaction.invoice_number)}`;
 
   function getReceiptUrl(): string {
@@ -30,32 +48,55 @@ export default function ReceiptModal({ receiptData, onClose }: ReceiptModalProps
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt('Salin link struk digital:', receiptUrl);
+      window.prompt(r.viewDigitalReceipt, receiptUrl);
     }
   }
 
   function handleSendWhatsApp() {
     const receiptUrl = getReceiptUrl();
     const itemLines = items
-      .map(
-        (i) =>
-          `• ${i.product_name} (${i.qty}x ${formatRupiah(i.price)}) = ${formatRupiah(
-            i.subtotal
-          )}`
-      )
+      .map((i) => {
+        const itemDiscount = Number(i.discount_amount ?? 0);
+        const discText =
+          itemDiscount > 0 ? ` [${r.itemDiscount} -${formatRupiah(itemDiscount)}]` : '';
+        return `• ${i.product_name} (${i.qty}x ${formatRupiah(i.price)})${discText} = ${formatRupiah(
+          i.subtotal
+        )}`;
+      })
       .join('\n');
 
+    const subtotalAmount = Number(transaction.subtotal_amount ?? 0);
+    const discountAmount = Number(transaction.discount_amount ?? 0);
+    const taxAmount = Number(transaction.tax_amount ?? 0);
+    const taxRate = Number(transaction.tax_rate ?? 0);
+    const totalAmount = Number(transaction.total_amount ?? 0);
+
+    const breakdownLines: string[] = [];
+    if (discountAmount > 0 || taxAmount > 0) {
+      breakdownLines.push(`${r.subtotal}: ${formatRupiah(subtotalAmount || totalAmount)}`);
+      if (discountAmount > 0) {
+        breakdownLines.push(`${r.discount}: -${formatRupiah(discountAmount)}`);
+      }
+      if (taxAmount > 0) {
+        breakdownLines.push(
+          `${r.tax}${taxRate > 0 ? ` (${taxRate}%)` : ''}: ${formatRupiah(taxAmount)}`
+        );
+      }
+    }
+
     const text = [
-      `*${STORE_INFO.name}*`,
-      `No. Nota: ${transaction.invoice_number}`,
+      `*${storeName}*`,
+      `${r.invoiceNo}: ${transaction.invoice_number}`,
       `---`,
       itemLines,
       `---`,
+      ...breakdownLines,
       `*Total: ${formatRupiah(transaction.total_amount)}*`,
-      `Bayar: ${formatRupiah(transaction.cash_received)}`,
-      `Kembalian: ${formatRupiah(transaction.change_amount)}`,
+      `${r.paid}: ${formatRupiah(transaction.cash_received)}`,
+      `${r.change}: ${formatRupiah(transaction.change_amount)}`,
       ``,
-      `Lihat struk digital Anda:`,
+      footerNote,
+      r.viewDigitalReceipt,
       receiptUrl,
     ].join('\n');
 
@@ -72,18 +113,18 @@ export default function ReceiptModal({ receiptData, onClose }: ReceiptModalProps
           </button>
         </div>
 
-        <ReceiptContent transaction={transaction} items={items} />
+        <ReceiptContent transaction={transaction} items={items} storeInfo={effectiveStore} />
 
         <div className="modal-actions no-print">
           <button type="button" className="btn btn-primary" onClick={handleSendWhatsApp}>
-            <MessageCircle size={16} /> Kirim WhatsApp
+            <MessageCircle size={16} /> {r.sendWhatsapp}
           </button>
           <button type="button" className="btn btn-outline" onClick={handleCopyLink}>
             {copied ? <Check size={16} /> : <Copy size={16} />}
-            <span>{copied ? 'Link Disalin!' : 'Salin Link'}</span>
+            <span>{copied ? r.linkCopied : r.copyLink}</span>
           </button>
           <button type="button" className="btn btn-outline" onClick={() => window.print()}>
-            <Printer size={16} /> Print / PDF
+            <Printer size={16} /> {dict.printSavePdf}
           </button>
           <a
             href={receiptPath}
@@ -91,7 +132,7 @@ export default function ReceiptModal({ receiptData, onClose }: ReceiptModalProps
             rel="noreferrer"
             className="btn btn-outline"
           >
-            <ExternalLink size={16} /> Buka Halaman Struk
+            <ExternalLink size={16} /> {r.openPage}
           </a>
         </div>
       </div>

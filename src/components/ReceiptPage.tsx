@@ -67,7 +67,11 @@ export default function ReceiptPage({ invoiceNumber }: ReceiptPageProps) {
       ) : error ? (
         <div className="alert alert-error">{error}</div>
       ) : transaction ? (
-        <ReceiptContent transaction={transaction} items={items} />
+        <ReceiptContent
+          transaction={transaction}
+          items={items}
+          storeInfo={transaction.store_settings}
+        />
       ) : null}
     </div>
   );

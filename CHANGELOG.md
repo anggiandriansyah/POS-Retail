@@ -2,6 +2,17 @@
 
 Semua perubahan penting pada proyek **POS Toko Retail (`react-supabase-app`)** dicatat di file ini.
 
+## [1.3.0] - 2026-11-24 (Fase 2 - Sprint 3 DEV)
+
+### Added
+- **Pengaturan Toko Dinamis (`store_settings`)**: Penambahan tabel `store_settings`, context `StoreSettingsProvider`, form **Pengaturan Toko** untuk Owner/Admin (nama toko, alamat, telepon, catatan footer struk, serta tarif pajak/PPN opsional), dan dukungan pada struk digital publik (`get_public_receipt`).
+- **Diskon & Pajak/PPN di Kasir**: Dukungan diskon per item dan diskon transaksi (`Rp` / `%`) serta opsi terapkan PPN (`applyTax`) pada `PosCashier` dan fungsi RPC `process_sale` dengan perhitungan sisi server yang tervalidasi.
+- **Filter Rentang Tanggal & Export CSV**: Penambahan filter tanggal (`startDate` / `endDate`) serta tombol **Export Penjualan (CSV)** dan **Export Mutasi Stok (CSV)** di `ReportsView` dengan UTF-8 BOM, RFC-4180 escaping, dan proteksi formula injection (`src/utils/csv.ts`).
+- **Kompatibilitas Dual Role (`admin`/`user` & `owner`/`kasir`)**: Penambahan helper `isAdminRole()` dan pembaruan RLS/SQL agar mendukung role `admin` dan `user` tanpa memutus akun `owner` dan `kasir` yang sudah ada.
+
+### Changed
+- **Shared Core Siap React Native**: Modul `src/types/pos.ts`, `src/utils/format.ts`, `src/utils/pricing.ts`, `src/utils/csv.ts`, dan `src/i18n/translations.ts` dijaga bebas dependensi browser untuk persiapan Sprint 4 (React Native).
+
 ## [1.2.0] - 2026-11-24 (Fase 2 - Sprint 2 Refinement & Production Release)
 
 ### Added

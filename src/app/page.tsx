@@ -10,6 +10,7 @@ import {
   LogOut,
   PackagePlus,
   Radio,
+  Settings,
   ShoppingBag,
   Store,
   Tag,
@@ -17,10 +18,12 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { AuthProvider } from '../contexts/AuthContext';
+import { StoreSettingsProvider } from '../contexts/StoreSettingsContext';
 import { useAuth } from '../contexts/useAuth';
+import { useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
-import type { Product, ReceiptModalData } from '../types/pos';
+import { isAdminRole, type Product, type ReceiptModalData } from '../types/pos';
 import { APP_VERSION, STORE_INFO } from '../utils/format';
 import LoginPage from '../components/LoginPage';
 import ThemeLangToggles from '../components/ThemeLangToggles';
@@ -34,6 +37,7 @@ const StockRequestPanel = dynamic(() => import('../components/StockRequestPanel'
 const OwnerLiveMonitor = dynamic(() => import('../components/OwnerLiveMonitor'), { ssr: false });
 const OwnerShifts = dynamic(() => import('../components/OwnerShifts'), { ssr: false });
 const StaffManager = dynamic(() => import('../components/StaffManager'), { ssr: false });
+const StoreSettingsForm = dynamic(() => import('../components/StoreSettingsForm'), { ssr: false });
 const ReceiptModal = dynamic(() => import('../components/ReceiptModal'), { ssr: false });
 
 interface TabItem {
@@ -59,6 +63,7 @@ async function queryProducts(): Promise<{ data: Product[]; error: string }> {
 
 function AuthenticatedApp() {
   const { session, profile, activeShift, loading: authLoading, signOut } = useAuth();
+  const { settings } = useStoreSettings();
   const { dict } = useThemeLang();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -66,7 +71,7 @@ function AuthenticatedApp() {
   const [error, setError] = useState('');
   const [receiptData, setReceiptData] = useState<ReceiptModalData | null>(null);
 
-  const isOwner = profile?.role === 'owner';
+  const isOwner = isAdminRole(profile?.role);
 
   const kasirTabs: TabItem[] = [
     { id: 'pos', label: dict.tabs.pos, icon: ShoppingBag },
@@ -82,6 +87,7 @@ function AuthenticatedApp() {
     { id: 'inventory', label: dict.tabs.inventory, icon: Boxes },
     { id: 'owner_shifts', label: dict.tabs.ownerShifts, icon: ClipboardList },
     { id: 'staff', label: dict.tabs.staff, icon: Users },
+    { id: 'settings', label: dict.tabs.settings, icon: Settings },
     { id: 'pos', label: dict.tabs.ownerPos, icon: ShoppingBag },
   ];
 
@@ -132,6 +138,8 @@ function AuthenticatedApp() {
 
   const lowStockCount = products.filter((p) => p.stock <= p.min_stock).length;
   const isDevEnv = process.env.NEXT_PUBLIC_APP_ENV !== 'production';
+  const roleLabelMap: Record<string, string> = dict.roles;
+  const roleLabel = (roleLabelMap[profile.role] || String(profile.role)).toUpperCase();
 
   return (
     <div className="app-shell">
@@ -143,7 +151,7 @@ function AuthenticatedApp() {
             </div>
             <div>
               <h1>
-                {STORE_INFO.name}{' '}
+                {settings.store_name || STORE_INFO.name}{' '}
                 {isDevEnv && <span className="env-badge">DEV</span>}
               </h1>
               <span className="muted-text">
@@ -156,9 +164,7 @@ function AuthenticatedApp() {
             <ThemeLangToggles compact />
             <div className="user-meta">
               <span className="user-name">{profile.full_name}</span>
-              <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>
-                {profile.role.toUpperCase()}
-              </span>
+              <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>{roleLabel}</span>
               <span
                 className={`status-pill ${activeShift ? 'status-open' : 'status-closed'}`}
               >
@@ -231,6 +237,7 @@ function AuthenticatedApp() {
             )}
             {currentTab === 'owner_shifts' && isOwner && <OwnerShifts />}
             {currentTab === 'staff' && isOwner && <StaffManager />}
+            {currentTab === 'settings' && isOwner && <StoreSettingsForm />}
             {currentTab === 'reports' && (
               <ReportsView
                 products={products}
@@ -249,7 +256,9 @@ function AuthenticatedApp() {
 export default function HomePage() {
   return (
     <AuthProvider>
-      <AuthenticatedApp />
+      <StoreSettingsProvider>
+        <AuthenticatedApp />
+      </StoreSettingsProvider>
     </AuthProvider>
   );
 }
