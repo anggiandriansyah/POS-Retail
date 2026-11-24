@@ -12,17 +12,21 @@ export default function ReceiptPage({ invoiceNumber }) {
   useEffect(() => {
     async function fetchReceipt() {
       setLoading(true);
-      const { data, error: txError } = await supabase
-        .from('transactions')
-        .select('*, transaction_items(*)')
-        .eq('invoice_number', invoiceNumber)
-        .single();
+      if (!supabase) {
+        setError('Supabase belum dikonfigurasi.');
+        setLoading(false);
+        return;
+      }
 
-      if (txError || !data) {
+      const { data, error: rpcError } = await supabase.rpc('get_public_receipt', {
+        p_invoice: invoiceNumber,
+      });
+
+      if (rpcError || !data) {
         setError('Struk tidak ditemukan atau sudah dihapus.');
       } else {
         setTransaction(data);
-        setItems(data.transaction_items || []);
+        setItems(data.items || []);
       }
       setLoading(false);
     }

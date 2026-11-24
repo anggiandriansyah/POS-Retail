@@ -1,10 +1,26 @@
 import { useMemo, useState } from 'react';
-import { Minus, Plus, Search, ShoppingCart, Trash2, CheckCircle2 } from 'lucide-react';
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Minus,
+  Plus,
+  Search,
+  ShoppingCart,
+  Trash2,
+} from 'lucide-react';
+import { useAuth } from '../contexts/useAuth';
 import { supabase } from '../supabaseClient';
 import { formatRupiah, generateInvoiceNumber } from '../utils/format';
 import BarcodeScanner from './BarcodeScanner';
 
-export default function PosCashier({ products, onProductsChanged, onCheckoutSuccess }) {
+export default function PosCashier({
+  products,
+  onProductsChanged,
+  onCheckoutSuccess,
+  onGoToShift,
+}) {
+  const { activeShift, profile, refreshShift } = useAuth();
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -13,9 +29,10 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
   const [submitting, setSubmitting] = useState(false);
 
   const filteredProducts = useMemo(() => {
+    const activeProducts = products.filter((p) => p.is_active !== false);
     const q = search.trim().toLowerCase();
-    if (!q) return products.slice(0, 12);
-    return products
+    if (!q) return activeProducts.slice(0, 12);
+    return activeProducts
       .filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
@@ -62,7 +79,7 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
 
   function handleBarcodeScan(barcode) {
     const found = products.find(
-      (p) => p.barcode.toLowerCase() === barcode.toLowerCase()
+      (p) => p.is_active !== false && p.barcode.toLowerCase() === barcode.toLowerCase()
     );
     if (!found) {
       setFeedback({
@@ -99,6 +116,13 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
 
   async function handleCheckout() {
     if (cart.length === 0) return;
+    if (!activeShift) {
+      setFeedback({
+        type: 'error',
+        text: 'Shift belum dibuka. Buka shift terlebih dahulu sebelum melakukan transaksi.',
+      });
+      return;
+    }
     if (paymentMethod === 'cash' && numericCash < totalAmount) {
       setFeedback({
         type: 'error',
@@ -117,9 +141,6 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
         qty: item.qty,
       }));
 
-      let txData = null;
-      let receiptItems = null;
-
       const { data: rpcResult, error: rpcError } = await supabase.rpc('process_sale', {
         p_invoice_number: invoiceNumber,
         p_payment_method: paymentMethod,
@@ -127,68 +148,21 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
         p_items: rpcItems,
       });
 
-      if (!rpcError && rpcResult) {
-        txData = rpcResult.transaction;
-        receiptItems = rpcResult.items;
-      } else {
-        const rpcNotFound =
-          rpcError?.code === 'PGRST202' ||
-          rpcError?.message?.toLowerCase().includes('could not find the function');
-
-        if (!rpcNotFound) {
-          throw rpcError;
+      if (rpcError) {
+        if (rpcError.message?.includes('SHIFT_REQUIRED')) {
+          await refreshShift();
+          throw new Error(
+            'Shift belum dibuka atau sudah ditutup. Silakan buka shift terlebih dahulu.'
+          );
         }
-
-        // Fallback jika fungsi RPC process_sale belum dibuat di Supabase
-        const { data: insertedTx, error: txError } = await supabase
-          .from('transactions')
-          .insert({
-            invoice_number: invoiceNumber,
-            total_amount: totalAmount,
-            payment_method: paymentMethod,
-            cash_received: numericCash,
-            change_amount: changeAmount,
-          })
-          .select()
-          .single();
-
-        if (txError) throw txError;
-        txData = insertedTx;
-
-        const itemsPayload = cart.map((item) => ({
-          transaction_id: txData.id,
-          product_id: item.id,
-          product_name: item.name,
-          qty: item.qty,
-          price: item.sell_price,
-          subtotal: item.sell_price * item.qty,
-        }));
-
-        const { data: insertedItems, error: itemsError } = await supabase
-          .from('transaction_items')
-          .insert(itemsPayload)
-          .select();
-
-        if (itemsError) throw itemsError;
-        receiptItems = insertedItems || itemsPayload;
-
-        for (const item of cart) {
-          const nextStock = Math.max(0, item.stock - item.qty);
-          const { error: stockError } = await supabase
-            .from('products')
-            .update({ stock: nextStock })
-            .eq('id', item.id);
-
-          if (stockError) throw stockError;
-
-          await supabase.from('stock_logs').insert({
-            product_id: item.id,
-            type: 'sale',
-            qty: -item.qty,
-            note: `Penjualan ${invoiceNumber}`,
-          });
-        }
+        throw rpcError;
       }
+
+      const txData = {
+        ...rpcResult.transaction,
+        cashier_name: profile?.full_name || 'Kasir',
+      };
+      const receiptItems = rpcResult.items || [];
 
       setCart([]);
       setCashReceived('');
@@ -209,7 +183,27 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
   }
 
   return (
-    <div className="pos-layout">
+    <div className="pos-wrapper">
+      {!activeShift && (
+        <div className="shift-warning-banner">
+          <div className="shift-warning-text">
+            <AlertTriangle size={20} />
+            <div>
+              <strong>Shift Kasir Belum Dibuka</strong>
+              <p className="muted-text" style={{ margin: 0 }}>
+                Anda harus membuka shift (input modal awal laci) sebelum dapat memproses pembayaran.
+              </p>
+            </div>
+          </div>
+          {onGoToShift && (
+            <button type="button" className="btn btn-primary" onClick={onGoToShift}>
+              <Clock size={16} /> Buka Shift Sekarang
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="pos-layout">
       <div className="pos-left card">
         <h2>Scan & Pilih Produk</h2>
         <BarcodeScanner
@@ -389,14 +383,21 @@ export default function PosCashier({ products, onProductsChanged, onCheckoutSucc
           <button
             type="button"
             className="btn btn-primary btn-lg"
-            disabled={cart.length === 0 || submitting}
+            disabled={cart.length === 0 || submitting || !activeShift}
             onClick={handleCheckout}
           >
             <CheckCircle2 size={18} />
-            <span>{submitting ? 'Memproses...' : 'Bayar & Buat Struk'}</span>
+            <span>
+              {!activeShift
+                ? 'Buka Shift Dulu untuk Bayar'
+                : submitting
+                  ? 'Memproses...'
+                  : 'Bayar & Buat Struk'}
+            </span>
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }

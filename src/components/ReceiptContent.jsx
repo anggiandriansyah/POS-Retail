@@ -20,6 +20,12 @@ export default function ReceiptContent({ transaction, items }) {
           <span>Tanggal</span>
           <span>{formatDateTime(transaction.created_at)}</span>
         </div>
+        {transaction.cashier_name && (
+          <div>
+            <span>Kasir</span>
+            <span>{transaction.cashier_name}</span>
+          </div>
+        )}
         <div>
           <span>Pembayaran</span>
           <span>{(transaction.payment_method || 'cash').toUpperCase()}</span>

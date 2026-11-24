@@ -828,3 +828,195 @@ body {
     max-width: 100%;
   }
 }
+
+/* Sprint 2 (v1.1.0): Auth, Header User Bar, Shift & Petty Cash */
+.topbar-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.user-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.badge-owner {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.badge-success {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.badge-danger {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.status-open {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.status-closed {
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+/* Login Page */
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px 16px;
+  background: var(--bg);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-brand h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.login-form,
+.shift-form,
+.shift-open-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-form label,
+.shift-form label,
+.shift-open-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.login-hint {
+  text-align: center;
+  margin: 0;
+}
+
+/* Shift Warning Banner on POS */
+.pos-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.shift-warning-banner {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shift-warning-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Shift Manager */
+.shift-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.shift-open-card {
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.shift-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .shift-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card-highlight {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 12px 14px;
+  }
+  .main-content {
+    padding: 14px;
+  }
+}

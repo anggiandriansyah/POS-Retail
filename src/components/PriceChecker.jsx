@@ -9,7 +9,7 @@ export default function PriceChecker({ products }) {
 
   function handleScan(barcode) {
     const found = products.find(
-      (p) => p.barcode.toLowerCase() === barcode.toLowerCase()
+      (p) => p.is_active !== false && p.barcode.toLowerCase() === barcode.toLowerCase()
     );
     if (found) {
       setSelectedProduct(found);

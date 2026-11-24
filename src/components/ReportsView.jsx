@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Receipt, RefreshCw } from 'lucide-react';
+import { useAuth } from '../contexts/useAuth';
 import { supabase } from '../supabaseClient';
 import { formatDateTime, formatRupiah } from '../utils/format';
 
@@ -9,51 +10,81 @@ function getStartOfTodayIso() {
   return start.toISOString();
 }
 
-async function queryReportsData() {
+async function queryReportsData({ isOwner, userId, shiftFilterId }) {
   const startOfTodayIso = getStartOfTodayIso();
-  const [{ data: txData }, { data: todayTxData }, { data: logData }] = await Promise.all([
-    supabase
-      .from('transactions')
-      .select('*, transaction_items(*)')
-      .order('created_at', { ascending: false })
-      .limit(50),
-    supabase
-      .from('transactions')
-      .select('total_amount, transaction_items(product_id, price, qty)')
-      .gte('created_at', startOfTodayIso),
-    supabase
-      .from('stock_logs')
-      .select('*, products(name, barcode)')
-      .order('created_at', { ascending: false })
-      .limit(50),
-  ]);
 
+  let txQuery = supabase
+    .from('transactions')
+    .select('*, transaction_items(*), cashier:profiles(full_name)')
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  let todayQuery = supabase
+    .from('transactions')
+    .select('total_amount, transaction_items(product_id, price, cost_price, qty)')
+    .gte('created_at', startOfTodayIso);
+
+  if (!isOwner && userId) {
+    txQuery = txQuery.eq('cashier_id', userId);
+    todayQuery = todayQuery.eq('cashier_id', userId);
+    if (shiftFilterId) {
+      txQuery = txQuery.eq('shift_id', shiftFilterId);
+      todayQuery = todayQuery.eq('shift_id', shiftFilterId);
+    }
+  }
+
+  const promises = [txQuery, todayQuery];
+  if (isOwner) {
+    promises.push(
+      supabase
+        .from('stock_logs')
+        .select('*, products(name, barcode)')
+        .order('created_at', { ascending: false })
+        .limit(50)
+    );
+  }
+
+  const results = await Promise.all(promises);
   return {
-    transactions: txData || [],
-    todayTransactions: todayTxData || [],
-    stockLogs: logData || [],
+    transactions: results[0].data || [],
+    todayTransactions: results[1].data || [],
+    stockLogs: isOwner ? results[2]?.data || [] : [],
   };
 }
 
 export default function ReportsView({ products, onOpenReceipt }) {
+  const { user, profile, activeShift } = useAuth();
+  const isOwner = profile?.role === 'owner';
+
   const [transactions, setTransactions] = useState([]);
   const [todayTransactions, setTodayTransactions] = useState([]);
   const [stockLogs, setStockLogs] = useState([]);
   const [subTab, setSubTab] = useState('transactions');
+  const [onlyActiveShift, setOnlyActiveShift] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const shiftFilterId = !isOwner && onlyActiveShift && activeShift ? activeShift.id : null;
 
   const handleRefresh = useCallback(async () => {
     setLoading(true);
-    const result = await queryReportsData();
+    const result = await queryReportsData({
+      isOwner,
+      userId: user?.id,
+      shiftFilterId,
+    });
     setTransactions(result.transactions);
     setTodayTransactions(result.todayTransactions);
     setStockLogs(result.stockLogs);
     setLoading(false);
-  }, []);
+  }, [isOwner, user?.id, shiftFilterId]);
 
   useEffect(() => {
     let cancelled = false;
-    queryReportsData().then((result) => {
+    queryReportsData({
+      isOwner,
+      userId: user?.id,
+      shiftFilterId,
+    }).then((result) => {
       if (cancelled) return;
       setTransactions(result.transactions);
       setTodayTransactions(result.todayTransactions);
@@ -63,7 +94,7 @@ export default function ReportsView({ products, onOpenReceipt }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isOwner, user?.id, shiftFilterId]);
 
   const summary = useMemo(() => {
     const todayRevenue = todayTransactions.reduce(
@@ -75,8 +106,10 @@ export default function ReportsView({ products, onOpenReceipt }) {
     let todayProfit = 0;
     for (const tx of todayTransactions) {
       for (const item of tx.transaction_items || []) {
-        const buyPrice = buyPriceMap.get(item.product_id) ?? 0;
-        todayProfit += (Number(item.price) - buyPrice) * item.qty;
+        const snapshotCost = Number(item.cost_price) || 0;
+        const unitCost =
+          snapshotCost > 0 ? snapshotCost : buyPriceMap.get(item.product_id) ?? 0;
+        todayProfit += (Number(item.price) - unitCost) * item.qty;
       }
     }
 
@@ -90,25 +123,31 @@ export default function ReportsView({ products, onOpenReceipt }) {
     };
   }, [todayTransactions, products]);
 
+  const activeSubTab = isOwner ? subTab : 'transactions';
+
   return (
     <div className="reports-layout">
       <div className="stats-grid">
         <div className="stat-card">
-          <span>Omzet Hari Ini</span>
+          <span>{isOwner ? 'Omzet Hari Ini' : 'Omzet Saya Hari Ini'}</span>
           <strong>{formatRupiah(summary.todayRevenue)}</strong>
         </div>
         <div className="stat-card">
-          <span>Transaksi Hari Ini</span>
+          <span>{isOwner ? 'Transaksi Hari Ini' : 'Transaksi Saya Hari Ini'}</span>
           <strong>{summary.todayCount} nota</strong>
         </div>
-        <div className="stat-card">
-          <span>Estimasi Laba Kotor</span>
-          <strong>{formatRupiah(summary.todayProfit)}</strong>
-        </div>
-        <div className="stat-card">
-          <span>Stok Menipis</span>
-          <strong>{summary.lowStockCount} produk</strong>
-        </div>
+        {isOwner && (
+          <>
+            <div className="stat-card">
+              <span>Estimasi Laba Kotor</span>
+              <strong>{formatRupiah(summary.todayProfit)}</strong>
+            </div>
+            <div className="stat-card">
+              <span>Stok Menipis</span>
+              <strong>{summary.lowStockCount} produk</strong>
+            </div>
+          </>
+        )}
       </div>
 
       <section className="card">
@@ -116,18 +155,29 @@ export default function ReportsView({ products, onOpenReceipt }) {
           <div className="mode-toggle">
             <button
               type="button"
-              className={`chip ${subTab === 'transactions' ? 'active' : ''}`}
+              className={`chip ${activeSubTab === 'transactions' ? 'active' : ''}`}
               onClick={() => setSubTab('transactions')}
             >
-              Riwayat Transaksi
+              {isOwner ? 'Riwayat Transaksi' : 'Riwayat Transaksi Saya'}
             </button>
-            <button
-              type="button"
-              className={`chip ${subTab === 'stock_logs' ? 'active' : ''}`}
-              onClick={() => setSubTab('stock_logs')}
-            >
-              Riwayat Mutasi Stok
-            </button>
+            {isOwner && (
+              <button
+                type="button"
+                className={`chip ${activeSubTab === 'stock_logs' ? 'active' : ''}`}
+                onClick={() => setSubTab('stock_logs')}
+              >
+                Riwayat Mutasi Stok
+              </button>
+            )}
+            {!isOwner && activeShift && (
+              <button
+                type="button"
+                className={`chip ${onlyActiveShift ? 'active' : ''}`}
+                onClick={() => setOnlyActiveShift((prev) => !prev)}
+              >
+                {onlyActiveShift ? 'Filter: Shift Aktif' : 'Filter: Semua Shift Saya'}
+              </button>
+            )}
           </div>
           <button type="button" className="btn btn-outline" onClick={handleRefresh}>
             <RefreshCw size={15} /> Refresh
@@ -136,13 +186,14 @@ export default function ReportsView({ products, onOpenReceipt }) {
 
         {loading ? (
           <p className="muted-text">Memuat laporan...</p>
-        ) : subTab === 'transactions' ? (
+        ) : activeSubTab === 'transactions' ? (
           <div className="table-responsive">
             <table className="data-table">
               <thead>
                 <tr>
                   <th>No. Invoice</th>
                   <th>Waktu</th>
+                  {isOwner && <th>Kasir</th>}
                   <th>Metode</th>
                   <th>Total</th>
                   <th>Digital Receipt</th>
@@ -151,24 +202,34 @@ export default function ReportsView({ products, onOpenReceipt }) {
               <tbody>
                 {transactions.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="text-center muted-text">
+                    <td colSpan={isOwner ? 6 : 5} className="text-center muted-text">
                       Belum ada transaksi tercatat.
                     </td>
                   </tr>
                 ) : (
                   transactions.map((tx) => (
                     <tr key={tx.id}>
-                      <td><code>{tx.invoice_number}</code></td>
+                      <td>
+                        <code>{tx.invoice_number}</code>
+                      </td>
                       <td>{formatDateTime(tx.created_at)}</td>
-                      <td><span className="badge">{tx.payment_method.toUpperCase()}</span></td>
-                      <td><strong>{formatRupiah(tx.total_amount)}</strong></td>
+                      {isOwner && <td>{tx.cashier?.full_name || 'Kasir'}</td>}
+                      <td>
+                        <span className="badge">{tx.payment_method.toUpperCase()}</span>
+                      </td>
+                      <td>
+                        <strong>{formatRupiah(tx.total_amount)}</strong>
+                      </td>
                       <td>
                         <button
                           type="button"
                           className="btn btn-outline btn-sm"
                           onClick={() =>
                             onOpenReceipt({
-                              transaction: tx,
+                              transaction: {
+                                ...tx,
+                                cashier_name: tx.cashier?.full_name || profile?.full_name || 'Kasir',
+                              },
                               items: tx.transaction_items || [],
                             })
                           }
@@ -209,7 +270,9 @@ export default function ReportsView({ products, onOpenReceipt }) {
                         <strong>{log.products?.name || '-'}</strong>{' '}
                         <span className="muted-text">({log.products?.barcode || '-'})</span>
                       </td>
-                      <td><span className="badge">{log.type}</span></td>
+                      <td>
+                        <span className="badge">{log.type}</span>
+                      </td>
                       <td>
                         <strong className={log.qty < 0 ? 'text-danger' : 'text-success'}>
                           {log.qty > 0 ? `+${log.qty}` : log.qty}

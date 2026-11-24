@@ -14,3 +14,17 @@ export const isSupabaseConfigured =
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
+
+/**
+ * Create a non-persisted Supabase client for admin actions (e.g. creating a
+ * cashier account) without overwriting the active Owner session.
+ */
+export function createEphemeralSupabaseClient() {
+  if (!isSupabaseConfigured) return null;
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}

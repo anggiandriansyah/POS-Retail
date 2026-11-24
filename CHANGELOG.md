@@ -2,6 +2,21 @@
 
 Semua perubahan penting pada proyek **POS Toko Retail (`react-supabase-app`)** dicatat di file ini.
 
+## [1.1.0] - 2026-11-24 (Fase 2 - Sprint 2)
+
+### Added
+- **Autentikasi & Pemisahan Role**: Login berbasis Supabase Auth dengan pemisahan peran `Owner` dan `Kasir` melalui tabel profil/role pengguna.
+- **Pemisahan UI POV Kasir vs POV Owner**: Tampilan antarmuka disesuaikan otomatis berdasarkan role—kasir fokus pada operasional transaksi, sedangkan owner memiliki akses manajemen penuh termasuk **Mode Kasir** untuk ikut melayani penjualan.
+- **Shift Kasir & Petty Cash**: Fitur buka/tutup shift kasir dengan pencatatan modal awal, kas masuk/keluar (*Petty Cash* `IN`/`OUT`), rekonsiliasi kas akhir, serta fitur **Force Close** oleh Owner untuk menutup paksa shift yang masih aktif.
+- **Automated Test Suite**: Penambahan `tests/sprint2.test.mjs` (14 tests) untuk memverifikasi alur autentikasi, role, shift kasir, petty cash, dan akses struk publik.
+
+### Security
+- **Penguncian RLS (Row Level Security)**: Kebijakan akses tabel diperketat hanya untuk pengguna terautentikasi sesuai peran (`Owner` vs `Kasir`).
+- **Digital Receipt Publik Aman**: Akses struk publik `/receipt/:invoice` kini dilayani melalui fungsi RPC `get_public_receipt` (`SECURITY DEFINER`) tanpa membuka akses tabel langsung ke role `anon`.
+
+### Changed
+- **Optimasi Code-Splitting**: Penerapan `React.lazy` dan `Suspense` pada rute/komponen halaman utama untuk mempercepat waktu muat awal aplikasi.
+
 ## [1.0.0] - 2026-11-24 (Fase 1)
 
 ### Added
