@@ -68,6 +68,8 @@ export default function App() {
   }
 
   const lowStockCount = products.filter((p) => p.stock <= p.min_stock).length;
+  const appEnv = import.meta.env.VITE_APP_ENV || (import.meta.env.DEV ? 'development' : 'production');
+  const isDevEnv = appEnv !== 'production';
 
   return (
     <div className="app-shell">
@@ -77,7 +79,10 @@ export default function App() {
             <Store size={22} />
           </div>
           <div>
-            <h1>{STORE_INFO.name}</h1>
+            <h1>
+              {STORE_INFO.name}{' '}
+              {isDevEnv && <span className="env-badge">DEV</span>}
+            </h1>
             <span className="muted-text">
               POS Retail &amp; Barcode Inventory • <code>v{APP_VERSION}</code>
             </span>
