@@ -1,6 +1,14 @@
+'use client';
+
+import type { PublicReceipt, Transaction, TransactionItem } from '../types/pos';
 import { STORE_INFO, formatDateTime, formatRupiah } from '../utils/format';
 
-export default function ReceiptContent({ transaction, items }) {
+export interface ReceiptContentProps {
+  transaction: Transaction | PublicReceipt;
+  items: TransactionItem[];
+}
+
+export default function ReceiptContent({ transaction, items }: ReceiptContentProps) {
   return (
     <div className="receipt-paper" id="printable-receipt">
       <div className="receipt-header">
@@ -20,6 +28,12 @@ export default function ReceiptContent({ transaction, items }) {
           <span>Tanggal</span>
           <span>{formatDateTime(transaction.created_at)}</span>
         </div>
+        {transaction.cashier_name && (
+          <div>
+            <span>Kasir</span>
+            <span>{transaction.cashier_name}</span>
+          </div>
+        )}
         <div>
           <span>Pembayaran</span>
           <span>{(transaction.payment_method || 'cash').toUpperCase()}</span>

@@ -1,15 +1,22 @@
+'use client';
+
 import { useState } from 'react';
 import { Tag, AlertTriangle, PackageCheck } from 'lucide-react';
+import type { Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
 import BarcodeScanner from './BarcodeScanner';
 
-export default function PriceChecker({ products }) {
-  const [selectedProduct, setSelectedProduct] = useState(null);
+export interface PriceCheckerProps {
+  products: Product[];
+}
+
+export default function PriceChecker({ products }: PriceCheckerProps) {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [notFoundBarcode, setNotFoundBarcode] = useState('');
 
-  function handleScan(barcode) {
+  function handleScan(barcode: string) {
     const found = products.find(
-      (p) => p.barcode.toLowerCase() === barcode.toLowerCase()
+      (p) => p.is_active !== false && p.barcode.toLowerCase() === barcode.toLowerCase()
     );
     if (found) {
       setSelectedProduct(found);

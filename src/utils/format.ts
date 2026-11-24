@@ -1,13 +1,14 @@
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.2.0';
 
 export const STORE_INFO = {
   name: 'Toko Retail Anda',
   address: 'Jl. Contoh No. 123, Indonesia',
   phone: '0812-3456-7890',
-  footerNote: 'Terima kasih telah berbelanja! Barang yang sudah dibeli tidak dapat ditukar.',
-};
+  footerNote:
+    'Terima kasih telah berbelanja! Barang yang sudah dibeli tidak dapat ditukar.',
+} as const;
 
-export function formatRupiah(amount) {
+export function formatRupiah(amount: number | string | null | undefined): string {
   const numeric = Number(amount) || 0;
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -17,7 +18,7 @@ export function formatRupiah(amount) {
   }).format(numeric);
 }
 
-export function formatDateTime(isoString) {
+export function formatDateTime(isoString: string | null | undefined): string {
   if (!isoString) return '-';
   return new Intl.DateTimeFormat('id-ID', {
     dateStyle: 'medium',
@@ -25,9 +26,16 @@ export function formatDateTime(isoString) {
   }).format(new Date(isoString));
 }
 
-export function generateInvoiceNumber() {
+export function formatClockTime(isoString: string | null | undefined): string {
+  if (!isoString) return '--:--:--';
+  const d = new Date(isoString);
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+export function generateInvoiceNumber(): string {
   const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
+  const pad = (n: number): string => String(n).padStart(2, '0');
   const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
   const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
   const randPart = Math.floor(100 + Math.random() * 900);

@@ -1,19 +1,30 @@
+'use client';
+
 import { useState } from 'react';
 import { Check, Copy, ExternalLink, MessageCircle, Printer, X } from 'lucide-react';
+import type { ReceiptModalData } from '../types/pos';
 import { STORE_INFO, formatRupiah } from '../utils/format';
 import ReceiptContent from './ReceiptContent';
 
-export default function ReceiptModal({ receiptData, onClose }) {
+export interface ReceiptModalProps {
+  receiptData: ReceiptModalData | null;
+  onClose: () => void;
+}
+
+export default function ReceiptModal({ receiptData, onClose }: ReceiptModalProps) {
   const [copied, setCopied] = useState(false);
 
   if (!receiptData?.transaction) return null;
 
   const { transaction, items } = receiptData;
-  const receiptUrl = `${window.location.origin}/receipt/${encodeURIComponent(
-    transaction.invoice_number
-  )}`;
+  const receiptPath = `/receipt/${encodeURIComponent(transaction.invoice_number)}`;
+
+  function getReceiptUrl(): string {
+    return `${window.location.origin}${receiptPath}`;
+  }
 
   async function handleCopyLink() {
+    const receiptUrl = getReceiptUrl();
     try {
       await navigator.clipboard.writeText(receiptUrl);
       setCopied(true);
@@ -24,6 +35,7 @@ export default function ReceiptModal({ receiptData, onClose }) {
   }
 
   function handleSendWhatsApp() {
+    const receiptUrl = getReceiptUrl();
     const itemLines = items
       .map(
         (i) =>
@@ -74,7 +86,7 @@ export default function ReceiptModal({ receiptData, onClose }) {
             <Printer size={16} /> Print / PDF
           </button>
           <a
-            href={receiptUrl}
+            href={receiptPath}
             target="_blank"
             rel="noreferrer"
             className="btn btn-outline"

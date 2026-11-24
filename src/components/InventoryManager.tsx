@@ -1,10 +1,24 @@
-import { useMemo, useState } from 'react';
+'use client';
+
+import { useMemo, useState, type FormEvent } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Edit2, Plus, Search, Trash2 } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabaseClient';
+import type { FeedbackMessage, Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
 import BarcodeScanner from './BarcodeScanner';
 
-const EMPTY_FORM = {
+interface ProductFormState {
+  id: string | null;
+  barcode: string;
+  name: string;
+  category: string;
+  buy_price: string;
+  sell_price: string;
+  stock: string;
+  min_stock: string;
+}
+
+const EMPTY_FORM: ProductFormState = {
   id: null,
   barcode: '',
   name: '',
@@ -15,16 +29,25 @@ const EMPTY_FORM = {
   min_stock: '5',
 };
 
-export default function InventoryManager({ products, onProductsChanged }) {
-  const [form, setForm] = useState(EMPTY_FORM);
+export interface InventoryManagerProps {
+  products: Product[];
+  onProductsChanged: () => Promise<void>;
+}
+
+export default function InventoryManager({
+  products,
+  onProductsChanged,
+}: InventoryManagerProps) {
+  const [form, setForm] = useState<ProductFormState>(EMPTY_FORM);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
-  const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
 
   // State untuk Scan Mutasi Stok (Kurangi / Tambah Stok)
-  const [stockMode, setStockMode] = useState('out'); // 'out' | 'in'
-  const [scannedProduct, setScannedProduct] = useState(null);
+  const [stockMode, setStockMode] = useState<'out' | 'in'>('out');
+  const [scannedProduct, setScannedProduct] = useState<Product | null>(null);
+  const [notFoundBarcode, setNotFoundBarcode] = useState('');
   const [adjustQty, setAdjustQty] = useState('1');
   const [adjustNote, setAdjustNote] = useState('Rusak / Kadaluarsa');
   const [adjusting, setAdjusting] = useState(false);
@@ -40,25 +63,27 @@ export default function InventoryManager({ products, onProductsChanged }) {
     );
   }, [products, search]);
 
-  function handleScanForStock(barcode) {
+  function handleScanForStock(barcode: string) {
     const found = products.find(
       (p) => p.barcode.toLowerCase() === barcode.toLowerCase()
     );
     if (!found) {
       setScannedProduct(null);
+      setNotFoundBarcode(barcode);
       setFeedback({
         type: 'error',
-        text: `Barcode "${barcode}" belum terdaftar. Anda bisa menambahkannya di form Tambah Produk.`,
+        text: `Barcode "${barcode}" belum terdaftar. Anda bisa langsung mendaftarkannya sebagai produk baru.`,
       });
       return;
     }
+    setNotFoundBarcode('');
     setScannedProduct(found);
     setFeedback(null);
   }
 
-  async function handleStockAdjustment(e) {
+  async function handleStockAdjustment(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!scannedProduct) return;
+    if (!scannedProduct || !supabase) return;
 
     const qtyNum = parseInt(adjustQty, 10);
     if (!qtyNum || qtyNum <= 0) {
@@ -103,14 +128,16 @@ export default function InventoryManager({ products, onProductsChanged }) {
       setAdjustQty('1');
       await onProductsChanged();
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal update stok: ${err.message}` });
+      const message = err instanceof Error ? err.message : String(err);
+      setFeedback({ type: 'error', text: `Gagal update stok: ${message}` });
     } finally {
       setAdjusting(false);
     }
   }
 
-  async function handleSaveProduct(e) {
+  async function handleSaveProduct(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!supabase) return;
     setSaving(true);
     setFeedback(null);
 
@@ -142,7 +169,7 @@ export default function InventoryManager({ products, onProductsChanged }) {
 
         if (payload.stock > 0 && created) {
           await supabase.from('stock_logs').insert({
-            product_id: created.id,
+            product_id: (created as Product).id,
             type: 'in',
             qty: payload.stock,
             note: 'Stok awal produk baru',
@@ -155,20 +182,23 @@ export default function InventoryManager({ products, onProductsChanged }) {
       setShowForm(false);
       await onProductsChanged();
     } catch (err) {
+      const errObj = err as { code?: string; message?: string };
+      const message = errObj?.message || String(err);
       const isDuplicate =
-        err?.code === '23505' || err?.message?.toLowerCase().includes('duplicate key');
+        errObj?.code === '23505' || message.toLowerCase().includes('duplicate key');
       setFeedback({
         type: 'error',
         text: isDuplicate
           ? `Barcode "${payload.barcode}" sudah terdaftar pada produk lain.`
-          : `Gagal menyimpan produk: ${err.message}`,
+          : `Gagal menyimpan produk: ${message}`,
       });
     } finally {
       setSaving(false);
     }
   }
 
-  async function handleDelete(product) {
+  async function handleDelete(product: Product) {
+    if (!supabase) return;
     if (!window.confirm(`Hapus produk "${product.name}"?`)) return;
     const { error } = await supabase.from('products').delete().eq('id', product.id);
     if (error) {
@@ -179,7 +209,7 @@ export default function InventoryManager({ products, onProductsChanged }) {
     await onProductsChanged();
   }
 
-  function startEdit(product) {
+  function startEdit(product: Product) {
     setForm({
       id: product.id,
       barcode: product.barcode,
@@ -240,6 +270,23 @@ export default function InventoryManager({ products, onProductsChanged }) {
           autoFocus={false}
           buttonLabel="Pilih Barang"
         />
+
+        {notFoundBarcode && (
+          <div style={{ marginTop: 8 }}>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                setForm({ ...EMPTY_FORM, barcode: notFoundBarcode });
+                setShowForm(true);
+                setNotFoundBarcode('');
+                setFeedback(null);
+              }}
+            >
+              <Plus size={15} /> Daftarkan &ldquo;{notFoundBarcode}&rdquo; sebagai Produk Baru
+            </button>
+          </div>
+        )}
 
         {scannedProduct && (
           <form onSubmit={handleStockAdjustment} className="stock-adjust-card">
@@ -308,15 +355,17 @@ export default function InventoryManager({ products, onProductsChanged }) {
         {showForm && (
           <form onSubmit={handleSaveProduct} className="product-form">
             <div className="form-grid">
-              <label>
-                Barcode *
-                <input
-                  type="text"
+              <label style={{ gridColumn: '1 / -1' }}>
+                Barcode * (Scan Kamera / Scanner USB / Ketik Manual)
+                <BarcodeScanner
                   value={form.barcode}
-                  onChange={(e) => setForm({ ...form, barcode: e.target.value })}
-                  placeholder="Scan atau ketik barcode"
-                  className="input"
+                  onChange={(val) => setForm((prev) => ({ ...prev, barcode: val }))}
+                  onScan={(val) => setForm((prev) => ({ ...prev, barcode: val }))}
+                  placeholder="Scan pakai kamera, scanner USB, atau ketik manual"
+                  autoFocus={false}
+                  hideSubmit
                   required
+                  closeCameraOnScan
                 />
               </label>
               <label>
@@ -432,8 +481,8 @@ export default function InventoryManager({ products, onProductsChanged }) {
             <tbody>
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="text-center muted-text">
-                    Belum ada produk. Klik "Tambah Produk" untuk mulai mengisi data.
+                  <td colSpan={7} className="text-center muted-text">
+                    Belum ada produk. Klik &quot;Tambah Produk&quot; untuk mulai mengisi data.
                   </td>
                 </tr>
               ) : (
