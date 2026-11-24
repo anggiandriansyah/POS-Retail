@@ -28,17 +28,23 @@ export default function BarcodeScanner({
   closeCameraOnScan = false,
 }: BarcodeScannerProps) {
   const [internalCode, setInternalCode] = useState('');
-  const code = value !== undefined ? value : internalCode;
-  const setCode = (next: string) => {
-    if (onChange) onChange(next);
-    if (value === undefined) setInternalCode(next);
-  };
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState('');
+  const [lastScannedNotice, setLastScannedNotice] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const lastScanRef = useRef<{ code: string; time: number }>({ code: '', time: 0 });
+  const onScanRef = useRef(onScan);
+  const closeOnScanRef = useRef(closeCameraOnScan);
   const readerId = useId().replace(/:/g, '_');
+
+  useEffect(() => {
+    onScanRef.current = onScan;
+  }, [onScan]);
+
+  useEffect(() => {
+    closeOnScanRef.current = closeCameraOnScan;
+  }, [closeCameraOnScan]);
 
   useEffect(() => {
     if (autoFocus && inputRef.current) {
@@ -53,32 +59,79 @@ export default function BarcodeScanner({
 
     async function startCamera() {
       try {
-        const { Html5Qrcode: Html5QrcodeClass } = await import('html5-qrcode');
+        const { Html5Qrcode: Html5QrcodeClass, Html5QrcodeSupportedFormats } = await import(
+          'html5-qrcode'
+        );
         if (!isMounted) return;
 
-        const html5QrCode = new Html5QrcodeClass(readerId);
+        const formatsToSupport = [
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.UPC_A,
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.CODE_39,
+          Html5QrcodeSupportedFormats.ITF,
+          Html5QrcodeSupportedFormats.QR_CODE,
+        ];
+
+        const html5QrCode = new Html5QrcodeClass(readerId, {
+          formatsToSupport,
+          experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true,
+          },
+          verbose: false,
+        });
         scannerRef.current = html5QrCode;
 
-        await html5QrCode.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 250, height: 140 } },
-          (decodedText) => {
-            const now = Date.now();
-            if (
-              lastScanRef.current.code === decodedText &&
-              now - lastScanRef.current.time < 1500
-            ) {
-              return;
-            }
-            lastScanRef.current = { code: decodedText, time: now };
-            const scanned = decodedText.trim();
-            onScan(scanned);
-            if (closeCameraOnScan) {
-              setCameraActive(false);
-            }
-          },
-          () => {}
-        );
+        const scanConfig = {
+          fps: 15,
+          qrbox: (viewfinderWidth: number, viewfinderHeight: number) => ({
+            width: Math.max(200, Math.floor(viewfinderWidth * 0.85)),
+            height: Math.max(110, Math.floor(viewfinderHeight * 0.55)),
+          }),
+          disableFlip: false,
+        };
+
+        const handleDecoded = (decodedText: string) => {
+          const now = Date.now();
+          const scanned = decodedText.trim();
+          if (!scanned) return;
+          if (
+            lastScanRef.current.code === scanned &&
+            now - lastScanRef.current.time < 1500
+          ) {
+            return;
+          }
+          lastScanRef.current = { code: scanned, time: now };
+          setLastScannedNotice(scanned);
+          onScanRef.current(scanned);
+          if (closeOnScanRef.current) {
+            setCameraActive(false);
+          }
+        };
+
+        try {
+          await html5QrCode.start(
+            {
+              facingMode: 'environment',
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            } as MediaTrackConstraints,
+            scanConfig,
+            handleDecoded,
+            () => {}
+          );
+        } catch {
+          // Fallback to default camera constraints if 1280x720 isn't supported
+          if (!isMounted) return;
+          await html5QrCode.start(
+            { facingMode: 'environment' },
+            scanConfig,
+            handleDecoded,
+            () => {}
+          );
+        }
       } catch (err) {
         if (isMounted) {
           const message = err instanceof Error ? err.message : String(err);
@@ -101,7 +154,13 @@ export default function BarcodeScanner({
         scannerRef.current = null;
       }
     };
-  }, [cameraActive, closeCameraOnScan, onScan, readerId]);
+  }, [cameraActive, readerId]);
+
+  const code = value !== undefined ? value : internalCode;
+  const setCode = (next: string) => {
+    if (onChange) onChange(next);
+    if (value === undefined) setInternalCode(next);
+  };
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -138,6 +197,7 @@ export default function BarcodeScanner({
         className={`btn ${cameraActive ? 'btn-danger' : 'btn-outline'}`}
         onClick={() => {
           setCameraError('');
+          setLastScannedNotice('');
           setCameraActive((prev) => !prev);
         }}
         title={cameraActive ? 'Tutup Kamera' : 'Scan Pakai Kamera'}
@@ -159,11 +219,18 @@ export default function BarcodeScanner({
       )}
 
       {cameraError && <p className="alert alert-error">{cameraError}</p>}
+      {lastScannedNotice && (
+        <p className="alert alert-success">
+          Barcode terbaca: <code>{lastScannedNotice}</code>
+        </p>
+      )}
 
       {cameraActive && (
         <div className="camera-box">
           <div id={readerId} className="camera-reader" />
-          <p className="muted-text">Arahkan kamera ke barcode / QR produk</p>
+          <p className="muted-text">
+            Arahkan barcode/QR sejajar di dalam kotak dengan pencahayaan cukup
+          </p>
         </div>
       )}
     </div>
