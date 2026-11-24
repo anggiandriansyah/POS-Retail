@@ -9,8 +9,8 @@ import {
   formatClockTime,
   formatRupiah,
   generateInvoiceNumber,
-} from '../src/utils/format.js';
-import { translations } from '../src/i18n/translations.js';
+} from '../src/utils/format.ts';
+import { translations } from '../src/i18n/translations.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,11 +32,11 @@ function loadEnvFile(filePath) {
 }
 
 const envDev = loadEnvFile(path.join(ROOT_DIR, '.env.development'));
-const supabaseUrl = envDev.VITE_SUPABASE_URL;
-const supabaseAnonKey = envDev.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = envDev.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = envDev.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-assert.ok(supabaseUrl, 'VITE_SUPABASE_URL must be defined in .env.development');
-assert.ok(supabaseAnonKey, 'VITE_SUPABASE_ANON_KEY must be defined in .env.development');
+assert.ok(supabaseUrl, 'NEXT_PUBLIC_SUPABASE_URL must be defined in .env.development');
+assert.ok(supabaseAnonKey, 'NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined in .env.development');
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -45,7 +45,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-describe('Unit Tests - src/utils/format.js', () => {
+describe('Unit Tests - src/utils/format.ts', () => {
   it('APP_VERSION should be 1.2.0', () => {
     assert.equal(APP_VERSION, '1.2.0');
   });
@@ -89,7 +89,7 @@ describe('Unit Tests - src/utils/format.js', () => {
   });
 });
 
-describe('Unit Tests - src/i18n/translations.js', () => {
+describe('Unit Tests - src/i18n/translations.ts', () => {
   function collectLeafKeys(obj, prefix = '') {
     const keys = [];
     for (const [key, value] of Object.entries(obj)) {
