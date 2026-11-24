@@ -8,8 +8,10 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../supabaseClient';
-import { formatDateTime, formatRupiah } from '../utils/format';
+import { formatClockTime, formatDateTime, formatRupiah } from '../utils/format';
+import DigitalClock from './DigitalClock';
 
 const PETTY_CATEGORIES = [
   'OPERASIONAL',
@@ -48,10 +50,14 @@ async function fetchShiftDetails(shiftId) {
 
 export default function ShiftManager({ onShiftOpened }) {
   const { user, profile, activeShift, refreshShift } = useAuth();
+  const { dict } = useThemeLang();
+  const t = dict.shift;
+
   const [openingCash, setOpeningCash] = useState('0');
   const [cashSales, setCashSales] = useState(0);
   const [pettyLogs, setPettyLogs] = useState([]);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [lastClosedShift, setLastClosedShift] = useState(null);
 
   // Petty cash form
   const [pettyType, setPettyType] = useState('OUT');
@@ -80,7 +86,7 @@ export default function ShiftManager({ onShiftOpened }) {
       setCashSales(result.cashSales);
       setPettyLogs(result.pettyLogs);
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal memuat detail shift: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setLoadingDetails(false);
     }
@@ -97,7 +103,7 @@ export default function ShiftManager({ onShiftOpened }) {
       })
       .catch((err) => {
         if (cancelled) return;
-        setFeedback({ type: 'error', text: `Gagal memuat detail shift: ${err.message}` });
+        setFeedback({ type: 'error', text: `${err.message}` });
       })
       .finally(() => {
         if (!cancelled) setLoadingDetails(false);
@@ -131,7 +137,7 @@ export default function ShiftManager({ onShiftOpened }) {
     setFeedback(null);
     const amount = Number(openingCash);
     if (Number.isNaN(amount) || amount < 0) {
-      setFeedback({ type: 'error', text: 'Modal awal laci harus >= 0.' });
+      setFeedback({ type: 'error', text: t.errOpeningCash });
       return;
     }
 
@@ -144,12 +150,13 @@ export default function ShiftManager({ onShiftOpened }) {
       });
       if (error) throw error;
 
+      setLastClosedShift(null);
       await refreshShift();
       setOpeningCash('0');
-      setFeedback({ type: 'success', text: 'Shift berhasil dibuka! Anda siap melayani transaksi.' });
+      setFeedback({ type: 'success', text: t.msgShiftOpened });
       if (onShiftOpened) onShiftOpened();
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal membuka shift: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setSubmitting(false);
     }
@@ -160,7 +167,7 @@ export default function ShiftManager({ onShiftOpened }) {
     setFeedback(null);
     const amount = Number(pettyAmount);
     if (Number.isNaN(amount) || amount <= 0) {
-      setFeedback({ type: 'error', text: 'Nominal kas harus lebih dari 0.' });
+      setFeedback({ type: 'error', text: t.errPettyAmount });
       return;
     }
 
@@ -180,11 +187,11 @@ export default function ShiftManager({ onShiftOpened }) {
       setPettyDesc('');
       setFeedback({
         type: 'success',
-        text: `Petty cash (${pettyType}) sebesar ${formatRupiah(amount)} tercatat.`,
+        text: `Petty cash (${pettyType}) ${formatRupiah(amount)}`,
       });
       await loadDetails();
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal mencatat petty cash: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setSubmitting(false);
     }
@@ -195,15 +202,12 @@ export default function ShiftManager({ onShiftOpened }) {
     setFeedback(null);
 
     if (!hasActualInput || Number.isNaN(numericActual) || numericActual < 0) {
-      setFeedback({ type: 'error', text: 'Uang fisik aktual harus diisi (>= 0).' });
+      setFeedback({ type: 'error', text: t.errActualCash });
       return;
     }
 
     if (discrepancy !== 0 && !closeNotes.trim()) {
-      setFeedback({
-        type: 'error',
-        text: 'Catatan selisih wajib diisi karena uang fisik berbeda dengan estimasi sistem.',
-      });
+      setFeedback({ type: 'error', text: t.errDiscrepancyNotes });
       return;
     }
 
@@ -216,19 +220,24 @@ export default function ShiftManager({ onShiftOpened }) {
       });
       if (error) throw error;
 
+      setLastClosedShift({
+        opened_at: activeShift.opened_at,
+        closed_at: closedShift?.closed_at || new Date().toISOString(),
+        discrepancy: Number(closedShift?.discrepancy || 0),
+      });
       setActualCash('');
       setCloseNotes('');
       await refreshShift();
       const diffText =
         Number(closedShift?.discrepancy || 0) === 0
-          ? 'Sesuai (Selisih Rp0)'
-          : `Selisih ${formatRupiah(closedShift.discrepancy)}`;
+          ? t.exactLabel
+          : `${t.discrepancyLabel}: ${formatRupiah(closedShift.discrepancy)}`;
       setFeedback({
         type: 'success',
-        text: `Shift berhasil ditutup. ${diffText}.`,
+        text: `${t.msgShiftClosed} ${diffText}.`,
       });
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal menutup shift: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setSubmitting(false);
     }
@@ -244,20 +253,37 @@ export default function ShiftManager({ onShiftOpened }) {
 
       {!activeShift ? (
         <section className="card shift-open-card">
+          <div className="shift-clock-banner">
+            <DigitalClock label={t.currentTimeLabel} />
+          </div>
+
+          {lastClosedShift && (
+            <div className="shift-recorded-times">
+              <div className="shift-time-chip">
+                <span>{t.openedAtLabel}</span>
+                <strong>{formatClockTime(lastClosedShift.opened_at)}</strong>
+              </div>
+              <div className="shift-time-chip">
+                <span>{t.closedAtLabel}</span>
+                <strong>{formatClockTime(lastClosedShift.closed_at)}</strong>
+              </div>
+            </div>
+          )}
+
           <div className="section-header">
             <div>
               <h2>
-                <Clock size={20} /> Buka Shift Kasir
+                <Clock size={20} /> {t.openTitle}
               </h2>
               <p className="muted-text">
-                Kasir: <strong>{profile?.full_name}</strong> — Masukkan modal awal uang tunai di laci sebelum memulai transaksi.
+                {t.cashierLabel}: <strong>{profile?.full_name}</strong> — {t.openDesc}
               </p>
             </div>
           </div>
 
           <form onSubmit={handleOpenShift} className="shift-open-form">
             <label>
-              Modal Awal Laci (Rp)
+              {t.openingCashLabel}
               <input
                 type="number"
                 min="0"
@@ -265,13 +291,13 @@ export default function ShiftManager({ onShiftOpened }) {
                 className="input"
                 value={openingCash}
                 onChange={(e) => setOpeningCash(e.target.value)}
-                placeholder="Contoh: 200000"
+                placeholder={t.openingCashPlaceholder}
                 required
               />
             </label>
             <button type="submit" className="btn btn-primary btn-lg" disabled={submitting}>
               <PlayCircle size={18} />
-              <span>{submitting ? 'Membuka Shift...' : 'Buka Shift Sekarang'}</span>
+              <span>{submitting ? t.openingBtn : t.openBtn}</span>
             </button>
           </form>
         </section>
@@ -280,49 +306,56 @@ export default function ShiftManager({ onShiftOpened }) {
           <div className="section-header">
             <div>
               <h2 style={{ margin: 0 }}>
-                Shift Aktif • <span className="status-pill status-open">OPEN</span>
+                {t.activeTitle} • <span className="status-pill status-open">{dict.openStatus}</span>
               </h2>
               <p className="muted-text">
-                Dibuka sejak {formatDateTime(activeShift.opened_at)} oleh{' '}
+                {t.openedSince} {formatDateTime(activeShift.opened_at)} {t.byLabel}{' '}
                 <strong>{profile?.full_name}</strong>
               </p>
             </div>
-            <button
-              type="button"
-              className="btn btn-outline"
-              onClick={loadDetails}
-              disabled={loadingDetails}
-            >
-              <RefreshCw size={15} /> Refresh
-            </button>
+            <div className="shift-header-right">
+              <div className="shift-time-chip">
+                <span>{t.openedAtLabel}</span>
+                <strong>{formatClockTime(activeShift.opened_at)}</strong>
+              </div>
+              <DigitalClock compact />
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={loadDetails}
+                disabled={loadingDetails}
+              >
+                <RefreshCw size={15} /> {dict.refresh}
+              </button>
+            </div>
           </div>
 
           <div className="stats-grid">
             <div className="stat-card">
-              <span>Modal Awal Laci</span>
+              <span>{t.openingStat}</span>
               <strong>{formatRupiah(summary.opening)}</strong>
             </div>
             <div className="stat-card">
-              <span>Penjualan Tunai Shift</span>
+              <span>{t.cashSalesStat}</span>
               <strong>{formatRupiah(cashSales)}</strong>
             </div>
             <div className="stat-card">
-              <span>Petty Cash Masuk (IN)</span>
+              <span>{t.pettyInStat}</span>
               <strong className="text-success">+{formatRupiah(summary.pettyIn)}</strong>
             </div>
             <div className="stat-card">
-              <span>Petty Cash Keluar (OUT)</span>
+              <span>{t.pettyOutStat}</span>
               <strong className="text-danger">-{formatRupiah(summary.pettyOut)}</strong>
             </div>
             <div className="stat-card stat-card-highlight">
-              <span>Estimasi Uang di Laci</span>
+              <span>{t.expectedCashStat}</span>
               <strong>{formatRupiah(summary.expectedCash)}</strong>
             </div>
           </div>
 
           <div className="shift-grid">
             <section className="card">
-              <h2>Catat Petty Cash (Kas Masuk / Keluar)</h2>
+              <h2>{t.pettyTitle}</h2>
               <form onSubmit={handleAddPettyCash} className="shift-form">
                 <div className="mode-toggle">
                   <button
@@ -330,32 +363,32 @@ export default function ShiftManager({ onShiftOpened }) {
                     className={`chip ${pettyType === 'IN' ? 'active' : ''}`}
                     onClick={() => setPettyType('IN')}
                   >
-                    <ArrowDownCircle size={14} /> Kas Masuk (IN)
+                    <ArrowDownCircle size={14} /> {t.cashIn}
                   </button>
                   <button
                     type="button"
                     className={`chip ${pettyType === 'OUT' ? 'active-danger' : ''}`}
                     onClick={() => setPettyType('OUT')}
                   >
-                    <ArrowUpCircle size={14} /> Kas Keluar (OUT)
+                    <ArrowUpCircle size={14} /> {t.cashOut}
                   </button>
                 </div>
 
                 <div className="form-grid">
                   <label>
-                    Nominal (Rp)
+                    {t.amountLabel}
                     <input
                       type="number"
                       min="1"
                       className="input"
                       value={pettyAmount}
                       onChange={(e) => setPettyAmount(e.target.value)}
-                      placeholder="Contoh: 25000"
+                      placeholder={t.amountPlaceholder}
                       required
                     />
                   </label>
                   <label>
-                    Kategori
+                    {t.categoryLabel}
                     <select
                       className="input"
                       value={pettyCategory}
@@ -371,36 +404,51 @@ export default function ShiftManager({ onShiftOpened }) {
                 </div>
 
                 <label>
-                  Keterangan
+                  {t.descriptionLabel}
                   <input
                     type="text"
                     className="input"
                     value={pettyDesc}
                     onChange={(e) => setPettyDesc(e.target.value)}
-                    placeholder="Contoh: Beli plastik kresek / tambah uang receh"
+                    placeholder={t.descriptionPlaceholder}
                   />
                 </label>
 
                 <button type="submit" className="btn btn-primary" disabled={submitting}>
-                  Simpan Petty Cash
+                  {t.savePettyBtn}
                 </button>
               </form>
             </section>
 
             <section className="card">
-              <h2>
-                <Lock size={18} /> Tutup Shift (Rekonsiliasi Laci)
-              </h2>
+              <div className="section-header" style={{ marginBottom: '12px' }}>
+                <h2 style={{ margin: 0 }}>
+                  <Lock size={18} /> {t.closeTitle}
+                </h2>
+                <DigitalClock compact />
+              </div>
+
+              <div className="shift-recorded-times" style={{ marginBottom: '12px' }}>
+                <div className="shift-time-chip">
+                  <span>{t.openedAtLabel}</span>
+                  <strong>{formatClockTime(activeShift.opened_at)}</strong>
+                </div>
+                <div className="shift-time-chip">
+                  <span>{t.closedAtLabel}</span>
+                  <strong>--:--:--</strong>
+                </div>
+              </div>
+
               <form onSubmit={handleCloseShift} className="shift-form">
                 <label>
-                  Uang Fisik Aktual di Laci (Rp)
+                  {t.actualCashLabel}
                   <input
                     type="number"
                     min="0"
                     className="input"
                     value={actualCash}
                     onChange={(e) => setActualCash(e.target.value)}
-                    placeholder="Hitung total uang tunai fisik..."
+                    placeholder={t.actualCashPlaceholder}
                     required
                   />
                 </label>
@@ -411,55 +459,56 @@ export default function ShiftManager({ onShiftOpened }) {
                       discrepancy === 0 ? 'alert-success' : 'alert-error'
                     }`}
                   >
-                    Selisih Laci:{' '}
+                    {t.discrepancyLabel}:{' '}
                     <strong>
                       {discrepancy > 0
-                        ? `+${formatRupiah(discrepancy)} (Lebih)`
+                        ? `+${formatRupiah(discrepancy)} (${t.overLabel})`
                         : discrepancy < 0
-                          ? `${formatRupiah(discrepancy)} (Kurang)`
-                          : 'Rp0 (Pas / Sesuai)'}
+                          ? `${formatRupiah(discrepancy)} (${t.shortLabel})`
+                          : t.exactLabel}
                     </strong>
                   </div>
                 )}
 
                 <label>
-                  Catatan Penutupan {discrepancy !== 0 ? '(Wajib diisi jika ada selisih)' : '(Opsional)'}
+                  {t.notesLabel}{' '}
+                  {discrepancy !== 0 ? t.notesRequiredHint : t.notesOptionalHint}
                   <textarea
                     rows="2"
                     className="input"
                     value={closeNotes}
                     onChange={(e) => setCloseNotes(e.target.value)}
-                    placeholder="Jelaskan jika ada selisih atau catatan serah terima..."
+                    placeholder={t.notesPlaceholder}
                     required={discrepancy !== 0}
                   />
                 </label>
 
                 <button type="submit" className="btn btn-danger btn-lg" disabled={submitting}>
                   <Lock size={17} />
-                  <span>{submitting ? 'Menutup Shift...' : 'Tutup Shift Sekarang'}</span>
+                  <span>{submitting ? t.closingBtn : t.closeBtn}</span>
                 </button>
               </form>
             </section>
           </div>
 
           <section className="card">
-            <h2>Riwayat Petty Cash Shift Ini</h2>
+            <h2>{t.historyTitle}</h2>
             <div className="table-responsive">
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Waktu</th>
-                    <th>Tipe</th>
-                    <th>Kategori</th>
-                    <th>Keterangan</th>
-                    <th>Nominal</th>
+                    <th>{t.colTime}</th>
+                    <th>{t.colType}</th>
+                    <th>{t.colCategory}</th>
+                    <th>{t.colDesc}</th>
+                    <th>{t.colAmount}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pettyLogs.length === 0 ? (
                     <tr>
                       <td colSpan="5" className="text-center muted-text">
-                        Belum ada catatan petty cash pada shift ini.
+                        {t.noPettyLogs}
                       </td>
                     </tr>
                   ) : (

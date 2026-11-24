@@ -2,6 +2,18 @@
 
 Semua perubahan penting pada proyek **POS Toko Retail (`react-supabase-app`)** dicatat di file ini.
 
+## [1.2.0] - 2026-11-24 (Fase 2 - Sprint 2 Refinement)
+
+### Added
+- **Sign In Username/Email & Sign Up**: Sign In menggunakan Username atau Email melalui fungsi RPC `resolve_login_email`, serta Sign Up dengan Google OAuth atau Email + Password + Confirm Password (akun Kasir tetap dikelola oleh Owner).
+- **Bilingual (ID/EN) & Dark/Light Mode**: Dukungan pergantian bahasa Indonesia/Inggris dan tema gelap/terang menggunakan tombol swipe toggle (bendera ID/EN dan ikon Bulan/Matahari) yang tersimpan di `localStorage`.
+- **Digital Clock Shift**: Penambahan jam digital real-time (`HH:MM:SS`) saat melakukan Open Shift maupun Close Shift.
+- **Kasir Stock Request**: Fitur pengajuan permintaan stok (`stock_requests`) oleh Kasir untuk meminta pengisian ulang stok barang yang habis ke Owner.
+- **Owner Live Monitor & Dukungan Username**: Pemantauan aktivitas toko secara langsung berbasis Supabase Realtime (`transactions`, `products`, `shifts`, `stock_requests`) dengan aksi 1-klik **Restock / Approve / Reject**, serta dukungan `@username` di menu **Kelola Kasir**.
+
+### Changed
+- **Automated Test Suite**: Cakupan pengujian otomatis pada `tests/sprint2.test.mjs` diperluas dari 14 menjadi 19 tests.
+
 ## [1.1.0] - 2026-11-24 (Fase 2 - Sprint 2)
 
 ### Added

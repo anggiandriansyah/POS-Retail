@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, Shield, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { createEphemeralSupabaseClient, supabase } from '../supabaseClient';
 import { formatDateTime } from '../utils/format';
+
+const USERNAME_REGEX = /^[a-zA-Z0-9_.]{3,30}$/;
 
 async function fetchProfiles() {
   const { data, error } = await supabase
@@ -15,11 +18,15 @@ async function fetchProfiles() {
 
 export default function StaffManager() {
   const { user } = useAuth();
+  const { dict } = useThemeLang();
+  const t = dict.staff;
+
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
 
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [creating, setCreating] = useState(false);
@@ -30,7 +37,7 @@ export default function StaffManager() {
       const data = await fetchProfiles();
       setProfiles(data);
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal memuat daftar staf: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setLoading(false);
     }
@@ -45,7 +52,7 @@ export default function StaffManager() {
       })
       .catch((err) => {
         if (cancelled) return;
-        setFeedback({ type: 'error', text: `Gagal memuat daftar staf: ${err.message}` });
+        setFeedback({ type: 'error', text: `${err.message}` });
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -59,45 +66,51 @@ export default function StaffManager() {
     e.preventDefault();
     setFeedback(null);
 
-    if (!fullName.trim() || !email.trim() || password.length < 6) {
-      setFeedback({
-        type: 'error',
-        text: 'Nama lengkap, email, dan password (min. 6 karakter) wajib diisi.',
-      });
+    if (!fullName.trim() || !username.trim() || !email.trim() || password.length < 6) {
+      setFeedback({ type: 'error', text: t.errRequired });
+      return;
+    }
+
+    if (!USERNAME_REGEX.test(username.trim())) {
+      setFeedback({ type: 'error', text: t.errUsernameFormat });
       return;
     }
 
     const ephemeralClient = createEphemeralSupabaseClient();
     if (!ephemeralClient) {
-      setFeedback({ type: 'error', text: 'Supabase belum dikonfigurasi.' });
+      setFeedback({ type: 'error', text: dict.supabaseNotConfigured });
       return;
     }
 
     setCreating(true);
     try {
+      const cleanUsername = username.trim().toLowerCase();
       const { data, error } = await ephemeralClient.auth.signUp({
         email: email.trim(),
         password,
         options: {
           data: {
             full_name: fullName.trim(),
+            username: cleanUsername,
           },
         },
       });
       if (error) throw error;
 
+      const createdName = fullName.trim();
       setFullName('');
+      setUsername('');
       setEmail('');
       setPassword('');
       setFeedback({
         type: 'success',
         text: data.session
-          ? `Akun kasir "${fullName.trim()}" berhasil dibuat dan langsung aktif.`
-          : `Akun kasir "${fullName.trim()}" dibuat. Jika konfirmasi email aktif, minta staf cek inbox.`,
+          ? `${createdName} (@${cleanUsername}) — ${dict.activeStatus}`
+          : `${createdName} (@${cleanUsername})`,
       });
       await loadProfiles();
     } catch (err) {
-      setFeedback({ type: 'error', text: `Gagal membuat akun kasir: ${err.message}` });
+      setFeedback({ type: 'error', text: `${err.message}` });
     } finally {
       setCreating(false);
     }
@@ -105,7 +118,7 @@ export default function StaffManager() {
 
   async function handleToggleActive(staff) {
     if (staff.id === user?.id) {
-      setFeedback({ type: 'error', text: 'Anda tidak dapat menonaktifkan akun Anda sendiri.' });
+      setFeedback({ type: 'error', text: t.errSelfDeactivate });
       return;
     }
     setFeedback(null);
@@ -116,19 +129,19 @@ export default function StaffManager() {
       .eq('id', staff.id);
 
     if (error) {
-      setFeedback({ type: 'error', text: `Gagal mengubah status: ${error.message}` });
+      setFeedback({ type: 'error', text: `${error.message}` });
       return;
     }
     setFeedback({
       type: 'success',
-      text: `${staff.full_name} sekarang ${nextActive ? 'Aktif' : 'Nonaktif'}.`,
+      text: `${staff.full_name} → ${nextActive ? dict.activeStatus : dict.inactiveStatus}.`,
     });
     await loadProfiles();
   }
 
   async function handleToggleRole(staff) {
     if (staff.id === user?.id) {
-      setFeedback({ type: 'error', text: 'Anda tidak dapat mengubah role akun Anda sendiri.' });
+      setFeedback({ type: 'error', text: t.errSelfRole });
       return;
     }
     setFeedback(null);
@@ -139,12 +152,12 @@ export default function StaffManager() {
       .eq('id', staff.id);
 
     if (error) {
-      setFeedback({ type: 'error', text: `Gagal mengubah role: ${error.message}` });
+      setFeedback({ type: 'error', text: `${error.message}` });
       return;
     }
     setFeedback({
       type: 'success',
-      text: `Role ${staff.full_name} diubah menjadi ${nextRole.toUpperCase()}.`,
+      text: `${staff.full_name} → ${nextRole.toUpperCase()}.`,
     });
     await loadProfiles();
   }
@@ -159,37 +172,46 @@ export default function StaffManager() {
 
       <section className="card">
         <h2>
-          <UserPlus size={18} /> Tambah Akun Kasir
+          <UserPlus size={18} /> {t.addTitle}
         </h2>
-        <p className="muted-text">
-          Membuat akun kasir baru tanpa mengganggu sesi login Owner Anda.
-        </p>
+        <p className="muted-text">{t.addDesc}</p>
         <form onSubmit={handleCreateCashier} className="product-form">
           <div className="form-grid">
             <label>
-              Nama Lengkap
+              {t.fullNameLabel}
               <input
                 type="text"
                 className="input"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Contoh: Siti Aminah"
+                placeholder={t.fullNamePlaceholder}
                 required
               />
             </label>
             <label>
-              Email Login
+              {t.usernameLabel}
+              <input
+                type="text"
+                className="input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={t.usernamePlaceholder}
+                required
+              />
+            </label>
+            <label>
+              {t.emailLabel}
               <input
                 type="email"
                 className="input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="kasir@toko.com"
+                placeholder={t.emailPlaceholder}
                 required
               />
             </label>
             <label>
-              Password Awal (min. 6 karakter)
+              {t.passwordLabel}
               <input
                 type="password"
                 className="input"
@@ -204,7 +226,7 @@ export default function StaffManager() {
           <div className="form-actions">
             <button type="submit" className="btn btn-primary" disabled={creating}>
               <UserPlus size={15} />
-              <span>{creating ? 'Membuat Akun...' : 'Buat Akun Kasir'}</span>
+              <span>{creating ? t.creatingBtn : t.createBtn}</span>
             </button>
           </div>
         </form>
@@ -212,31 +234,31 @@ export default function StaffManager() {
 
       <section className="card">
         <div className="section-header">
-          <h2 style={{ margin: 0 }}>Daftar Staf &amp; Hak Akses</h2>
+          <h2 style={{ margin: 0 }}>{t.listTitle}</h2>
           <button type="button" className="btn btn-outline" onClick={loadProfiles} disabled={loading}>
-            <RefreshCw size={15} /> Refresh
+            <RefreshCw size={15} /> {dict.refresh}
           </button>
         </div>
 
         {loading ? (
-          <p className="muted-text">Memuat daftar staf...</p>
+          <p className="muted-text">{t.loadingList}</p>
         ) : (
           <div className="table-responsive">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Nama Lengkap</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Terdaftar</th>
-                  <th>Aksi</th>
+                  <th>{t.colName}</th>
+                  <th>{t.colRole}</th>
+                  <th>{t.colStatus}</th>
+                  <th>{t.colCreated}</th>
+                  <th>{t.colActions}</th>
                 </tr>
               </thead>
               <tbody>
                 {profiles.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="text-center muted-text">
-                      Belum ada pengguna terdaftar.
+                      {t.noStaff}
                     </td>
                   </tr>
                 ) : (
@@ -245,8 +267,13 @@ export default function StaffManager() {
                     return (
                       <tr key={staff.id}>
                         <td>
-                          <strong>{staff.full_name}</strong>{' '}
-                          {isSelf && <span className="badge">Anda</span>}
+                          <div>
+                            <strong>{staff.full_name}</strong>{' '}
+                            {isSelf && <span className="badge">{dict.you}</span>}
+                          </div>
+                          {staff.username && (
+                            <span className="username-tag">@{staff.username}</span>
+                          )}
                         </td>
                         <td>
                           <span
@@ -263,7 +290,7 @@ export default function StaffManager() {
                               staff.is_active ? 'status-open' : 'status-closed'
                             }`}
                           >
-                            {staff.is_active ? 'AKTIF' : 'NONAKTIF'}
+                            {staff.is_active ? dict.activeStatus : dict.inactiveStatus}
                           </span>
                         </td>
                         <td>{formatDateTime(staff.created_at)}</td>
@@ -276,7 +303,7 @@ export default function StaffManager() {
                               onClick={() => handleToggleRole(staff)}
                             >
                               <Shield size={13} />
-                              {staff.role === 'owner' ? 'Jadikan Kasir' : 'Jadikan Owner'}
+                              {staff.role === 'owner' ? t.makeCashier : t.makeOwner}
                             </button>
                             <button
                               type="button"
@@ -288,11 +315,11 @@ export default function StaffManager() {
                             >
                               {staff.is_active ? (
                                 <>
-                                  <UserX size={13} /> Nonaktifkan
+                                  <UserX size={13} /> {t.deactivate}
                                 </>
                               ) : (
                                 <>
-                                  <UserCheck size={13} /> Aktifkan
+                                  <UserCheck size={13} /> {t.activate}
                                 </>
                               )}
                             </button>

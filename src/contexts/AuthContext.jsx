@@ -120,11 +120,28 @@ export function AuthProvider({ children }) {
   }, [checkHasOwner, loadUserContext]);
 
   const signIn = useCallback(
-    async (email, password) => {
+    async (identifier, password) => {
       if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
       setAuthError('');
+      const trimmed = identifier.trim();
+      let resolvedEmail = trimmed;
+
+      const { data: emailData, error: rpcError } = await supabase.rpc('resolve_login_email', {
+        p_identifier: trimmed,
+      });
+
+      if (rpcError) {
+        if (!trimmed.includes('@')) {
+          throw rpcError;
+        }
+      } else if (emailData) {
+        resolvedEmail = emailData;
+      } else if (!trimmed.includes('@')) {
+        throw new Error('Username tidak ditemukan.');
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: resolvedEmail,
         password,
       });
       if (error) throw error;
@@ -134,15 +151,32 @@ export function AuthProvider({ children }) {
     [loadUserContext]
   );
 
-  const signUp = useCallback(async (email, password, fullName) => {
+  const signUp = useCallback(async (email, password, fullName, username) => {
     if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
+    const metadata = {
+      full_name: fullName.trim(),
+    };
+    if (username && username.trim()) {
+      metadata.username = username.trim().toLowerCase();
+    }
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
-        data: {
-          full_name: fullName.trim(),
-        },
+        data: metadata,
+      },
+    });
+    if (error) throw error;
+    return data;
+  }, []);
+
+  const signInWithGoogle = useCallback(async () => {
+    if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
+    setAuthError('');
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
       },
     });
     if (error) throw error;
@@ -150,17 +184,21 @@ export function AuthProvider({ children }) {
   }, []);
 
   const claimFirstOwner = useCallback(
-    async (email, password, fullName) => {
+    async (email, password, fullName, username) => {
       if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
       setAuthError('');
       const trimmedName = fullName.trim();
+      const metadata = {
+        full_name: trimmedName,
+      };
+      if (username && username.trim()) {
+        metadata.username = username.trim().toLowerCase();
+      }
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
-          data: {
-            full_name: trimmedName,
-          },
+          data: metadata,
         },
       });
       if (error) throw error;
@@ -206,6 +244,7 @@ export function AuthProvider({ children }) {
     authError,
     signIn,
     signUp,
+    signInWithGoogle,
     claimFirstOwner,
     signOut,
     refreshShift,

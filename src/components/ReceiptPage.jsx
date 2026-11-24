@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Printer } from 'lucide-react';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../supabaseClient';
 import ReceiptContent from './ReceiptContent';
+import ThemeLangToggles from './ThemeLangToggles';
 
 export default function ReceiptPage({ invoiceNumber }) {
+  const { dict } = useThemeLang();
   const [transaction, setTransaction] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +16,7 @@ export default function ReceiptPage({ invoiceNumber }) {
     async function fetchReceipt() {
       setLoading(true);
       if (!supabase) {
-        setError('Supabase belum dikonfigurasi.');
+        setError(dict.supabaseNotConfigured);
         setLoading(false);
         return;
       }
@@ -23,7 +26,7 @@ export default function ReceiptPage({ invoiceNumber }) {
       });
 
       if (rpcError || !data) {
-        setError('Struk tidak ditemukan atau sudah dihapus.');
+        setError(dict.receiptNotFound);
       } else {
         setTransaction(data);
         setItems(data.items || []);
@@ -32,23 +35,26 @@ export default function ReceiptPage({ invoiceNumber }) {
     }
 
     fetchReceipt();
-  }, [invoiceNumber]);
+  }, [dict.receiptNotFound, dict.supabaseNotConfigured, invoiceNumber]);
 
   return (
     <div className="receipt-public-page">
       <div className="receipt-public-actions no-print">
         <a href="/" className="btn btn-outline">
-          <ArrowLeft size={16} /> Kembali ke POS
+          <ArrowLeft size={16} /> {dict.backToPos}
         </a>
-        {transaction && (
-          <button type="button" className="btn btn-primary" onClick={() => window.print()}>
-            <Printer size={16} /> Print / Simpan PDF
-          </button>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <ThemeLangToggles compact />
+          {transaction && (
+            <button type="button" className="btn btn-primary" onClick={() => window.print()}>
+              <Printer size={16} /> {dict.printSavePdf}
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (
-        <p className="muted-text">Memuat struk digital...</p>
+        <p className="muted-text">{dict.loadingReceipt}</p>
       ) : error ? (
         <div className="alert alert-error">{error}</div>
       ) : (

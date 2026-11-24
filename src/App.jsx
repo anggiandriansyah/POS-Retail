@@ -5,16 +5,21 @@ import {
   Clock,
   ClipboardList,
   LogOut,
+  PackagePlus,
+  Radio,
   ShoppingBag,
   Store,
   Tag,
   Users,
 } from 'lucide-react';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeLangProvider } from './contexts/ThemeLangContext';
 import { useAuth } from './contexts/useAuth';
+import { useThemeLang } from './contexts/useThemeLang';
 import { isSupabaseConfigured, supabase } from './supabaseClient';
 import { APP_VERSION, STORE_INFO } from './utils/format';
 import LoginPage from './components/LoginPage';
+import ThemeLangToggles from './components/ThemeLangToggles';
 import './App.css';
 
 const PosCashier = lazy(() => import('./components/PosCashier'));
@@ -22,25 +27,12 @@ const PriceChecker = lazy(() => import('./components/PriceChecker'));
 const InventoryManager = lazy(() => import('./components/InventoryManager'));
 const ReportsView = lazy(() => import('./components/ReportsView'));
 const ShiftManager = lazy(() => import('./components/ShiftManager'));
+const StockRequestPanel = lazy(() => import('./components/StockRequestPanel'));
+const OwnerLiveMonitor = lazy(() => import('./components/OwnerLiveMonitor'));
 const OwnerShifts = lazy(() => import('./components/OwnerShifts'));
 const StaffManager = lazy(() => import('./components/StaffManager'));
 const ReceiptModal = lazy(() => import('./components/ReceiptModal'));
 const ReceiptPage = lazy(() => import('./components/ReceiptPage'));
-
-const KASIR_TABS = [
-  { id: 'pos', label: 'Kasir (POS)', icon: ShoppingBag },
-  { id: 'price', label: 'Cek Harga', icon: Tag },
-  { id: 'shift', label: 'Shift & Petty Cash', icon: Clock },
-  { id: 'reports', label: 'Riwayat Saya', icon: BarChart3 },
-];
-
-const OWNER_TABS = [
-  { id: 'reports', label: 'Laporan & Dashboard', icon: BarChart3 },
-  { id: 'inventory', label: 'Produk & Stok', icon: Boxes },
-  { id: 'owner_shifts', label: 'Rekap Shift', icon: ClipboardList },
-  { id: 'staff', label: 'Kelola Kasir', icon: Users },
-  { id: 'pos', label: 'Mode Kasir (POS)', icon: ShoppingBag },
-];
 
 async function queryProducts() {
   if (!isSupabaseConfigured || !supabase) {
@@ -58,6 +50,7 @@ async function queryProducts() {
 
 function AuthenticatedApp() {
   const { session, profile, activeShift, loading: authLoading, signOut } = useAuth();
+  const { dict } = useThemeLang();
   const [activeTab, setActiveTab] = useState(null);
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
@@ -65,11 +58,29 @@ function AuthenticatedApp() {
   const [receiptData, setReceiptData] = useState(null);
 
   const isOwner = profile?.role === 'owner';
-  const tabs = isOwner ? OWNER_TABS : KASIR_TABS;
-  const defaultTab = isOwner ? 'reports' : 'pos';
+
+  const kasirTabs = [
+    { id: 'pos', label: dict.tabs.pos, icon: ShoppingBag },
+    { id: 'price', label: dict.tabs.price, icon: Tag },
+    { id: 'shift', label: dict.tabs.shift, icon: Clock },
+    { id: 'stock_requests', label: dict.tabs.stockRequests, icon: PackagePlus },
+    { id: 'reports', label: dict.tabs.reports, icon: BarChart3 },
+  ];
+
+  const ownerTabs = [
+    { id: 'live', label: dict.tabs.live, icon: Radio, isLive: true },
+    { id: 'reports', label: dict.tabs.ownerReports, icon: BarChart3 },
+    { id: 'inventory', label: dict.tabs.inventory, icon: Boxes },
+    { id: 'owner_shifts', label: dict.tabs.ownerShifts, icon: ClipboardList },
+    { id: 'staff', label: dict.tabs.staff, icon: Users },
+    { id: 'pos', label: dict.tabs.ownerPos, icon: ShoppingBag },
+  ];
+
+  const tabs = isOwner ? ownerTabs : kasirTabs;
+  const defaultTab = isOwner ? 'live' : 'pos';
   const allowedTabIds = isOwner
-    ? [...OWNER_TABS.map((t) => t.id), 'shift']
-    : KASIR_TABS.map((t) => t.id);
+    ? [...ownerTabs.map((t) => t.id), 'shift']
+    : kasirTabs.map((t) => t.id);
 
   const currentTab =
     activeTab && allowedTabIds.includes(activeTab) ? activeTab : defaultTab;
@@ -100,7 +111,7 @@ function AuthenticatedApp() {
     return (
       <div className="login-page">
         <div className="card">
-          <p className="muted-text">Memeriksa sesi login...</p>
+          <p className="muted-text">{dict.loadingSession}</p>
         </div>
       </div>
     );
@@ -130,12 +141,13 @@ function AuthenticatedApp() {
                 {isDevEnv && <span className="env-badge">DEV</span>}
               </h1>
               <span className="muted-text">
-                POS Retail &amp; Barcode Inventory • <code>v{APP_VERSION}</code>
+                {dict.appSubtitle} • <code>v{APP_VERSION}</code>
               </span>
             </div>
           </div>
 
           <div className="user-bar">
+            <ThemeLangToggles compact />
             <div className="user-meta">
               <span className="user-name">{profile.full_name}</span>
               <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>
@@ -144,17 +156,17 @@ function AuthenticatedApp() {
               <span
                 className={`status-pill ${activeShift ? 'status-open' : 'status-closed'}`}
               >
-                Shift: {activeShift ? 'OPEN' : 'CLOSED'}
+                {dict.shiftLabel}: {activeShift ? dict.openStatus : dict.closedStatus}
               </span>
             </div>
             <button
               type="button"
               className="btn btn-outline btn-sm"
               onClick={signOut}
-              title="Keluar dari akun"
+              title={dict.logout}
             >
               <LogOut size={15} />
-              <span>Keluar</span>
+              <span>{dict.logout}</span>
             </button>
           </div>
         </div>
@@ -171,6 +183,7 @@ function AuthenticatedApp() {
               >
                 <Icon size={17} />
                 <span>{tab.label}</span>
+                {tab.isLive && <span className="live-dot" aria-hidden="true" />}
                 {tab.id === 'inventory' && lowStockCount > 0 && (
                   <span className="nav-badge">{lowStockCount}</span>
                 )}
@@ -185,10 +198,19 @@ function AuthenticatedApp() {
 
         {loadingProducts && products.length === 0 ? (
           <div className="card">
-            <p className="muted-text">Memuat data toko dari Supabase...</p>
+            <p className="muted-text">{dict.loadingStore}</p>
           </div>
         ) : (
-          <Suspense fallback={<div className="card"><p className="muted-text">Memuat modul...</p></div>}>
+          <Suspense
+            fallback={
+              <div className="card">
+                <p className="muted-text">{dict.loadingModule}</p>
+              </div>
+            }
+          >
+            {currentTab === 'live' && isOwner && (
+              <OwnerLiveMonitor onProductsChanged={refreshProducts} />
+            )}
             {currentTab === 'pos' && (
               <PosCashier
                 products={products}
@@ -200,6 +222,9 @@ function AuthenticatedApp() {
             {currentTab === 'price' && <PriceChecker products={products} />}
             {currentTab === 'shift' && (
               <ShiftManager onShiftOpened={() => setActiveTab('pos')} />
+            )}
+            {currentTab === 'stock_requests' && (
+              <StockRequestPanel products={products} />
             )}
             {currentTab === 'inventory' && isOwner && (
               <InventoryManager products={products} onProductsChanged={refreshProducts} />
@@ -228,17 +253,23 @@ export default function App() {
   const receiptMatch = pathname.match(/^\/receipt\/([^/]+)\/?$/);
   const invoiceNumber = receiptMatch ? decodeURIComponent(receiptMatch[1]) : null;
 
-  if (invoiceNumber) {
-    return (
-      <Suspense fallback={<div className="receipt-public-page"><p className="muted-text">Memuat struk...</p></div>}>
-        <ReceiptPage invoiceNumber={invoiceNumber} />
-      </Suspense>
-    );
-  }
-
   return (
-    <AuthProvider>
-      <AuthenticatedApp />
-    </AuthProvider>
+    <ThemeLangProvider>
+      {invoiceNumber ? (
+        <Suspense
+          fallback={
+            <div className="receipt-public-page">
+              <p className="muted-text">Loading...</p>
+            </div>
+          }
+        >
+          <ReceiptPage invoiceNumber={invoiceNumber} />
+        </Suspense>
+      ) : (
+        <AuthProvider>
+          <AuthenticatedApp />
+        </AuthProvider>
+      )}
+    </ThemeLangProvider>
   );
 }

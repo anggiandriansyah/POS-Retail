@@ -6,9 +6,11 @@ import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import {
   APP_VERSION,
+  formatClockTime,
   formatRupiah,
   generateInvoiceNumber,
 } from '../src/utils/format.js';
+import { translations } from '../src/i18n/translations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,8 +46,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 describe('Unit Tests - src/utils/format.js', () => {
-  it('APP_VERSION should be 1.1.0', () => {
-    assert.equal(APP_VERSION, '1.1.0');
+  it('APP_VERSION should be 1.2.0', () => {
+    assert.equal(APP_VERSION, '1.2.0');
   });
 
   it('formatRupiah formats positive numbers in IDR without decimals', () => {
@@ -74,6 +76,61 @@ describe('Unit Tests - src/utils/format.js', () => {
     const randNum = Number(randPart);
     assert.ok(randNum >= 100 && randNum <= 999, `Random suffix ${randNum} should be 100..999`);
   });
+
+  it('formatClockTime formats ISO timestamps as HH:MM:SS and handles empty inputs', () => {
+    assert.equal(formatClockTime(null), '--:--:--');
+    assert.equal(formatClockTime(undefined), '--:--:--');
+    assert.equal(formatClockTime(''), '--:--:--');
+
+    assert.equal(formatClockTime('2026-01-15T09:05:03'), '09:05:03');
+    assert.equal(formatClockTime('2026-01-15T00:00:00'), '00:00:00');
+    assert.equal(formatClockTime('2026-01-15T23:59:59'), '23:59:59');
+    assert.match(formatClockTime(new Date().toISOString()), /^\d{2}:\d{2}:\d{2}$/);
+  });
+});
+
+describe('Unit Tests - src/i18n/translations.js', () => {
+  function collectLeafKeys(obj, prefix = '') {
+    const keys = [];
+    for (const [key, value] of Object.entries(obj)) {
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+      if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        keys.push(...collectLeafKeys(value, fullKey));
+      } else {
+        keys.push([fullKey, value]);
+      }
+    }
+    return keys;
+  }
+
+  it('translations has complete and matching id and en keys with non-empty strings', () => {
+    assert.ok(translations.id && typeof translations.id === 'object', 'translations.id must exist');
+    assert.ok(translations.en && typeof translations.en === 'object', 'translations.en must exist');
+
+    const idEntries = collectLeafKeys(translations.id);
+    const enEntries = collectLeafKeys(translations.en);
+
+    assert.ok(idEntries.length > 0, 'translations.id must not be empty');
+    assert.ok(enEntries.length > 0, 'translations.en must not be empty');
+
+    const idMap = new Map(idEntries);
+    const enMap = new Map(enEntries);
+
+    const missingInEn = idEntries.map(([k]) => k).filter((k) => !enMap.has(k));
+    const missingInId = enEntries.map(([k]) => k).filter((k) => !idMap.has(k));
+
+    assert.deepEqual(missingInEn, [], `Keys missing in en: ${missingInEn.join(', ')}`);
+    assert.deepEqual(missingInId, [], `Keys missing in id: ${missingInId.join(', ')}`);
+
+    for (const [key, val] of idEntries) {
+      assert.equal(typeof val, 'string', `id.${key} must be a string`);
+      assert.ok(val.trim().length > 0, `id.${key} must be non-empty`);
+    }
+    for (const [key, val] of enEntries) {
+      assert.equal(typeof val, 'string', `en.${key} must be a string`);
+      assert.ok(val.trim().length > 0, `en.${key} must be non-empty`);
+    }
+  });
 });
 
 describe('Live Integration & Security Tests - Supabase DEV', () => {
@@ -83,6 +140,7 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
     'shifts',
     'petty_cash_logs',
     'profiles',
+    'stock_requests',
   ];
 
   for (const table of protectedTables) {
@@ -105,6 +163,22 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
   it("anon calling get_public_receipt('INV-NONEXISTENT-999') returns null without DB error", async () => {
     const { data, error } = await supabase.rpc('get_public_receipt', {
       p_invoice: 'INV-NONEXISTENT-999',
+    });
+    assert.equal(error, null);
+    assert.equal(data, null);
+  });
+
+  it("anon can call resolve_login_email('anggitest123') and gets 'anggitest123@posretail.test'", async () => {
+    const { data, error } = await supabase.rpc('resolve_login_email', {
+      p_identifier: 'anggitest123',
+    });
+    assert.equal(error, null);
+    assert.equal(data, 'anggitest123@posretail.test');
+  });
+
+  it("anon calling resolve_login_email('nonexistent_user_xyz') returns null", async () => {
+    const { data, error } = await supabase.rpc('resolve_login_email', {
+      p_identifier: 'nonexistent_user_xyz',
     });
     assert.equal(error, null);
     assert.equal(data, null);
@@ -135,7 +209,7 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
     );
   });
 
-  it("app_versions is readable and contains versions '1.0.0' and '1.1.0'", async () => {
+  it("app_versions is readable and contains versions '1.0.0', '1.1.0', and '1.2.0'", async () => {
     const { data, error } = await supabase
       .from('app_versions')
       .select('version');
@@ -145,5 +219,6 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
     const versions = data.map((row) => row.version);
     assert.ok(versions.includes('1.0.0'), `Expected '1.0.0' in ${JSON.stringify(versions)}`);
     assert.ok(versions.includes('1.1.0'), `Expected '1.1.0' in ${JSON.stringify(versions)}`);
+    assert.ok(versions.includes('1.2.0'), `Expected '1.2.0' in ${JSON.stringify(versions)}`);
   });
 });

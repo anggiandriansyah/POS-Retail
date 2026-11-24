@@ -1,4 +1,4 @@
-export const APP_VERSION = '1.1.0';
+export const APP_VERSION = '1.2.0';
 
 export const STORE_INFO = {
   name: 'Toko Retail Anda',
@@ -23,6 +23,13 @@ export function formatDateTime(isoString) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(isoString));
+}
+
+export function formatClockTime(isoString) {
+  if (!isoString) return '--:--:--';
+  const d = new Date(isoString);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
 export function generateInvoiceNumber() {
