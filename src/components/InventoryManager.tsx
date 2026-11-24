@@ -47,6 +47,7 @@ export default function InventoryManager({
   // State untuk Scan Mutasi Stok (Kurangi / Tambah Stok)
   const [stockMode, setStockMode] = useState<'out' | 'in'>('out');
   const [scannedProduct, setScannedProduct] = useState<Product | null>(null);
+  const [notFoundBarcode, setNotFoundBarcode] = useState('');
   const [adjustQty, setAdjustQty] = useState('1');
   const [adjustNote, setAdjustNote] = useState('Rusak / Kadaluarsa');
   const [adjusting, setAdjusting] = useState(false);
@@ -68,12 +69,14 @@ export default function InventoryManager({
     );
     if (!found) {
       setScannedProduct(null);
+      setNotFoundBarcode(barcode);
       setFeedback({
         type: 'error',
-        text: `Barcode "${barcode}" belum terdaftar. Anda bisa menambahkannya di form Tambah Produk.`,
+        text: `Barcode "${barcode}" belum terdaftar. Anda bisa langsung mendaftarkannya sebagai produk baru.`,
       });
       return;
     }
+    setNotFoundBarcode('');
     setScannedProduct(found);
     setFeedback(null);
   }
@@ -268,6 +271,23 @@ export default function InventoryManager({
           buttonLabel="Pilih Barang"
         />
 
+        {notFoundBarcode && (
+          <div style={{ marginTop: 8 }}>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                setForm({ ...EMPTY_FORM, barcode: notFoundBarcode });
+                setShowForm(true);
+                setNotFoundBarcode('');
+                setFeedback(null);
+              }}
+            >
+              <Plus size={15} /> Daftarkan &ldquo;{notFoundBarcode}&rdquo; sebagai Produk Baru
+            </button>
+          </div>
+        )}
+
         {scannedProduct && (
           <form onSubmit={handleStockAdjustment} className="stock-adjust-card">
             <div>
@@ -335,15 +355,17 @@ export default function InventoryManager({
         {showForm && (
           <form onSubmit={handleSaveProduct} className="product-form">
             <div className="form-grid">
-              <label>
-                Barcode *
-                <input
-                  type="text"
+              <label style={{ gridColumn: '1 / -1' }}>
+                Barcode * (Scan Kamera / Scanner USB / Ketik Manual)
+                <BarcodeScanner
                   value={form.barcode}
-                  onChange={(e) => setForm({ ...form, barcode: e.target.value })}
-                  placeholder="Scan atau ketik barcode"
-                  className="input"
+                  onChange={(val) => setForm((prev) => ({ ...prev, barcode: val }))}
+                  onScan={(val) => setForm((prev) => ({ ...prev, barcode: val }))}
+                  placeholder="Scan pakai kamera, scanner USB, atau ketik manual"
+                  autoFocus={false}
+                  hideSubmit
                   required
+                  closeCameraOnScan
                 />
               </label>
               <label>

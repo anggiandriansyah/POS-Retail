@@ -9,6 +9,11 @@ export interface BarcodeScannerProps {
   placeholder?: string;
   autoFocus?: boolean;
   buttonLabel?: string;
+  value?: string;
+  onChange?: (barcode: string) => void;
+  hideSubmit?: boolean;
+  required?: boolean;
+  closeCameraOnScan?: boolean;
 }
 
 export default function BarcodeScanner({
@@ -16,8 +21,18 @@ export default function BarcodeScanner({
   placeholder = 'Scan barcode dengan scanner USB atau ketik kode lalu Enter...',
   autoFocus = true,
   buttonLabel = 'Cari / Scan',
+  value,
+  onChange,
+  hideSubmit = false,
+  required = false,
+  closeCameraOnScan = false,
 }: BarcodeScannerProps) {
-  const [code, setCode] = useState('');
+  const [internalCode, setInternalCode] = useState('');
+  const code = value !== undefined ? value : internalCode;
+  const setCode = (next: string) => {
+    if (onChange) onChange(next);
+    if (value === undefined) setInternalCode(next);
+  };
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -56,7 +71,11 @@ export default function BarcodeScanner({
               return;
             }
             lastScanRef.current = { code: decodedText, time: now };
-            onScan(decodedText.trim());
+            const scanned = decodedText.trim();
+            onScan(scanned);
+            if (closeCameraOnScan) {
+              setCameraActive(false);
+            }
           },
           () => {}
         );
@@ -82,47 +101,62 @@ export default function BarcodeScanner({
         scannerRef.current = null;
       }
     };
-  }, [cameraActive, onScan, readerId]);
+  }, [cameraActive, closeCameraOnScan, onScan, readerId]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = code.trim();
     if (!trimmed) return;
     onScan(trimmed);
-    setCode('');
+    if (value === undefined) {
+      setInternalCode('');
+    }
     inputRef.current?.focus();
   }
 
-  return (
-    <div className="scanner-wrapper">
-      <form onSubmit={handleSubmit} className="scanner-form">
-        <div className="scanner-input-group">
-          <ScanBarcode size={18} className="scanner-icon" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder={placeholder}
-            className="input scanner-input"
-          />
-        </div>
+  const controls = (
+    <>
+      <div className="scanner-input-group">
+        <ScanBarcode size={18} className="scanner-icon" />
+        <input
+          ref={inputRef}
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder={placeholder}
+          className="input scanner-input"
+          required={required}
+        />
+      </div>
+      {!hideSubmit && (
         <button type="submit" className="btn btn-primary">
           {buttonLabel}
         </button>
-        <button
-          type="button"
-          className={`btn ${cameraActive ? 'btn-danger' : 'btn-outline'}`}
-          onClick={() => {
-            setCameraError('');
-            setCameraActive((prev) => !prev);
-          }}
-          title={cameraActive ? 'Tutup Kamera' : 'Scan Pakai Kamera'}
-        >
-          {cameraActive ? <CameraOff size={18} /> : <Camera size={18} />}
-          <span>{cameraActive ? 'Tutup Kamera' : 'Kamera'}</span>
-        </button>
-      </form>
+      )}
+      <button
+        type="button"
+        className={`btn ${cameraActive ? 'btn-danger' : 'btn-outline'}`}
+        onClick={() => {
+          setCameraError('');
+          setCameraActive((prev) => !prev);
+        }}
+        title={cameraActive ? 'Tutup Kamera' : 'Scan Pakai Kamera'}
+      >
+        {cameraActive ? <CameraOff size={18} /> : <Camera size={18} />}
+        <span>{cameraActive ? 'Tutup Kamera' : 'Kamera'}</span>
+      </button>
+    </>
+  );
+
+  return (
+    <div className="scanner-wrapper">
+      {hideSubmit ? (
+        <div className="scanner-form">{controls}</div>
+      ) : (
+        <form onSubmit={handleSubmit} className="scanner-form">
+          {controls}
+        </form>
+      )}
 
       {cameraError && <p className="alert alert-error">{cameraError}</p>}
 
