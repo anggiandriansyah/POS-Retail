@@ -9,12 +9,13 @@ Aplikasi Kasir & Manajemen Toko Retail Modern berbasis **Next.js 16 (App Router 
 
 ## 📚 Dokumentasi Resmi (Format PDF)
 
-Seluruh dokumen teknis dan operasional resmi tersimpan di folder [`docs/`](./docs/README.md) dalam format **PDF siap cetak**:
+Seluruh dokumen teknis, operasional, dan SOP resmi tersimpan di folder [`docs/`](./docs/README.md) dalam format **PDF siap cetak / siap edar**:
 
 1. [**Dokumen Riwayat Versi & Enhancement (v1.0.0 s/d v1.3.0)**](./docs/pdf/01_DOKUMEN_VERSIONING_v1.0_sd_v1.3.pdf) — Rangkuman evolusi fitur, skema database, dan panduan upgrade.
 2. [**Buku Panduan Pengguna (User Manual Guide v1.3.0)**](./docs/pdf/02_USER_MANUAL_GUIDE_v1.3.0.pdf) — Panduan lengkap operasional untuk Kasir dan Owner.
 3. [**Laporan Pengujian Akhir (Final Test Report v1.3.0)**](./docs/pdf/03_LAPORAN_PENGUJIAN_AKHIR_v1.3.0.pdf) — Verifikasi Quality Gate, matriks ketertelusuran kebutuhan, dan hasil UAT.
 4. [**Sertifikasi Deployment Production (Production Sign-Off)**](./docs/pdf/04_SERTIFIKASI_DEPLOYMENT_v1.3.0.pdf) — Pengesahan rilis resmi, metadata deployment, dan analisis risiko/rollback.
+5. [**Standar Operasional Prosedur (SOP) Rilis & Deployment**](./docs/pdf/05_STANDAR_OPERASIONAL_PROSEDUR_SOP_DEPLOYMENT.pdf) — Kebijakan wajib deliverables dokumen paska-deployment untuk Technical Writer.
 
 ---
 
