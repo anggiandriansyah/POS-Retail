@@ -2,54 +2,49 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   cleanupTestProduct,
+  closeOpenedShiftSafely,
   closeShiftWithExpectedCash,
   createAnonClient,
   createTestProduct,
   ensureOpenShift,
   findSprint3MigrationFile,
-  getOptionalRoleCredentials,
   importWorkspaceModule,
   invokePricingEngine,
-  isAuthRequired,
   loadDevEnv,
   makeRunTag,
   parseCsvRoundTrip,
   readWorkspaceFile,
   requireAuthSessions,
   restoreStoreSettings,
-  signInWithRole,
   snapshotStoreSettings,
 } from './helpers.mjs';
 
 loadDevEnv();
 
-async function maybeRunLiveSaleParity({
-  taxEnabled,
-  taxRate,
-  applyTax,
-  itemsSpec,
-  orderDiscountType,
-  orderDiscountValue,
-  paymentMethod,
-  cashReceived,
-  expected,
-  tagSuffix,
-}) {
-  const hasCreds =
-    getOptionalRoleCredentials('owner') && getOptionalRoleCredentials('kasir');
-  if (!hasCreds) {
-    if (isAuthRequired()) {
-      assert.fail('E2E_REQUIRE_AUTH=1 set but owner/kasir credentials missing');
-    }
-    return;
+async function runLiveSaleParity(
+  sub,
+  {
+    taxEnabled,
+    taxRate,
+    applyTax,
+    itemsSpec,
+    orderDiscountType,
+    orderDiscountValue,
+    paymentMethod,
+    cashReceived,
+    expected,
+    tagSuffix,
   }
+) {
+  const sessions = await requireAuthSessions(sub, ['owner', 'kasir']);
+  if (!sessions) return;
 
-  const owner = await signInWithRole('owner');
-  const kasir = await signInWithRole('kasir');
+  const { owner, kasir } = sessions;
   const anon = createAnonClient();
   const runTag = makeRunTag();
   const snapshot = await snapshotStoreSettings(owner.client);
   const createdProducts = [];
+  let shiftState = null;
 
   try {
     await owner.client
@@ -74,7 +69,7 @@ async function maybeRunLiveSaleParity({
       });
     }
 
-    await ensureOpenShift(kasir.client, kasir.user.id);
+    shiftState = await ensureOpenShift(kasir.client, kasir.user.id);
     const inv = `INV-${runTag}-${tagSuffix}`;
     const { data, error } = await kasir.client.rpc('process_sale', {
       p_invoice_number: inv,
@@ -100,6 +95,7 @@ async function maybeRunLiveSaleParity({
     assert.equal(Number(receipt.tax_amount), expected.taxAmount);
     assert.equal(Number(receipt.total_amount), expected.totalAmount);
   } finally {
+    await closeOpenedShiftSafely(kasir.client, shiftState);
     await restoreStoreSettings(owner.client, snapshot);
     for (const p of createdProducts) {
       await cleanupTestProduct(owner.client, p.id);
@@ -108,7 +104,7 @@ async function maybeRunLiveSaleParity({
 }
 
 describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)', () => {
-  it('T3-01: tax_enabled=false + tax_rate=11 + applyTax=true + item % + order Rp (qris)', async () => {
+  it('T3-01: tax_enabled=false + tax_rate=11 + applyTax=true + item % + order Rp (qris)', async (t) => {
     const pricingMod = await importWorkspaceModule('src/utils/pricing.ts');
     const items = [
       { sell_price: 20000, qty: 2, discount_type: 'percent', discount_value: 15 },
@@ -127,20 +123,22 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(res.taxAmount, 0);
     assert.equal(res.totalAmount, 32000);
 
-    await maybeRunLiveSaleParity({
-      taxEnabled: false,
-      taxRate: 11,
-      applyTax: true,
-      itemsSpec: items,
-      orderDiscountType: 'nominal',
-      orderDiscountValue: 2000,
-      paymentMethod: 'qris',
-      expected: res,
-      tagSuffix: 'T301',
+    await t.test('live DEV process_sale & get_public_receipt parity', async (sub) => {
+      await runLiveSaleParity(sub, {
+        taxEnabled: false,
+        taxRate: 11,
+        applyTax: true,
+        itemsSpec: items,
+        orderDiscountType: 'nominal',
+        orderDiscountValue: 2000,
+        paymentMethod: 'qris',
+        expected: res,
+        tagSuffix: 'T301',
+      });
     });
   });
 
-  it('T3-02: tax_enabled=true + tax_rate=11 + applyTax=null + item Rp + order % (transfer)', async () => {
+  it('T3-02: tax_enabled=true + tax_rate=11 + applyTax=null + item Rp + order % (transfer)', async (t) => {
     const pricingMod = await importWorkspaceModule('src/utils/pricing.ts');
     const items = [
       { sell_price: 30000, qty: 2, discount_type: 'nominal', discount_value: 5000 },
@@ -159,20 +157,22 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(res.taxAmount, 5445);
     assert.equal(res.totalAmount, 54945);
 
-    await maybeRunLiveSaleParity({
-      taxEnabled: true,
-      taxRate: 11,
-      applyTax: null,
-      itemsSpec: items,
-      orderDiscountType: 'percent',
-      orderDiscountValue: 10,
-      paymentMethod: 'transfer',
-      expected: res,
-      tagSuffix: 'T302',
+    await t.test('live DEV process_sale & get_public_receipt parity', async (sub) => {
+      await runLiveSaleParity(sub, {
+        taxEnabled: true,
+        taxRate: 11,
+        applyTax: null,
+        itemsSpec: items,
+        orderDiscountType: 'percent',
+        orderDiscountValue: 10,
+        paymentMethod: 'transfer',
+        expected: res,
+        tagSuffix: 'T302',
+      });
     });
   });
 
-  it('T3-03: tax_enabled=true + tax_rate=11 + applyTax=false + no item disc + order Rp (cash)', async () => {
+  it('T3-03: tax_enabled=true + tax_rate=11 + applyTax=false + no item disc + order Rp (cash)', async (t) => {
     const pricingMod = await importWorkspaceModule('src/utils/pricing.ts');
     const items = [
       { sell_price: 25000, qty: 2, discount_type: 'nominal', discount_value: 0 },
@@ -191,21 +191,23 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(res.taxAmount, 0);
     assert.equal(res.totalAmount, 40000);
 
-    await maybeRunLiveSaleParity({
-      taxEnabled: true,
-      taxRate: 11,
-      applyTax: false,
-      itemsSpec: items,
-      orderDiscountType: 'nominal',
-      orderDiscountValue: 10000,
-      paymentMethod: 'cash',
-      cashReceived: 50000,
-      expected: res,
-      tagSuffix: 'T303',
+    await t.test('live DEV process_sale & get_public_receipt parity', async (sub) => {
+      await runLiveSaleParity(sub, {
+        taxEnabled: true,
+        taxRate: 11,
+        applyTax: false,
+        itemsSpec: items,
+        orderDiscountType: 'nominal',
+        orderDiscountValue: 10000,
+        paymentMethod: 'cash',
+        cashReceived: 50000,
+        expected: res,
+        tagSuffix: 'T303',
+      });
     });
   });
 
-  it('T3-04: tax_enabled=true + tax_rate=12.5 + mixed item discounts + over-subtotal order Rp clamps to 0', async () => {
+  it('T3-04: tax_enabled=true + tax_rate=12.5 + mixed item discounts + over-subtotal order Rp clamps to 0', async (t) => {
     const pricingMod = await importWorkspaceModule('src/utils/pricing.ts');
     const items = [
       { sell_price: 10000, qty: 2, discount_type: 'percent', discount_value: 50 },
@@ -225,21 +227,23 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(res.taxAmount, 0);
     assert.equal(res.totalAmount, 0);
 
-    await maybeRunLiveSaleParity({
-      taxEnabled: true,
-      taxRate: 12.5,
-      applyTax: true,
-      itemsSpec: items,
-      orderDiscountType: 'nominal',
-      orderDiscountValue: 999999,
-      paymentMethod: 'cash',
-      cashReceived: 0,
-      expected: res,
-      tagSuffix: 'T304',
+    await t.test('live DEV process_sale & get_public_receipt parity', async (sub) => {
+      await runLiveSaleParity(sub, {
+        taxEnabled: true,
+        taxRate: 12.5,
+        applyTax: true,
+        itemsSpec: items,
+        orderDiscountType: 'nominal',
+        orderDiscountValue: 999999,
+        paymentMethod: 'cash',
+        cashReceived: 0,
+        expected: res,
+        tagSuffix: 'T304',
+      });
     });
   });
 
-  it('T3-05: pricing.ts vs SQL process_sale exact parity across multi-item .5 rounding cases', async () => {
+  it('T3-05: pricing.ts vs SQL process_sale exact parity across multi-item .5 rounding cases', async (t) => {
     const pricingMod = await importWorkspaceModule('src/utils/pricing.ts');
     const items = [
       { sell_price: 1005, qty: 1, discount_type: 'percent', discount_value: 10 },
@@ -259,17 +263,19 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(res.taxAmount, 216);
     assert.equal(res.totalAmount, 1942);
 
-    await maybeRunLiveSaleParity({
-      taxEnabled: true,
-      taxRate: 12.5,
-      applyTax: true,
-      itemsSpec: items,
-      orderDiscountType: 'percent',
-      orderDiscountValue: 5,
-      paymentMethod: 'cash',
-      cashReceived: 2000,
-      expected: res,
-      tagSuffix: 'T305',
+    await t.test('live DEV process_sale & get_public_receipt parity', async (sub) => {
+      await runLiveSaleParity(sub, {
+        taxEnabled: true,
+        taxRate: 12.5,
+        applyTax: true,
+        itemsSpec: items,
+        orderDiscountType: 'percent',
+        orderDiscountValue: 5,
+        paymentMethod: 'cash',
+        cashReceived: 2000,
+        expected: res,
+        tagSuffix: 'T305',
+      });
     });
   });
 
@@ -299,9 +305,29 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     const expectedProfit = res.subtotalAmount - res.discountAmount - cogs;
     assert.equal(expectedProfit, 6000);
 
+    const todayQueryMatch = reportsSrc.match(
+      /let\s+todayQuery\s*=[\s\S]*?\.select\(\s*(['"`])([\s\S]*?)\1\s*\)/
+    );
+    assert.ok(todayQueryMatch, 'Expected todayQuery in ReportsView.tsx');
+    const todaySelectCols = todayQueryMatch[2];
     assert.ok(
-      reportsSrc.includes('discount_amount') && reportsSrc.includes('buildCsvString'),
-      'ReportsView must adjust profit by discount_amount and build Sales CSV'
+      todaySelectCols.includes('discount_amount') ||
+        todaySelectCols.includes('subtotal_amount') ||
+        todaySelectCols.includes('subtotal'),
+      `todayQuery must select discount/subtotal columns for net profit, got: ${todaySelectCols}`
+    );
+
+    const profitBlockMatch = reportsSrc.match(
+      /let\s+todayProfit\s*=[\s\S]*?(?=const\s+lowStockCount|return\s*\{)/
+    );
+    assert.ok(profitBlockMatch, 'Expected todayProfit block in ReportsView.tsx');
+    assert.ok(
+      /discount_amount|subtotal_amount|item\.subtotal/.test(profitBlockMatch[0]),
+      'todayProfit block in ReportsView.tsx must subtract order/item discounts'
+    );
+    assert.ok(
+      reportsSrc.includes('buildCsvString'),
+      'ReportsView.tsx must use buildCsvString for Sales CSV export'
     );
 
     const csv = buildCsvString(
@@ -338,12 +364,42 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     const receiptModal = readWorkspaceFile('src/components/ReceiptModal.tsx');
     const receiptPage = readWorkspaceFile('src/components/ReceiptPage.tsx');
 
-    assert.ok(/storeSettings|store_settings/i.test(receiptContent));
-    assert.ok(/discount_amount|discount/i.test(receiptContent));
-    assert.ok(/tax_amount|tax/i.test(receiptContent));
-    assert.ok(/storeSettings|store_settings/i.test(receiptModal));
-    assert.ok(/encodeURIComponent/.test(receiptModal));
-    assert.ok(receiptPage.includes('get_public_receipt'));
+    assert.ok(
+      receiptContent.includes('store_settings') &&
+        /\{storeName\}[\s\S]*\{storeAddress\}[\s\S]*\{storePhone\}[\s\S]*\{storeFooter\}/.test(
+          receiptContent
+        )
+    );
+    assert.ok(receiptContent.includes('discountAmount') && receiptContent.includes('taxAmount'));
+
+    const waMatch = receiptModal.match(
+      /function\s+handleSendWhatsApp[\s\S]*?(?=\n\s*return\s*\()/
+    );
+    assert.ok(waMatch, 'Expected handleSendWhatsApp in ReceiptModal.tsx');
+    const waFn = waMatch[0];
+    assert.ok(
+      waFn.includes('storeName') &&
+        waFn.includes('footerNote') &&
+        waFn.includes('discountAmount') &&
+        waFn.includes('taxAmount') &&
+        waFn.includes('encodeURIComponent')
+    );
+    assert.ok(
+      receiptPage.includes('get_public_receipt') &&
+        /<ReceiptContent[\s\S]*?storeInfo=\{[^}]*store_settings/.test(receiptPage)
+    );
+
+    const specialStoreName = 'Toko & "Bintang" *Promo*';
+    const specialFooter = 'Terima kasih & "Selamat" *Belanja*!';
+    const waText = [
+      `*${specialStoreName}*`,
+      'No. Nota: INV-SPECIAL-01',
+      'Total: Rp 50.000',
+      specialFooter,
+    ].join('\n');
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+    const parsedUrl = new URL(waUrl);
+    assert.equal(parsedUrl.searchParams.get('text'), waText);
   });
 
   it('T3-09: Dual-role admin/owner equivalence vs kasir/user restriction across types, UI, and SQL', async () => {
@@ -359,9 +415,14 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     assert.equal(isAdminRole('kasir'), false);
     assert.equal(isAdminRole('user'), false);
 
-    assert.ok(pageSrc.includes('isAdminRole(profile?.role)'));
+    assert.ok(
+      /isAdminRole\([^)]*role[^)]*\)/.test(pageSrc),
+      'src/app/page.tsx must check role via isAdminRole(...)'
+    );
     assert.ok(staffSrc.includes("'admin'") && staffSrc.includes("'user'"));
-    const isOwnerFnMatch = sql.match(/create\s+or\s+replace\s+function\s+private\.is_owner\(\)[\s\S]*?\$\$;/i);
+    const isOwnerFnMatch = sql.match(
+      /create\s+or\s+replace\s+function\s+private\.is_owner\(\)[\s\S]*?(\$[a-zA-Z_]*\$)[\s\S]*?\1\s*;/i
+    );
     assert.ok(isOwnerFnMatch, 'Expected private.is_owner() in v1_3_0 migration');
     const ownerInMatch = isOwnerFnMatch[0].match(/role\s+in\s*\(([^)]+)\)/i);
     assert.ok(ownerInMatch, 'Expected role in (...) inside private.is_owner()');
@@ -398,6 +459,7 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     const anonClient = createAnonClient();
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -408,7 +470,7 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
         sell_price: 12000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const inv = `INV-${runTag}-LEG`;
       const { error: saleErr } = await kasirClient.rpc('process_sale', {
@@ -429,6 +491,7 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
       assert.equal(Number(receipt.total_amount), 12000);
       assert.equal(receipt.store_settings.store_name, '[E2E] Toko Legacy Compat');
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -455,6 +518,8 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
     const runTag = makeRunTag();
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shift = null;
+    let shiftClosed = false;
 
     try {
       await ownerClient
@@ -466,11 +531,12 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
         stock: 10,
       });
 
-      const { shift } = await ensureOpenShift(
+      const opened = await ensureOpenShift(
         kasirClient,
         sessions.kasir.user.id,
         100000
       );
+      shift = opened.shift;
 
       // Cash sale: 20000 - 2000 = 18000 + 10% (1800) = 19800
       const { error: cashErr } = await kasirClient.rpc('process_sale', {
@@ -497,10 +563,18 @@ describe('Tier 3 — Cross-Feature Pairwise Combinatorial Matrix (12 scenarios)'
       assert.equal(qrisErr, null);
 
       const closed = await closeShiftWithExpectedCash(kasirClient, shift);
+      shiftClosed = true;
       assert.equal(closed.status, 'CLOSED');
       assert.equal(Number(closed.expected_cash), 119800);
       assert.equal(Number(closed.discrepancy), 0);
     } finally {
+      if (shift && !shiftClosed) {
+        try {
+          await closeShiftWithExpectedCash(kasirClient, shift);
+        } catch {
+          // Preserve primary test failure
+        }
+      }
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }

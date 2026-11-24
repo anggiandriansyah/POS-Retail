@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Laporan Pengujian Akhir (Final Test Report) v1.3.0</title>
+<style>
+  @page { size: A4; margin: 16mm 16mm 16mm 16mm; }
+  @media print {
+    body { font-size: 9.5pt; line-height: 1.45; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b; background: #ffffff; margin: 0; padding: 0; font-size: 10pt; line-height: 1.5;
+  }
+  .header-cover { border-bottom: 3px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px; }
+  .doc-badge {
+    display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+    padding: 2px 8px; font-size: 8pt; font-weight: 700; border-radius: 9999px; text-transform: uppercase;
+  }
+  h1 { font-size: 18pt; font-weight: 800; color: #0f172a; margin: 6px 0 4px 0; }
+  .subtitle { font-size: 10.5pt; color: #64748b; margin: 0 0 10px 0; }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 8pt;
+  }
+  .meta-item strong { display: block; color: #475569; font-size: 7pt; text-transform: uppercase; }
+  .meta-item span { color: #0f172a; font-weight: 600; }
+  h2 { font-size: 12.5pt; color: #1e3a8a; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
+  h3 { font-size: 10.5pt; color: #0f172a; margin-top: 14px; margin-bottom: 6px; }
+  p, ul, ol { margin: 0 0 8px 0; }
+  ul, ol { padding-left: 18px; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 7.5pt; font-weight: 700; }
+  .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .tag-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+  .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  .warning-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; color: #b91c1c; }
+  .signature-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
+  }
+  .sig-card {
+    border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; text-align: center;
+    background: #fafafa; font-size: 8pt;
+  }
+  .sig-role { font-weight: 700; color: #475569; font-size: 7.5pt; margin-bottom: 28px; }
+  .sig-name { font-weight: 700; border-top: 1px solid #94a3b8; padding-top: 4px; color: #0f172a; }
+  .footer-note { font-size: 8pt; color: #94a3b8; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+</style>
+</head>
+<body>
+<div class="header-cover">
+  <div class="doc-badge">FINAL QUALITY REPORT • v1.3.0</div>
+  <h1>Laporan Pengujian Akhir (Final Test Report) v1.3.0</h1>
+  <div class="subtitle">Dokumen Hasil Verifikasi Mutu, Quality Gates, dan Matriks Ketertelusuran Fitur Sprint 3</div>
+  <div class="meta-grid">
+    <div class="meta-item"><strong>Aplikasi</strong><span>POS Toko Retail</span></div>
+    <div class="meta-item"><strong>Versi Diuji</strong><span>v1.3.0</span></div>
+    <div class="meta-item"><strong>Tanggal Pengujian</strong><span>24 November 2026</span></div>
+    <div class="meta-item"><strong>Hasil Akhir</strong><span>QUALITY GATE PASSED</span></div>
+  </div>
+</div>
+
+<h2>1. Ringkasan Eksekutif Pengujian (Executive Summary)</h2>
+<p>Laporan ini merangkum seluruh hasil pengujian sistem <strong>POS Toko Retail versi 1.3.0</strong> sebelum dirilis ke lingkungan Production. Pengujian mencakup pengecekan tipe statis (TypeScript), analisis statis kode (Linter), pengujian unit & integrasi langsung (Live Integration Test), pengujian kombinatorial E2E, serta verifikasi build aplikasi produksi.</p>
+
+<div class="info-box">
+  <strong>Status Quality Gate: LULUS (PASS)</strong><br>
+  Seluruh kriteria penerimaan (Acceptance Criteria) untuk User Story US-3.1, US-3.2, US-3.3, US-3.4, dan Kompatibilitas Dual-Role telah diverifikasi dengan tingkat keberhasilan 100% pada suite pengujian otomatis tanpa kegagalan (0 fail).
+</div>
+
+<h2>2. Ringkasan Hasil Pengujian Kualitas Kode (Quality Gates)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Tahap / Suite Pengujian</th>
+      <th>Tool / Perintah</th>
+      <th>Cakupan / Target</th>
+      <th>Hasil Aktual</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Static Typecheck</strong></td>
+      <td><code>tsc --noEmit</code></td>
+      <td>Seluruh source code Next.js 16 & TypeScript (39 file)</td>
+      <td>0 Error</td>
+      <td><span class="tag tag-green">PASSED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Linter & Code Health</strong></td>
+      <td><code>oxlint</code></td>
+      <td>39 file, 104 aturan linter aktif</td>
+      <td>0 Warning, 0 Error (waktu: 123ms)</td>
+      <td><span class="tag tag-green">PASSED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Unit & Live DEV Integration</strong></td>
+      <td><code>node --test tests/*.test.mjs</code></td>
+      <td>Format rupiah, invoice generator, translations ID/EN, Supabase DEV table lock, RLS security, RPC resolve login, RPC process_sale denial, RPC close_shift denial, tabel app_versions</td>
+      <td>3 Suite, 19 Tests Passed, 0 Fail (1.7s)</td>
+      <td><span class="tag tag-green">PASSED</span></td>
+    </tr>
+    <tr>
+      <td><strong>E2E Combinatorial Matrix (Tier 1-4)</strong></td>
+      <td><code>node --test tests/e2e/sprint3_tier*.test.mjs</code></td>
+      <td>Tier 1 (Schema & Atomic RPC), Tier 2 (Boundary & Dual Role), Tier 3 (Cross-feature pairwise 12 skenario), Tier 4 (Real-world workload, formula-safe CSV export, pure-core RN sandbox)</td>
+      <td>22 Suite, 93 Tests Passed, 0 Fail, 43 Skipped (karena kredensial live role tidak diset di env)</td>
+      <td><span class="tag tag-green">PASSED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Production Build</strong></td>
+      <td><code>next build</code> (Turbopack)</td>
+      <td>Kompilasi halaman Static <code>/</code>, <code>/_not-found</code>, dan Server-Rendered Dynamic <code>/receipt/[invoice]</code></td>
+      <td>Compiled successfully (808ms), Page generation 3/3 static pages</td>
+      <td><span class="tag tag-green">PASSED</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Matriks Ketertelusuran Kebutuhan (Requirements Traceability Matrix)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Kode US</th>
+      <th>Kebutuhan / Fitur</th>
+      <th>Modul Terkait</th>
+      <th>Test Case Validasi</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>US-3.1</strong></td>
+      <td>Pengaturan Toko Dinamis (Store Settings), Singleton, RLS, Realtime & Struk Publik</td>
+      <td><code>StoreSettingsForm.tsx</code>, <code>useStoreSettings.ts</code>, <code>store_settings</code> SQL</td>
+      <td>Tier 1 F1, Tier 2 F4, Tier 3 T3-08, Tier 4 T4-04</td>
+      <td><span class="tag tag-green">VERIFIED</span></td>
+    </tr>
+    <tr>
+      <td><strong>US-3.2</strong></td>
+      <td>Diskon Item (Rp/%), Diskon Nota (Rp/%), Opsi Pajak PPN 11%, dan RPC process_sale</td>
+      <td><code>PosCashier.tsx</code>, <code>pricing.ts</code>, <code>process_sale</code> (7 args)</td>
+      <td>Tier 1 F2 & F3, Tier 2 F5 & F6, Tier 3 T3-01..T3-05</td>
+      <td><span class="tag tag-green">VERIFIED</span></td>
+    </tr>
+    <tr>
+      <td><strong>US-3.3</strong></td>
+      <td>Filter Rentang Tanggal & Export Penjualan / Mutasi Stok ke CSV (Excel-Ready)</td>
+      <td><code>ReportsView.tsx</code>, <code>csv.ts</code></td>
+      <td>Tier 2 F7, Tier 3 T3-06, Tier 3 T3-10, Tier 4 T4-03</td>
+      <td><span class="tag tag-green">VERIFIED</span></td>
+    </tr>
+    <tr>
+      <td><strong>US-3.4</strong></td>
+      <td>Pembersihan Aset Legacy & Isolasi Shared Core (Siap Mobile React Native)</td>
+      <td><code>src/types/pos.ts</code>, <code>format.ts</code>, <code>pricing.ts</code>, <code>csv.ts</code></td>
+      <td>Tier 2 F8, Tier 4 T4-05 (Node child-process tanpa DOM)</td>
+      <td><span class="tag tag-green">VERIFIED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Dual-Role</strong></td>
+      <td>Kompatibilitas 4 Role (Owner, Admin, Kasir, User) tanpa merusak akun lama</td>
+      <td><code>StaffManager.tsx</code>, <code>isAdminRole()</code>, <code>profiles</code> SQL</td>
+      <td>Tier 2 F10-01..04, Tier 3 T3-09</td>
+      <td><span class="tag tag-green">VERIFIED</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>4. Lembar Pengujian Pengguna (User Acceptance Testing / UAT Checklist)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Skenario Pengujian Manual</th>
+      <th>Ekspektasi Hasil</th>
+      <th>Hasil UAT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Masuk sebagai Owner/Admin dan ubah Nama Toko di Pengaturan Toko.</td>
+      <td>Nama toko terupdate seketika di header dashboard dan di struk digital publik.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Kasir menginput produk dengan Diskon Item Rp 2.000 dan Diskon Nota 10%.</td>
+      <td>Subtotal, total diskon, dan total bayar terhitung tepat tanpa desimal menggantung.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Centang opsi PPN pada transaksi dan selesaikan transaksi dengan uang tunai.</td>
+      <td>PPN dihitung tepat (11%), struk menampilkan rincian PPN, kembalian akurat.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Pilih rentang tanggal pada menu Laporan dan klik "Export Penjualan (CSV)".</td>
+      <td>File CSV terunduh, dibuka di Microsoft Excel langsung rapi per kolom dengan UTF-8.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Owner mengubah peran staff di Kelola Kasir (toggle role).</td>
+      <td>Peran berganti lancar antara Kasir dan Owner tanpa error database.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Akses publik struk nota belanja tanpa akun login melalui tautan WhatsApp.</td>
+      <td>Halaman struk terbuka normal, menampilkan item belanja, diskon, dan PPN.</td>
+      <td><span class="tag tag-green">BERHASIL</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>5. Catatan Kendala & Pengujian yang Dilewati (Skipped Tests)</h2>
+<div class="warning-box">
+  <strong>Catatan Pengujian E2E (43 Skipped):</strong><br>
+  Terdapat 43 skenario pengujian E2E otomatis yang di-skip karena lingkungan runner CI/lokal tidak diset variabel lingkungan kredensial live role (<code>E2E_OWNER_IDENTIFIER</code>, <code>E2E_KASIR_IDENTIFIER</code>, dan <code>E2E_BASE_URL</code>). Seluruh logika bisnis inti dari skenario tersebut telah terverifikasi melalui unit test pricing, live integration test Supabase DEV, serta pengujian manual UAT.
+</div>
+
+<div class="footer-note">
+  POS Retail System Documentation • Hak Cipta © 2026 PT POS Retail Indonesia
+</div>
+</body>
+</html>

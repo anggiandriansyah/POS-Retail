@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import {
   cleanupTestProduct,
+  closeOpenedShiftSafely,
   createAnonClient,
   createTestProduct,
   ensureOpenShift,
@@ -27,6 +28,16 @@ describe('Tier 2 — F1: store_settings Boundaries & Security (7 tests)', () => 
     const anonClient = createAnonClient();
     const { data, error } = await anonClient.from('store_settings').select('*');
     assert.ok(error !== null, `Expected error for anon SELECT, got data=${JSON.stringify(data)}`);
+    assert.notEqual(
+      error.code,
+      'PGRST205',
+      `store_settings table missing from schema cache (${error.message})`
+    );
+    assert.notEqual(
+      error.code,
+      '42P01',
+      `store_settings table missing on DEV (${error.message})`
+    );
     assert.equal(data, null);
   });
 
@@ -36,12 +47,16 @@ describe('Tier 2 — F1: store_settings Boundaries & Security (7 tests)', () => 
       .from('store_settings')
       .insert({ id: 1, store_name: 'Anon Hack' });
     assert.ok(insErr !== null, 'Expected anon INSERT to be rejected');
+    assert.notEqual(insErr.code, 'PGRST205', `store_settings missing (${insErr.message})`);
+    assert.notEqual(insErr.code, '42P01', `store_settings missing (${insErr.message})`);
 
     const { error: updErr } = await anonClient
       .from('store_settings')
       .update({ store_name: 'Anon Hack' })
       .eq('id', 1);
     assert.ok(updErr !== null, 'Expected anon UPDATE to be rejected');
+    assert.notEqual(updErr.code, 'PGRST205', `store_settings missing (${updErr.message})`);
+    assert.notEqual(updErr.code, '42P01', `store_settings missing (${updErr.message})`);
   });
 
   it('T2-F1-03: kasir is blocked from UPDATE/INSERT on public.store_settings', async (t) => {
@@ -149,10 +164,11 @@ describe('Tier 2 — F2: transactions & transaction_items Security & Boundaries 
     const ownerClient = sessions.owner.client;
     const kasirClient = sessions.kasir.client;
     let product = null;
+    let shiftState = null;
 
     try {
       product = await createTestProduct(ownerClient, runTag, { stock: 5 });
-      await ensureOpenShift(ownerClient, sessions.owner.user.id);
+      shiftState = await ensureOpenShift(ownerClient, sessions.owner.user.id);
       const inv = `INV-${runTag}-OWN`;
       const { error: saleErr } = await ownerClient.rpc('process_sale', {
         p_invoice_number: inv,
@@ -169,6 +185,7 @@ describe('Tier 2 — F2: transactions & transaction_items Security & Boundaries 
       assert.equal(qErr, null);
       assert.deepEqual(kasirRows, [], 'Kasir must not see owner transaction');
     } finally {
+      await closeOpenedShiftSafely(ownerClient, shiftState);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
   });
@@ -223,6 +240,7 @@ describe('Tier 2 — F2: transactions & transaction_items Security & Boundaries 
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -233,7 +251,7 @@ describe('Tier 2 — F2: transactions & transaction_items Security & Boundaries 
         sell_price: 20000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const inv = `INV-${runTag}-ZERO`;
       const { data, error } = await kasirClient.rpc('process_sale', {
@@ -250,6 +268,7 @@ describe('Tier 2 — F2: transactions & transaction_items Security & Boundaries 
       assert.equal(Number(data.transaction.tax_amount), 0);
       assert.equal(Number(data.transaction.change_amount), 0);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -315,6 +334,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -326,7 +346,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
         sell_price: 25000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const { data, error } = await kasirClient.rpc('process_sale', {
         p_invoice_number: `INV-${runTag}-TAMPER`,
@@ -352,6 +372,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
       assert.equal(Number(data.items[0].subtotal), 50000);
       assert.equal(Number(data.items[0].cost_price), 8000);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -366,6 +387,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -376,7 +398,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
         sell_price: 10000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const { data, error } = await kasirClient.rpc('process_sale', {
         p_invoice_number: `INV-${runTag}-TAXOFF`,
@@ -392,6 +414,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
       assert.equal(Number(data.transaction.tax_amount), 0);
       assert.equal(Number(data.transaction.total_amount), 10000);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -406,6 +429,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -416,7 +440,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
         sell_price: 10000,
         stock: 10,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       for (const badPct of [-0.01, 100.01]) {
         const { error: badErr } = await kasirClient.rpc('process_sale', {
@@ -442,7 +466,21 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
       });
       assert.equal(err0, null);
       assert.equal(Number(ok0.transaction.total_amount), 10000);
+
+      const { data: ok100, error: err100 } = await kasirClient.rpc('process_sale', {
+        p_invoice_number: `INV-${runTag}-PCT100`,
+        p_payment_method: 'cash',
+        p_cash_received: 0,
+        p_items: [{ product_id: product.id, qty: 1 }],
+        p_discount_type: 'percent',
+        p_discount_value: 100,
+        p_apply_tax: false,
+      });
+      assert.equal(err100, null, `Expected percent=100 to succeed: ${err100?.message}`);
+      assert.equal(Number(ok100.transaction.discount_amount), 10000);
+      assert.equal(Number(ok100.transaction.total_amount), 0);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -456,10 +494,11 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
     const ownerClient = sessions.owner.client;
     const kasirClient = sessions.kasir.client;
     let product = null;
+    let shiftState = null;
 
     try {
       product = await createTestProduct(ownerClient, runTag, { stock: 5 });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const { error: negErr } = await kasirClient.rpc('process_sale', {
         p_invoice_number: `INV-${runTag}-NEG`,
@@ -483,6 +522,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
       });
       assert.ok(typeErr !== null, 'Invalid discount_type must be rejected');
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
   });
@@ -496,6 +536,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -506,7 +547,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
         sell_price: 10000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const { error: underpayErr } = await kasirClient.rpc('process_sale', {
         p_invoice_number: `INV-${runTag}-UNDER`,
@@ -532,6 +573,7 @@ describe('Tier 2 — F3: process_sale & get_public_receipt Boundaries & Anti-Tam
       assert.equal(Number(clamped.transaction.discount_amount), 10000);
       assert.equal(Number(clamped.transaction.total_amount), 0);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -603,7 +645,7 @@ describe('Tier 2 — F4: app_versions Boundaries & Migration Idempotency (5 test
 describe('Tier 2 — F5: Shared Core Purity & Formatting Boundaries (5 tests)', () => {
   it('T2-F5-01: stripped Node runtime without browser globals loads and runs all 5 shared core modules', () => {
     const script = `
-      for (const name of ['window', 'document', 'localStorage', 'sessionStorage', 'Blob']) {
+      for (const name of ['window', 'document', 'localStorage', 'sessionStorage', 'navigator', 'Blob']) {
         Object.defineProperty(globalThis, name, {
           configurable: true,
           get() { throw new Error('Forbidden browser global accessed: ' + name); }
@@ -615,9 +657,14 @@ describe('Tier 2 — F5: Shared Core Purity & Formatting Boundaries (5 tests)', 
       const pricing = await import(${JSON.stringify(pathToFileURL(workspacePath('src/utils/pricing.ts')).href)});
       const csv = await import(${JSON.stringify(pathToFileURL(workspacePath('src/utils/csv.ts')).href)});
       if (typeof fmt.formatRupiah(1000) !== 'string') throw new Error('formatRupiah failed');
-      if (!i18n.translations?.id || !i18n.translations?.en) throw new Error('translations failed');
+      if (typeof fmt.formatDateTime('2026-11-24T06:00:00Z') !== 'string') throw new Error('formatDateTime failed');
+      if (fmt.formatClockTime('2026-11-24T09:05:03') !== '09:05:03') throw new Error('formatClockTime failed');
+      if (!/^INV-\\d{8}-\\d{6}-\\d{3}$/.test(fmt.generateInvoiceNumber())) throw new Error('generateInvoiceNumber failed');
+      if (csv.sanitizeCsvCell('=CMD()') !== "'=CMD()") throw new Error('sanitizeCsvCell failed');
+      if (csv.escapeCsvField('a,"b"') !== '"a,""b"""') throw new Error('escapeCsvField failed');
       if (typeof csv.buildCsvString(['a'], [['b']]) !== 'string') throw new Error('csv failed');
       if (typeof pos.isAdminRole !== 'function') throw new Error('isAdminRole missing');
+      if (!i18n.translations?.id || !i18n.translations?.en) throw new Error('translations failed');
       if (Object.keys(pricing).length === 0) throw new Error('pricing empty');
     `;
     execFileSync(process.execPath, ['--input-type=module', '-e', script], {
@@ -668,13 +715,23 @@ describe('Tier 2 — F5: Shared Core Purity & Formatting Boundaries (5 tests)', 
 
 describe('Tier 2 — F6: Store Settings UI & Fallback Boundaries (5 tests)', () => {
   it('T2-F6-01: LoginPage, ReceiptContent, and ReceiptPage provide STORE_INFO fallback for blank store_name', () => {
-    for (const rel of [
-      'src/components/LoginPage.tsx',
-      'src/components/ReceiptContent.tsx',
-    ]) {
-      const src = readWorkspaceFile(rel);
-      assert.ok(src.includes('STORE_INFO'), `${rel} must retain STORE_INFO fallback`);
-    }
+    const loginSrc = readWorkspaceFile('src/components/LoginPage.tsx');
+    assert.ok(
+      loginSrc.includes('STORE_INFO.name'),
+      'LoginPage.tsx must retain STORE_INFO.name fallback'
+    );
+
+    const receiptContentSrc = readWorkspaceFile('src/components/ReceiptContent.tsx');
+    assert.ok(
+      /store_name\?\.trim\(\)[\s\S]*STORE_INFO\.name/.test(receiptContentSrc),
+      'ReceiptContent.tsx must trim store_name and fall back to STORE_INFO.name'
+    );
+
+    const receiptPageSrc = readWorkspaceFile('src/components/ReceiptPage.tsx');
+    assert.ok(
+      /<ReceiptContent[\s\S]*?storeInfo=\{[^}]*store_settings/.test(receiptPageSrc),
+      'ReceiptPage.tsx must delegate rendering with store_settings to ReceiptContent (inheriting STORE_INFO fallback)'
+    );
   });
 
   it('T2-F6-02: ReceiptContent handles legacy PublicReceipt without store_settings via STORE_INFO fallback', () => {
@@ -688,8 +745,12 @@ describe('Tier 2 — F6: Store Settings UI & Fallback Boundaries (5 tests)', () 
   it('T2-F6-03: StoreSettingsForm validates empty store_name and tax_rate < 0 or > 100', () => {
     const src = readWorkspaceFile('src/components/StoreSettingsForm.tsx');
     assert.ok(
-      /trim\(\)/.test(src) && /tax_rate/.test(src) && /100/.test(src),
-      'StoreSettingsForm must validate store_name and 0..100 tax_rate'
+      /\.trim\(\)[\s\S]*if\s*\(\s*!\w+\s*\)[\s\S]*errStoreNameRequired/.test(src),
+      'StoreSettingsForm must reject empty/whitespace store_name with errStoreNameRequired'
+    );
+    assert.ok(
+      /<\s*0\s*\|\|\s*\w+\s*>\s*100[\s\S]*errTaxRateRange/.test(src),
+      'StoreSettingsForm must validate tax_rate < 0 or > 100 with errTaxRateRange'
     );
   });
 
@@ -702,15 +763,17 @@ describe('Tier 2 — F6: Store Settings UI & Fallback Boundaries (5 tests)', () 
       : readWorkspaceFile('src/contexts/AuthContext.tsx');
     assert.ok(
       ctxSrc.includes('store_settings') &&
-        (/if\s*\([^)]*session|if\s*\([^)]*user|STORE_INFO|catch/i.test(ctxSrc)),
-      'Context loading store_settings must handle unauthenticated state safely'
+        /if\s*\(\s*!(?:userId|session|user)[\s\S]*DEFAULT_STORE_SETTINGS|STORE_INFO/.test(ctxSrc) &&
+        /try\s*\{[\s\S]*catch\s*\(/.test(ctxSrc),
+      'Context loading store_settings must guard unauthenticated state and catch fetch errors safely'
     );
   });
 
   it('T2-F6-05: ReceiptPage handles get_public_receipt returning null cleanly', () => {
     const src = readWorkspaceFile('src/components/ReceiptPage.tsx');
     assert.ok(
-      src.includes('receiptNotFound') && /rpcError\s*\|\|\s*!data/.test(src),
+      src.includes('receiptNotFound') &&
+        /(?:rpcError\s*\|\|\s*!data|!data\s*\|\|\s*rpcError)/.test(src),
       'ReceiptPage must show receiptNotFound when get_public_receipt returns null'
     );
   });
@@ -926,9 +989,11 @@ describe('Tier 2 — F8: CSV Formula Injection & Date Filter Boundaries (8 tests
       'ReportsView must manage startDate/endDate range cleanly'
     );
     assert.ok(
-      /\.length\s*===\s*0|noData|empty|Memuat|Tidak ada|Belum ada|errInvalidDateRange/i.test(
-        src
-      ),
+      /startDate\s*>\s*endDate|endDate\s*<\s*startDate|errInvalidDateRange/.test(src),
+      'ReportsView must validate inverted date range (startDate > endDate / errInvalidDateRange)'
+    );
+    assert.ok(
+      src.includes('transactions.length === 0') && src.includes('stockLogs.length === 0'),
       'ReportsView must render empty state cleanly when date filter matches 0 rows'
     );
   });
@@ -1020,12 +1085,22 @@ describe('Tier 2 — F9: i18n, Versioning & Regression Boundaries (5 tests)', ()
     for (const table of tables) {
       const { data, error } = await anonClient.from(table).select('*').limit(1);
       assert.ok(error !== null, `Expected anon SELECT denial on ${table}`);
+      assert.notEqual(
+        error.code,
+        'PGRST205',
+        `Table ${table} missing from schema cache (${error.message})`
+      );
+      assert.notEqual(
+        error.code,
+        '42P01',
+        `Table ${table} missing on DEV (${error.message})`
+      );
       assert.equal(data, null);
     }
   });
 });
 
-describe('Tier 2 — F10: Dual-Role Boundaries & Security (5 tests)', () => {
+describe('Tier 2 — F10: Dual-Role Boundaries & Security (6 tests)', () => {
   it('T2-F10-01: isAdminRole returns false for null, undefined, and empty string', async () => {
     const { isAdminRole } = await importWorkspaceModule('src/types/pos.ts');
     assert.equal(typeof isAdminRole, 'function');
@@ -1070,5 +1145,38 @@ describe('Tier 2 — F10: Dual-Role Boundaries & Security (5 tests)', () => {
       .update({ store_name: 'User Hack' })
       .eq('id', 1);
     assert.ok(error !== null, 'Expected user role write to store_settings to be denied');
+  });
+
+  it('T2-F10-06: admin role has owner-equivalent RLS on store_settings and stock_logs (private.is_owner() equivalence)', async (t) => {
+    const sessions = await requireAuthSessions(t, ['admin']);
+    if (!sessions) return;
+
+    const adminClient = sessions.admin.client;
+    assert.equal(
+      sessions.admin.profile.role,
+      'admin',
+      `Expected E2E_ADMIN account to have role=admin, got ${sessions.admin.profile.role}`
+    );
+
+    const snapshot = await snapshotStoreSettings(adminClient);
+    try {
+      const { data: updated, error: updErr } = await adminClient
+        .from('store_settings')
+        .update({ footer_note: '[E2E] Admin RLS Equivalence' })
+        .eq('id', 1)
+        .select()
+        .single();
+      assert.equal(updErr, null, `Admin update on store_settings failed: ${updErr?.message}`);
+      assert.equal(updated.footer_note, '[E2E] Admin RLS Equivalence');
+
+      const { data: logs, error: logsErr } = await adminClient
+        .from('stock_logs')
+        .select('id')
+        .limit(1);
+      assert.equal(logsErr, null, `Admin SELECT on stock_logs failed: ${logsErr?.message}`);
+      assert.ok(Array.isArray(logs));
+    } finally {
+      await restoreStoreSettings(adminClient, snapshot);
+    }
   });
 });

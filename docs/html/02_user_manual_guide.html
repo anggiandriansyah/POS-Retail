@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Buku Panduan Pengguna (User Manual Guide) v1.3.0</title>
+<style>
+  @page { size: A4; margin: 16mm 16mm 16mm 16mm; }
+  @media print {
+    body { font-size: 9.5pt; line-height: 1.45; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b; background: #ffffff; margin: 0; padding: 0; font-size: 10pt; line-height: 1.5;
+  }
+  .header-cover { border-bottom: 3px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px; }
+  .doc-badge {
+    display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+    padding: 2px 8px; font-size: 8pt; font-weight: 700; border-radius: 9999px; text-transform: uppercase;
+  }
+  h1 { font-size: 18pt; font-weight: 800; color: #0f172a; margin: 6px 0 4px 0; }
+  .subtitle { font-size: 10.5pt; color: #64748b; margin: 0 0 10px 0; }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 8pt;
+  }
+  .meta-item strong { display: block; color: #475569; font-size: 7pt; text-transform: uppercase; }
+  .meta-item span { color: #0f172a; font-weight: 600; }
+  h2 { font-size: 12.5pt; color: #1e3a8a; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
+  h3 { font-size: 10.5pt; color: #0f172a; margin-top: 14px; margin-bottom: 6px; }
+  p, ul, ol { margin: 0 0 8px 0; }
+  ul, ol { padding-left: 18px; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 7.5pt; font-weight: 700; }
+  .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .tag-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+  .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  .tip-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  .warning-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; color: #b91c1c; }
+  .step-num { display: inline-block; width: 18px; height: 18px; background: #2563eb; color: #ffffff; border-radius: 50%; text-align: center; line-height: 18px; font-size: 7.5pt; font-weight: bold; margin-right: 4px; }
+  .footer-note { font-size: 8pt; color: #94a3b8; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+</style>
+</head>
+<body>
+<div class="header-cover">
+  <div class="doc-badge">USER MANUAL GUIDE • VERSI RESMI 1.3.0</div>
+  <h1>Buku Panduan Pengguna (User Manual Guide) v1.3.0</h1>
+  <div class="subtitle">Petunjuk Lengkap Pengoperasian Aplikasi Kasir & Manajemen Toko untuk Kasir dan Pemilik Toko</div>
+  <div class="meta-grid">
+    <div class="meta-item"><strong>Aplikasi</strong><span>POS Toko Retail</span></div>
+    <div class="meta-item"><strong>Versi Panduan</strong><span>v1.3.0 (Production)</span></div>
+    <div class="meta-item"><strong>Target Audiens</strong><span>Owner, Admin, Kasir, Staff</span></div>
+    <div class="meta-item"><strong>URL Production</strong><span>pos-retail-umber.vercel.app</span></div>
+  </div>
+</div>
+
+<h2>1. Pengenalan & Cara Mengakses Sistem</h2>
+<p>Aplikasi <strong>POS Toko Retail</strong> dirancang berbasis web modern (Next.js 16) yang responsif dan dapat diakses dari browser komputer kasir (PC/laptop), tablet Android/iPad, maupun smartphone.</p>
+<ul>
+  <li><strong>URL Lingkungan Production:</strong> <a href="https://pos-retail-umber.vercel.app/">https://pos-retail-umber.vercel.app/</a></li>
+  <li><strong>URL Lingkungan DEV (Uji Coba Fitur Baru):</strong> <a href="https://pos-retail-git-develop-anggiandriansyah.vercel.app/">https://pos-retail-git-develop-anggiandriansyah.vercel.app/</a></li>
+</ul>
+
+<h3>Kustomisasi Tampilan & Bahasa:</h3>
+<p>Di sudut kanan atas layar login dan dashboard, Anda dapat mengatur preferensi tampilan:</p>
+<ul>
+  <li><strong>Ganti Bahasa (ID / EN):</strong> Klik tombol bendera 🇮🇩 ID atau 🇬🇧 EN untuk beralih instan antara Bahasa Indonesia dan Bahasa Inggris.</li>
+  <li><strong>Ganti Tema (Dark / Light):</strong> Klik tombol ikon Matahari (Terang) atau Bulan (Gelap) sesuai kenyamanan pencahayaan toko Anda.</li>
+</ul>
+
+<h2>2. Panduan Masuk (Sign In) & Pendaftaran (Sign Up)</h2>
+<h3>A. Masuk ke Akun yang Sudah Ada</h3>
+<ol>
+  <li>Buka aplikasi, pilih tab <strong>Masuk (Sign In)</strong>.</li>
+  <li>Masukkan <strong>Username</strong> (contoh: <code>kasir1</code>) atau <strong>Alamat Email</strong> Anda.</li>
+  <li>Ketik <strong>Kata Sandi (Password)</strong> minimal 6 karakter.</li>
+  <li>Klik tombol <strong>Masuk ke Kasir / Dashboard</strong>.</li>
+</ol>
+
+<h3>B. Pendaftaran Akun Baru (Pemilik Toko Pertama / Owner)</h3>
+<ol>
+  <li>Pilih tab <strong>Daftar (Sign Up)</strong>.</li>
+  <li><strong>Pilihan 1 (Cepat):</strong> Klik tombol <strong>"Lanjutkan dengan Google"</strong> untuk login instan menggunakan akun Google Anda.</li>
+  <li><strong>Pilihan 2 (Formulir):</strong> Isi Email, Username, Nama Lengkap, Password, dan Konfirmasi Password, lalu klik <strong>Buat Akun</strong>.</li>
+</ol>
+<div class="info-box">
+  <strong>Penting:</strong> Akun pertama yang mendaftar di sistem akan otomatis mendapatkan peran sebagai <strong>Owner (Pemilik Toko)</strong>. Akun kasir selanjutnya dibuatkan oleh Owner melalui menu <em>Kelola Kasir</em>.
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Panduan Operasional Kasir (POV Kasir / Staff)</h2>
+
+<h3>A. Membuka Shift Kasir (Open Shift)</h3>
+<p>Sebelum melayani transaksi penjualan, kasir diwajibkan membuka shift kerja:</p>
+<ol>
+  <li>Layar akan menampilkan kotak dialog <strong>Buka Shift Kasir</strong> lengkap dengan <strong>Jam Digital Real-time (HH:MM:SS)</strong>.</li>
+  <li>Masukkan nominal <strong>Modal Awal / Kas Kasir</strong> (uang pecahan kecil untuk kembalian di laci kas). Jika tidak ada, isi <code>0</code>.</li>
+  <li>Klik <strong>Buka Shift Sekarang</strong>. Menu kasir akan otomatis terbuka.</li>
+</ol>
+
+<h3>B. Melayani Transaksi Penjualan (POS Cashier)</h3>
+<p>Halaman kasir terbagi atas katalog produk di sebelah kiri dan keranjang transaksi di sebelah kanan.</p>
+<ol>
+  <li><strong>Memilih Produk ke Keranjang:</strong>
+    <ul>
+      <li><em>Pencarian Teks:</em> Ketik nama produk pada kotak pencarian.</li>
+      <li><em>Scan Barcode Fisik:</em> Scan barcode kemasan menggunakan scanner barcode USB/Bluetooth.</li>
+      <li><em>Scan Barcode Kamera:</em> Klik tombol <strong>Scan Kamera</strong>. Arahkan kamera HP/laptop ke barcode, atau gunakan opsi <strong>Photo Scan</strong> untuk memindai dari file gambar.</li>
+      <li><em>Klik Langsung:</em> Klik kartu produk untuk menambahkan 1 qty ke keranjang.</li>
+    </ul>
+  </li>
+  <li><strong>Memberikan Diskon Per Item (Fitur Baru v1.3.0):</strong>
+    <ul>
+      <li>Pada baris barang di keranjang belanja, klik opsi diskon item.</li>
+      <li>Pilih tipe diskon: <strong>Rp (Nominal)</strong> atau <strong>% (Persentase)</strong>.</li>
+      <li>Ketik nilai diskon (misal: <code>2000</code> untuk potongan Rp 2.000, atau <code>10</code> untuk diskon 10%). Total harga baris tersebut akan langsung terpotong secara otomatis.</li>
+    </ul>
+  </li>
+  <li><strong>Memberikan Diskon Nota Global & Pajak PPN (Fitur Baru v1.3.0):</strong>
+    <ul>
+      <li>Di bagian bawah keranjang (ringkasan total), Anda dapat memberikan <strong>Diskon Nota</strong> (pilihan Rp atau %).</li>
+      <li>Centang kotak <strong>Terapkan Pajak (PPN)</strong> jika transaksi ini dikenakan pajak (persentase pajak default mengikuti Pengaturan Toko, misal 11%).</li>
+    </ul>
+  </li>
+  <li><strong>Pembayaran & Kembalian:</strong>
+    <ul>
+      <li>Pilih metode pembayaran: <strong>Tunai (Cash)</strong>, <strong>QRIS</strong>, atau <strong>Transfer Bank</strong>.</li>
+      <li>Untuk pembayaran Tunai, masukkan jumlah <strong>Uang Diterima</strong>. Sistem secara otomatis menghitung nilai <strong>Kembalian</strong>.</li>
+      <li>Klik tombol <strong>Proses Transaksi</strong>.</li>
+    </ul>
+  </li>
+  <li><strong>Struk Digital & Cetak:</strong>
+    <ul>
+      <li>Struk belanja akan langsung muncul di layar. Anda dapat mengklik <strong>Cetak Struk</strong> untuk printer thermal / kertas kasir, atau klik <strong>Kirim ke WhatsApp</strong> untuk membagikan tautan struk online langsung ke pelanggan!</li>
+    </ul>
+  </li>
+</ol>
+
+<h3>C. Pencatatan Kas Masuk / Keluar (Petty Cash)</h3>
+<p>Jika ada uang masuk di luar transaksi penjualan (misal: tambah modal kembalian) atau uang keluar (misal: beli lakban/kantong plastik, bayar sampah):</p>
+<ol>
+  <li>Klik tombol <strong>Petty Cash</strong> pada panel shift kasir.</li>
+  <li>Pilih tipe: <strong>Kas Masuk (IN)</strong> atau <strong>Kas Keluar (OUT)</strong>.</li>
+  <li>Masukkan nominal rupiah dan tulis catatan keperluannya (misal: <em>"Beli plastik kantong kresek"</em>).</li>
+  <li>Klik <strong>Simpan Catatan Kas</strong>. Saldo kas shift akan langsung diperbarui.</li>
+</ol>
+
+<h3>D. Mengajukan Permintaan Stok Barang (Stock Request)</h3>
+<p>Jika kasir melihat barang fisik di rak pajangan mulai habis:</p>
+<ol>
+  <li>Klik tombol <strong>Minta Stok</strong> di pojok kartu produk yang menipis.</li>
+  <li>Masukkan jumlah kuantitas yang diminta dan catatan (misal: <em>"Rak depan habis, tolong ambil dari gudang"</em>).</li>
+  <li>Permintaan akan langsung muncul secara real-time di layar Pemilik Toko (Owner).</li>
+</ol>
+
+<h3>E. Menutup Shift Kasir (Close Shift)</h3>
+<ol>
+  <li>Di akhir jam kerja, klik tombol <strong>Tutup Shift</strong>.</li>
+  <li>Hitung seluruh uang fisik yang ada di laci kas kasir, lalu masukkan pada kolom <strong>Uang Kas Sebenarnya</strong>.</li>
+  <li>Sistem akan menampilkan rekonsiliasi otomatis: modal awal, total penjualan tunai, petty cash masuk/keluar, dan <strong>Selisih Kas</strong> (seimbang / surplus / minus).</li>
+  <li>Tulis catatan serah terima jika ada, lalu klik <strong>Konfirmasi Tutup Shift</strong>.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h2>4. Panduan Khusus Pemilik Toko (POV Owner / Admin)</h2>
+
+<h3>A. Mode Kasir untuk Owner</h3>
+<p>Pemilik toko memiliki akses ke semua menu manajemen toko, sekaligus memiliki tombol <strong>Buka Mode Kasir</strong> untuk ikut langsung melayani pelanggan saat kasir sedang sibuk.</p>
+
+<h3>B. Manajemen Produk & Stok</h3>
+<ul>
+  <li><strong>Tambah Produk Baru:</strong> Masukkan Nama Produk, Kategori, Harga Beli, Harga Jual, Stok Awal, dan Batas Minimum Stok (Min Stock). Anda juga dapat memindai barcode menggunakan kamera secara langsung.</li>
+  <li><strong>Alert Stok Menipis:</strong> Produk yang stoknya sama dengan atau di bawah <em>Min Stock</em> akan ditandai dengan badge merah dan muncul di ringkasan peringatan dashboard.</li>
+  <li><strong>Edit & Hapus:</strong> Perbarui data harga atau stok fisik kapan saja melalui tombol aksi di tabel produk.</li>
+</ul>
+
+<h3>C. Live Monitor Toko Realtime</h3>
+<p>Di menu <strong>Live Monitor</strong>, Owner dapat memantau operasional toko secara langsung tanpa perlu me-refresh halaman:</p>
+<ul>
+  <li>Melihat struk transaksi penjualan terbaru yang sedang diinput oleh kasir.</li>
+  <li>Melihat daftar barang yang habis dan klik <strong>Restock Cepat (+10 qty)</strong>.</li>
+  <li>Melihat <strong>Permintaan Stok</strong> dari kasir dengan tombol aksi 1-klik: <strong>Approve (Setujui & Tambah Stok)</strong> atau <strong>Reject (Tolak)</strong>.</li>
+</ul>
+
+<h3>D. Pengaturan Profil Toko Dinamis (Store Settings)</h3>
+<p>Fitur baru pada versi 1.3.0 memungkinkan Owner mengatur identitas bisnis yang langsung tercetak pada struk belanja:</p>
+<ol>
+  <li>Buka tab <strong>Pengaturan Toko</strong>.</li>
+  <li>Ubah <strong>Nama Toko</strong>, <strong>Alamat Lengkap</strong>, <strong>Nomor Telepon Toko</strong>, dan <strong>Catatan Kaki Struk</strong> (misal: <em>"Terima kasih telah berbelanja! Barang yang dibeli tidak dapat ditukar."</em>).</li>
+  <li>Atur <strong>Tarif Pajak PPN (%) Default</strong> (misal: <code>11%</code>).</li>
+  <li>Klik <strong>Simpan Pengaturan Toko</strong>. Perubahan langsung tersinkronisasi ke seluruh kasir dan struk digital publik secara real-time.</li>
+</ol>
+
+<h3>E. Laporan Transaksi, Filter Rentang Tanggal & Export Excel (CSV)</h3>
+<p>Pada menu <strong>Laporan</strong>, Owner dapat memantau performa keuangan toko:</p>
+<ul>
+  <li><strong>Kartu Statistik:</strong> Omzet Hari Ini, Total Nota Hari Ini, dan Estimasi Laba Kotor (dihitung otomatis dari selisih Harga Jual dan Snapshot Harga Beli per item).</li>
+  <li><strong>Filter Rentang Tanggal:</strong> Pilih <em>Tanggal Mulai</em> dan <em>Tanggal Akhir</em> untuk melihat rekapitulasi penjualan periode tertentu (misal: 1 minggu atau 1 bulan terakhir). Klik <em>Reset</em> untuk kembali ke hari ini.</li>
+  <li><strong>Export Laporan ke CSV (Excel):</strong>
+    <ul>
+      <li>Klik tombol <strong>Export Penjualan (CSV)</strong> untuk mengunduh rekap transaksi lengkap (Invoice, Kasir, Waktu, Subtotal, Diskon, Pajak, Total, Pembayaran).</li>
+      <li>Klik tombol <strong>Export Mutasi Stok (CSV)</strong> untuk mengunduh riwayat pergerakan stok keluar/masuk.</li>
+    </ul>
+  </li>
+</ul>
+<div class="tip-box">
+  <strong>Tips Membuka File CSV di Microsoft Excel:</strong><br>
+  File CSV yang diunduh dari sistem POS Retail sudah dilengkapi dengan <em>UTF-8 BOM</em> dan proteksi formula injection. Anda dapat langsung mengklik ganda (double click) file <code>.csv</code> di komputer Anda, dan Excel akan langsung menampilkannya dalam kolom-kolom yang rapi tanpa karakter berantakan!
+</div>
+
+<h3>F. Kelola Kasir & Staff (Staff Manager)</h3>
+<ul>
+  <li><strong>Tambah Akun Kasir Baru:</strong> Isi Nama Lengkap, Username unik, Email, dan Password (minimal 6 karakter).</li>
+  <li><strong>Ubah Peran / Toggle Role:</strong> Ubah peran akun antara Kasir dan Owner / Admin hanya dengan 1 klik.</li>
+  <li><strong>Nonaktifkan Akun:</strong> Jika ada kasir yang sudah tidak bekerja, klik tombol <em>Nonaktifkan</em> agar akun tersebut tidak dapat login kembali tanpa menghapus riwayat transaksi masa lalunya.</li>
+</ul>
+
+<h2>5. Tanya Jawab (FAQ) & Solusi Kendala (Troubleshooting)</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 35%;">Pertanyaan / Kendala</th>
+      <th>Solusi & Penjelasan</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Kamera barcode scanner tidak menyala di browser?</strong></td>
+      <td>Pastikan Anda telah memberikan izin (Permission: Allow) akses kamera pada peramban web Anda. Disarankan menggunakan Google Chrome atau Microsoft Edge.</td>
+    </tr>
+    <tr>
+      <td><strong>Kasir lupa menutup shift sebelum pulang?</strong></td>
+      <td>Owner dapat menggunakan fitur <strong>Force Close</strong> dari menu shift untuk menutup shift tersebut secara paksa, sehingga kasir shift berikutnya dapat membuka shift baru.</td>
+    </tr>
+    <tr>
+      <td><strong>Apakah struk digital bisa diakses pelanggan tanpa login?</strong></td>
+      <td>Ya. Tautan struk digital publik (<code>/receipt/[invoice]</code>) aman diakses siapa saja melalui WhatsApp/QR code tanpa memerlukan akun atau kata sandi.</td>
+    </tr>
+    <tr>
+      <td><strong>Apakah data aman jika internet tiba-tiba terputus saat transaksi?</strong></td>
+      <td>Setiap transaksi diproses secara atomik melalui fungsi database server <code>process_sale</code>. Jika terjadi gangguan jaringan, transaksi tidak akan menggantung dan stok barang tidak akan berkurang sebelum ada kepastian sukses dari server.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer-note">
+  POS Retail System Documentation • Hak Cipta © 2026 PT POS Retail Indonesia • User Manual Guide v1.3.0
+</div>
+</body>
+</html>

@@ -4,11 +4,13 @@ import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import {
   cleanupTestProduct,
+  closeOpenedShiftSafely,
   closeShiftWithExpectedCash,
   createAnonClient,
   createTestProduct,
   ensureOpenShift,
   getBaseUrlOrSkip,
+  getOptionalRoleCredentials,
   importWorkspaceModule,
   loadDevEnv,
   makeRunTag,
@@ -33,6 +35,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
     const snapshot = await snapshotStoreSettings(ownerClient);
     let prodA = null;
     let prodB = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -56,7 +59,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
         sell_price: 15000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const inv = `INV-${runTag}-W1`;
       // 2x 20000 (-10% = 36000) + 1x 15000 (-2500 = 12500) => subtotal 48500
@@ -103,6 +106,20 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       assert.equal(pA.stock, 8);
       assert.equal(pB.stock, 4);
 
+      const { data: stockLogs, error: logsErr } = await ownerClient
+        .from('stock_logs')
+        .select('product_id, type, qty, note')
+        .in('product_id', [prodA.id, prodB.id]);
+      assert.equal(logsErr, null, `stock_logs query failed: ${logsErr?.message}`);
+      const saleLogA = (stockLogs || []).find(
+        (l) => l.product_id === prodA.id && l.type === 'sale'
+      );
+      const saleLogB = (stockLogs || []).find(
+        (l) => l.product_id === prodB.id && l.type === 'sale'
+      );
+      assert.ok(saleLogA && Number(saleLogA.qty) === -2, 'Expected -2 sale stock_log for prodA');
+      assert.ok(saleLogB && Number(saleLogB.qty) === -1, 'Expected -1 sale stock_log for prodB');
+
       const { data: receipt, error: recErr } = await anonClient.rpc(
         'get_public_receipt',
         { p_invoice: inv }
@@ -112,6 +129,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       assert.equal(receipt.store_settings.store_name, '[E2E] Toko Promo Bundle');
       assert.equal(receipt.items.length, 2);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (prodA) await cleanupTestProduct(ownerClient, prodA.id);
       if (prodB) await cleanupTestProduct(ownerClient, prodB.id);
@@ -127,6 +145,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
     const kasirClient = sessions.kasir.client;
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -137,7 +156,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
         sell_price: 25000,
         stock: 10,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const { data: exempt, error: exErr } = await kasirClient.rpc('process_sale', {
         p_invoice_number: `INV-${runTag}-EXEMPT`,
@@ -165,6 +184,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       assert.equal(Number(freeTx.transaction.total_amount), 0);
       assert.equal(Number(freeTx.transaction.tax_amount), 0);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -274,6 +294,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
     const anonClient = createAnonClient();
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shiftState = null;
 
     try {
       await ownerClient
@@ -289,7 +310,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
         sell_price: 10000,
         stock: 5,
       });
-      await ensureOpenShift(kasirClient, sessions.kasir.user.id);
+      shiftState = await ensureOpenShift(kasirClient, sessions.kasir.user.id);
 
       const inv = `INV-${runTag}-IMM`;
       const { error: saleErr } = await kasirClient.rpc('process_sale', {
@@ -325,6 +346,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       assert.equal(Number(receipt.tax_amount), 1100);
       assert.equal(Number(receipt.total_amount), 11100);
     } finally {
+      await closeOpenedShiftSafely(kasirClient, shiftState);
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -332,7 +354,7 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
 
   it('T4-05: React Native Sprint 4 pure-core end-to-end pipeline in isolated Node child process without DOM globals', () => {
     const script = `
-      for (const name of ['window', 'document', 'localStorage', 'sessionStorage', 'Blob']) {
+      for (const name of ['window', 'document', 'localStorage', 'sessionStorage', 'navigator', 'Blob']) {
         Object.defineProperty(globalThis, name, {
           configurable: true,
           get() { throw new Error('DOM global accessed in RN runtime: ' + name); }
@@ -361,8 +383,14 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       if (total !== 38850) throw new Error('Unexpected RN pricing total: ' + total);
       const inv = fmt.generateInvoiceNumber();
       const formatted = fmt.formatRupiah(total);
+      const dt = fmt.formatDateTime('2026-11-24T06:00:00Z');
+      const tm = fmt.formatClockTime('2026-11-24T09:05:03');
+      if (typeof dt !== 'string' || dt.length < 4) throw new Error('formatDateTime failed in RN');
+      if (tm !== '09:05:03') throw new Error('formatClockTime failed in RN');
+      if (csv.sanitizeCsvCell('=CMD()') !== "'=CMD()") throw new Error('sanitizeCsvCell failed in RN');
+      if (csv.escapeCsvField('Toko, "RN"') !== '"Toko, ""RN"""') throw new Error('escapeCsvField failed in RN');
       const label = i18n.translations.en.tabs.settings;
-      const outCsv = csv.buildCsvString(['Invoice', 'Label', 'Total'], [[inv, label, formatted]]);
+      const outCsv = csv.buildCsvString(['Invoice', 'Time', 'Label', 'Total'], [[inv, tm, label, formatted]]);
       if (!outCsv.startsWith('\\uFEFF')) throw new Error('Missing BOM in RN CSV output');
     `;
     execFileSync(process.execPath, ['--input-type=module', '-e', script], {
@@ -393,6 +421,8 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
     const runTag = makeRunTag();
     const snapshot = await snapshotStoreSettings(ownerClient);
     let product = null;
+    let shift = null;
+    let shiftClosed = false;
 
     try {
       await ownerClient
@@ -404,11 +434,12 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
         stock: 20,
       });
 
-      const { shift } = await ensureOpenShift(
+      const opened = await ensureOpenShift(
         kasirClient,
         sessions.kasir.user.id,
         50000
       );
+      shift = opened.shift;
 
       // Cash sale: 20000 - 2000 = 18000 + 10% (1800) = 19800
       const { error: cErr } = await kasirClient.rpc('process_sale', {
@@ -456,11 +487,19 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
       assert.equal(pcErr, null, `Petty cash insert failed: ${pcErr?.message}`);
 
       const closed = await closeShiftWithExpectedCash(kasirClient, shift);
+      shiftClosed = true;
       assert.equal(closed.status, 'CLOSED');
       // 50000 + 19800 + 15000 - 5000 = 79800
       assert.equal(Number(closed.expected_cash), 79800);
       assert.equal(Number(closed.discrepancy), 0);
     } finally {
+      if (shift && !shiftClosed) {
+        try {
+          await closeShiftWithExpectedCash(kasirClient, shift);
+        } catch {
+          // Preserve primary test failure
+        }
+      }
       await restoreStoreSettings(ownerClient, snapshot);
       if (product) await cleanupTestProduct(ownerClient, product.id);
     }
@@ -473,12 +512,36 @@ describe('Tier 4 — Real-World Application Workloads & Regression (7 scenarios)
     assert.equal(hoErr, null);
     assert.equal(typeof hasOwner, 'boolean');
 
-    const { data: resolved, error: resErr } = await anonClient.rpc(
+    const { error: storeAnonErr } = await anonClient
+      .from('store_settings')
+      .select('*')
+      .limit(1);
+    assert.ok(storeAnonErr !== null, 'Expected anon SELECT on store_settings to be denied');
+    assert.notEqual(storeAnonErr.code, 'PGRST205');
+    assert.notEqual(storeAnonErr.code, '42P01');
+
+    const { isAdminRole } = await importWorkspaceModule('src/types/pos.ts');
+    assert.equal(isAdminRole('owner'), true);
+    assert.equal(isAdminRole('admin'), true);
+    assert.equal(isAdminRole('kasir'), false);
+    assert.equal(isAdminRole('user'), false);
+
+    const { data: emailPass, error: emailErr } = await anonClient.rpc(
       'resolve_login_email',
-      { p_identifier: 'anggitest123' }
+      { p_identifier: '  Regression@PosRetail.Test  ' }
     );
-    assert.equal(resErr, null);
-    assert.equal(resolved, 'anggitest123@posretail.test');
+    assert.equal(emailErr, null);
+    assert.equal(emailPass, 'regression@posretail.test');
+
+    const ownerCreds = getOptionalRoleCredentials('owner');
+    if (ownerCreds && !ownerCreds.identifier.includes('@')) {
+      const { data: resolvedOwner, error: resErr } = await anonClient.rpc(
+        'resolve_login_email',
+        { p_identifier: ownerCreds.identifier }
+      );
+      assert.equal(resErr, null);
+      assert.ok(typeof resolvedOwner === 'string' && resolvedOwner.includes('@'));
+    }
 
     const { data: noUser, error: noUserErr } = await anonClient.rpc(
       'resolve_login_email',
