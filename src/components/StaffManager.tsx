@@ -5,7 +5,7 @@ import { RefreshCw, Shield, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 import { useThemeLang } from '../contexts/useThemeLang';
 import { createEphemeralSupabaseClient, supabase } from '../lib/supabaseClient';
-import type { FeedbackMessage, Profile } from '../types/pos';
+import { isAdminRole, type FeedbackMessage, type Profile, type UserRole } from '../types/pos';
 import { formatDateTime } from '../utils/format';
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_.]{3,30}$/;
@@ -154,7 +154,13 @@ export default function StaffManager() {
       return;
     }
     setFeedback(null);
-    const nextRole = staff.role === 'owner' ? 'kasir' : 'owner';
+    const nextRoleMap: Record<UserRole, UserRole> = {
+      owner: 'kasir',
+      kasir: 'owner',
+      admin: 'user',
+      user: 'admin',
+    };
+    const nextRole = nextRoleMap[staff.role] ?? (isAdminRole(staff.role) ? 'user' : 'admin');
     const { error } = await supabase
       .from('profiles')
       .update({ role: nextRole, updated_at: new Date().toISOString() })
@@ -287,7 +293,7 @@ export default function StaffManager() {
                         <td>
                           <span
                             className={`badge ${
-                              staff.role === 'owner' ? 'badge-owner' : ''
+                              isAdminRole(staff.role) ? 'badge-owner' : ''
                             }`}
                           >
                             {staff.role.toUpperCase()}
@@ -312,7 +318,7 @@ export default function StaffManager() {
                               onClick={() => handleToggleRole(staff)}
                             >
                               <Shield size={13} />
-                              {staff.role === 'owner' ? t.makeCashier : t.makeOwner}
+                              {isAdminRole(staff.role) ? t.makeCashier : t.makeOwner}
                             </button>
                             <button
                               type="button"

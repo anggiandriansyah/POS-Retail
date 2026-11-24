@@ -12,9 +12,12 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { useStoreSettings } from '../contexts/useStoreSettings';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import type {
   CartItem,
+  DiscountType,
   FeedbackMessage,
   PaymentMethod,
   Product,
@@ -23,6 +26,7 @@ import type {
   TransactionItem,
 } from '../types/pos';
 import { formatRupiah, generateInvoiceNumber } from '../utils/format';
+import { calculateOrderPricing } from '../utils/pricing';
 import BarcodeScanner from './BarcodeScanner';
 
 export interface PosCashierProps {
@@ -39,12 +43,40 @@ export default function PosCashier({
   onGoToShift,
 }: PosCashierProps) {
   const { activeShift, profile, refreshShift } = useAuth();
+  const { settings } = useStoreSettings();
+  const { dict } = useThemeLang();
+  const pDict = dict.pos;
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
   const [cashReceived, setCashReceived] = useState('');
+  const [orderDiscountType, setOrderDiscountType] = useState<DiscountType>('nominal');
+  const [orderDiscountValue, setOrderDiscountValue] = useState('');
+  const [applyTaxOverride, setApplyTaxOverride] = useState<boolean | null>(null);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const applyTax = applyTaxOverride ?? Boolean(settings.tax_enabled);
+
+  const pricing = useMemo(
+    () =>
+      calculateOrderPricing({
+        items: cart.map((item) => ({
+          sell_price: item.sell_price,
+          qty: item.qty,
+          discount_type: item.discount_type || 'nominal',
+          discount_value: item.discount_value || 0,
+        })),
+        discountType: orderDiscountType,
+        discountValue: Number(orderDiscountValue) || 0,
+        taxEnabled: Boolean(settings.tax_enabled),
+        taxRate: Number(settings.tax_rate) || 0,
+        applyTax,
+      }),
+    [cart, orderDiscountType, orderDiscountValue, settings.tax_enabled, settings.tax_rate, applyTax]
+  );
+
+  const totalAmount = pricing.totalAmount;
 
   const filteredProducts = useMemo(() => {
     const activeProducts = products.filter((p) => p.is_active !== false);
@@ -60,14 +92,28 @@ export default function PosCashier({
       .slice(0, 12);
   }, [products, search]);
 
-  const totalAmount = useMemo(
-    () => cart.reduce((sum, item) => sum + item.sell_price * item.qty, 0),
-    [cart]
-  );
-
   const numericCash =
     paymentMethod === 'cash' ? Number(cashReceived) || 0 : totalAmount;
   const changeAmount = Math.max(0, numericCash - totalAmount);
+
+  function updateItemDiscount(
+    productId: string,
+    discountType: DiscountType,
+    discountValue: string
+  ) {
+    const parsed = Math.max(0, Number(discountValue) || 0);
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === productId
+          ? {
+              ...item,
+              discount_type: discountType,
+              discount_value: discountType === 'percent' ? Math.min(100, parsed) : parsed,
+            }
+          : item
+      )
+    );
+  }
 
   function addToCart(product: Product) {
     if (product.stock <= 0) {
@@ -161,6 +207,8 @@ export default function PosCashier({
       const rpcItems = cart.map((item) => ({
         product_id: item.id,
         qty: item.qty,
+        discount_type: item.discount_type || 'nominal',
+        discount_value: item.discount_value || 0,
       }));
 
       const { data: rpcResult, error: rpcError } = await supabase.rpc('process_sale', {
@@ -168,6 +216,9 @@ export default function PosCashier({
         p_payment_method: paymentMethod,
         p_cash_received: numericCash,
         p_items: rpcItems,
+        p_discount_type: orderDiscountType,
+        p_discount_value: Number(orderDiscountValue) || 0,
+        p_apply_tax: applyTax,
       });
 
       if (rpcError) {
@@ -193,6 +244,9 @@ export default function PosCashier({
 
       setCart([]);
       setCashReceived('');
+      setOrderDiscountValue('');
+      setOrderDiscountType('nominal');
+      setApplyTaxOverride(null);
       setFeedback({ type: 'success', text: `Transaksi ${invoiceNumber} berhasil!` });
       await onProductsChanged();
       onCheckoutSuccess({
@@ -309,50 +363,155 @@ export default function PosCashier({
                 <p>Keranjang masih kosong. Scan barcode atau klik produk di sebelah kiri.</p>
               </div>
             ) : (
-              cart.map((item) => (
-                <div key={item.id} className="cart-item">
-                  <div className="cart-item-info">
-                    <strong>{item.name}</strong>
-                    <span className="muted-text">
-                      {formatRupiah(item.sell_price)} × {item.qty} ={' '}
-                      <b>{formatRupiah(item.sell_price * item.qty)}</b>
-                    </span>
+              cart.map((item, idx) => {
+                const line = pricing.items[idx];
+                const itemDiscType = item.discount_type || 'nominal';
+                const itemDiscVal = item.discount_value || 0;
+                return (
+                  <div key={item.id} className="cart-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                      <div className="cart-item-info">
+                        <strong>{item.name}</strong>
+                        <span className="muted-text">
+                          {formatRupiah(item.sell_price)} × {item.qty} ={' '}
+                          <b>{formatRupiah(line?.lineNet ?? item.sell_price * item.qty)}</b>
+                          {line && line.itemDiscountAmount > 0 && (
+                            <span style={{ marginLeft: 6, color: 'var(--danger)' }}>
+                              (-{formatRupiah(line.itemDiscountAmount)})
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="cart-item-actions">
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          onClick={() => updateQty(item.id, -1)}
+                          aria-label="Kurangi jumlah"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="qty-value">{item.qty}</span>
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          onClick={() => updateQty(item.id, 1)}
+                          aria-label="Tambah jumlah"
+                        >
+                          <Plus size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-btn danger"
+                          onClick={() => removeItem(item.id)}
+                          aria-label="Hapus item"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                      <span className="muted-text" style={{ fontSize: '0.78rem', minWidth: 80 }}>
+                        {pDict.itemDiscount}:
+                      </span>
+                      <select
+                        value={itemDiscType}
+                        onChange={(e) =>
+                          updateItemDiscount(
+                            item.id,
+                            e.target.value as DiscountType,
+                            String(itemDiscVal)
+                          )
+                        }
+                        className="input"
+                        style={{ width: 72, padding: '4px 6px', fontSize: '0.8rem' }}
+                      >
+                        <option value="nominal">Rp</option>
+                        <option value="percent">%</option>
+                      </select>
+                      <input
+                        type="number"
+                        min="0"
+                        max={itemDiscType === 'percent' ? 100 : undefined}
+                        value={itemDiscVal === 0 ? '' : itemDiscVal}
+                        onChange={(e) =>
+                          updateItemDiscount(item.id, itemDiscType, e.target.value)
+                        }
+                        placeholder="0"
+                        className="input"
+                        style={{ flex: 1, padding: '4px 8px', fontSize: '0.82rem' }}
+                      />
+                    </div>
                   </div>
-                  <div className="cart-item-actions">
-                    <button
-                      type="button"
-                      className="icon-btn"
-                      onClick={() => updateQty(item.id, -1)}
-                      aria-label="Kurangi jumlah"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="qty-value">{item.qty}</span>
-                    <button
-                      type="button"
-                      className="icon-btn"
-                      onClick={() => updateQty(item.id, 1)}
-                      aria-label="Tambah jumlah"
-                    >
-                      <Plus size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      className="icon-btn danger"
-                      onClick={() => removeItem(item.id)}
-                      aria-label="Hapus item"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
           <div className="checkout-box">
+            {cart.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                  <span className="muted-text" style={{ fontSize: '0.82rem', minWidth: 96 }}>
+                    {pDict.orderDiscount}:
+                  </span>
+                  <select
+                    value={orderDiscountType}
+                    onChange={(e) => setOrderDiscountType(e.target.value as DiscountType)}
+                    className="input"
+                    style={{ width: 72, padding: '6px 8px', fontSize: '0.84rem' }}
+                  >
+                    <option value="nominal">Rp</option>
+                    <option value="percent">%</option>
+                  </select>
+                  <input
+                    type="number"
+                    min="0"
+                    max={orderDiscountType === 'percent' ? 100 : undefined}
+                    value={orderDiscountValue}
+                    onChange={(e) => setOrderDiscountValue(e.target.value)}
+                    placeholder="0"
+                    className="input"
+                    style={{ flex: 1, padding: '6px 8px', fontSize: '0.84rem' }}
+                  />
+                </div>
+
+                {settings.tax_enabled && (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={applyTax}
+                      onChange={(e) => setApplyTaxOverride(e.target.checked)}
+                    />
+                    <span>
+                      {pDict.applyTax} ({settings.tax_rate}%)
+                    </span>
+                  </label>
+                )}
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                  <span className="muted-text">{pDict.subtotal}</span>
+                  <span>{formatRupiah(pricing.subtotalAmount)}</span>
+                </div>
+                {pricing.orderDiscountAmount > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--danger)' }}>
+                    <span>{pDict.orderDiscount}</span>
+                    <span>-{formatRupiah(pricing.orderDiscountAmount)}</span>
+                  </div>
+                )}
+                {pricing.taxAmount > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span className="muted-text">
+                      {pDict.tax} ({pricing.taxRate}%)
+                    </span>
+                    <span>{formatRupiah(pricing.taxAmount)}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="total-row">
-              <span>Total Belanja</span>
+              <span>{pDict.grandTotal}</span>
               <strong>{formatRupiah(totalAmount)}</strong>
             </div>
 

@@ -1,16 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Receipt, RefreshCw } from 'lucide-react';
+import { Download, Receipt, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 import { supabase } from '../lib/supabaseClient';
-import type {
-  Product,
-  ReceiptModalData,
-  StockLog,
-  Transaction,
-  TransactionItem,
+import {
+  isAdminRole,
+  type Product,
+  type ReceiptModalData,
+  type StockLog,
+  type Transaction,
+  type TransactionItem,
 } from '../types/pos';
+import { buildCsvString } from '../utils/csv';
 import { formatDateTime, formatRupiah } from '../utils/format';
 
 interface TodayTransactionSummary {
@@ -28,10 +30,14 @@ async function queryReportsData({
   isOwner,
   userId,
   shiftFilterId,
+  startDate,
+  endDate,
 }: {
   isOwner: boolean;
   userId?: string;
   shiftFilterId: string | null;
+  startDate: string;
+  endDate: string;
 }): Promise<{
   transactions: Transaction[];
   todayTransactions: TodayTransactionSummary[];
@@ -42,12 +48,18 @@ async function queryReportsData({
   }
 
   const startOfTodayIso = getStartOfTodayIso();
+  const hasDateRange = Boolean(startDate || endDate);
+  const startIso = startDate ? new Date(`${startDate}T00:00:00`).toISOString() : null;
+  const endIso = endDate ? new Date(`${endDate}T23:59:59.999`).toISOString() : null;
 
   let txQuery = supabase
     .from('transactions')
     .select('*, transaction_items(*), cashier:profiles(full_name)')
     .order('created_at', { ascending: false })
-    .limit(50);
+    .limit(hasDateRange ? 500 : 50);
+
+  if (startIso) txQuery = txQuery.gte('created_at', startIso);
+  if (endIso) txQuery = txQuery.lte('created_at', endIso);
 
   let todayQuery = supabase
     .from('transactions')
@@ -63,16 +75,21 @@ async function queryReportsData({
     }
   }
 
+  let stockLogsQuery = isOwner
+    ? supabase
+        .from('stock_logs')
+        .select('*, products(name, barcode)')
+        .order('created_at', { ascending: false })
+        .limit(hasDateRange ? 500 : 50)
+    : null;
+
+  if (stockLogsQuery && startIso) stockLogsQuery = stockLogsQuery.gte('created_at', startIso);
+  if (stockLogsQuery && endIso) stockLogsQuery = stockLogsQuery.lte('created_at', endIso);
+
   const [txResult, todayResult, stockLogsResult] = await Promise.all([
     txQuery,
     todayQuery,
-    isOwner
-      ? supabase
-          .from('stock_logs')
-          .select('*, products(name, barcode)')
-          .order('created_at', { ascending: false })
-          .limit(50)
-      : Promise.resolve({ data: [] as StockLog[] }),
+    stockLogsQuery ?? Promise.resolve({ data: [] as StockLog[] }),
   ]);
 
   return {
@@ -82,6 +99,18 @@ async function queryReportsData({
   };
 }
 
+function downloadCsvFile(filename: string, csvContent: string) {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export interface ReportsViewProps {
   products: Product[];
   onOpenReceipt: (data: ReceiptModalData) => void;
@@ -89,13 +118,15 @@ export interface ReportsViewProps {
 
 export default function ReportsView({ products, onOpenReceipt }: ReportsViewProps) {
   const { user, profile, activeShift } = useAuth();
-  const isOwner = profile?.role === 'owner';
+  const isOwner = isAdminRole(profile?.role);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [todayTransactions, setTodayTransactions] = useState<TodayTransactionSummary[]>([]);
   const [stockLogs, setStockLogs] = useState<StockLog[]>([]);
   const [subTab, setSubTab] = useState<'transactions' | 'stock_logs'>('transactions');
   const [onlyActiveShift, setOnlyActiveShift] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [loading, setLoading] = useState(true);
 
   const shiftFilterId = !isOwner && onlyActiveShift && activeShift ? activeShift.id : null;
@@ -106,12 +137,14 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
       isOwner,
       userId: user?.id,
       shiftFilterId,
+      startDate,
+      endDate,
     });
     setTransactions(result.transactions);
     setTodayTransactions(result.todayTransactions);
     setStockLogs(result.stockLogs);
     setLoading(false);
-  }, [isOwner, user?.id, shiftFilterId]);
+  }, [isOwner, user?.id, shiftFilterId, startDate, endDate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,6 +152,8 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
       isOwner,
       userId: user?.id,
       shiftFilterId,
+      startDate,
+      endDate,
     }).then((result) => {
       if (cancelled) return;
       setTransactions(result.transactions);
@@ -129,7 +164,7 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
     return () => {
       cancelled = true;
     };
-  }, [isOwner, user?.id, shiftFilterId]);
+  }, [isOwner, user?.id, shiftFilterId, startDate, endDate]);
 
   const summary = useMemo(() => {
     const todayRevenue = todayTransactions.reduce(
@@ -162,6 +197,49 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
 
   const activeSubTab = isOwner ? subTab : 'transactions';
 
+  function handleExportCsv() {
+    const todayStamp = new Date().toISOString().slice(0, 10);
+    if (activeSubTab === 'transactions') {
+      const headers = [
+        'No. Invoice',
+        'Waktu',
+        'Kasir',
+        'Metode',
+        'Subtotal',
+        'Diskon',
+        'Pajak',
+        'Total',
+        'Uang Diterima',
+        'Kembalian',
+      ];
+      const rows = transactions.map((tx) => [
+        tx.invoice_number,
+        formatDateTime(tx.created_at),
+        tx.cashier?.full_name || profile?.full_name || 'Kasir',
+        tx.payment_method.toUpperCase(),
+        tx.subtotal_amount ?? tx.total_amount,
+        tx.discount_amount ?? 0,
+        tx.tax_amount ?? 0,
+        tx.total_amount,
+        tx.cash_received,
+        tx.change_amount,
+      ]);
+      downloadCsvFile(`laporan-penjualan-${todayStamp}.csv`, buildCsvString(headers, rows));
+      return;
+    }
+
+    const headers = ['Waktu', 'Produk', 'Barcode', 'Tipe', 'Perubahan', 'Catatan'];
+    const rows = stockLogs.map((log) => [
+      formatDateTime(log.created_at),
+      log.products?.name || '-',
+      log.products?.barcode || '-',
+      log.type,
+      log.qty,
+      log.note || '-',
+    ]);
+    downloadCsvFile(`laporan-mutasi-stok-${todayStamp}.csv`, buildCsvString(headers, rows));
+  }
+
   return (
     <div className="reports-layout">
       <div className="stats-grid">
@@ -188,7 +266,7 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
       </div>
 
       <section className="card">
-        <div className="section-header">
+        <div className="section-header" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
           <div className="mode-toggle">
             <button
               type="button"
@@ -216,9 +294,60 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
               </button>
             )}
           </div>
-          <button type="button" className="btn btn-outline" onClick={handleRefresh}>
-            <RefreshCw size={15} /> Refresh
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {isOwner && (
+              <>
+                <input
+                  type="date"
+                  className="input"
+                  aria-label="Tanggal Mulai"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  style={{ width: 'auto' }}
+                />
+                <span className="muted-text">-</span>
+                <input
+                  type="date"
+                  className="input"
+                  aria-label="Tanggal Akhir"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  style={{ width: 'auto' }}
+                />
+                {(startDate || endDate) && (
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-sm"
+                    onClick={() => {
+                      setStartDate('');
+                      setEndDate('');
+                    }}
+                  >
+                    Reset
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleExportCsv}
+                  disabled={
+                    loading ||
+                    (activeSubTab === 'transactions'
+                      ? transactions.length === 0
+                      : stockLogs.length === 0)
+                  }
+                >
+                  <Download size={15} />{' '}
+                  {activeSubTab === 'transactions'
+                    ? 'Export Penjualan (CSV)'
+                    : 'Export Mutasi Stok (CSV)'}
+                </button>
+              </>
+            )}
+            <button type="button" className="btn btn-outline" onClick={handleRefresh}>
+              <RefreshCw size={15} /> Refresh
+            </button>
+          </div>
         </div>
 
         {loading ? (

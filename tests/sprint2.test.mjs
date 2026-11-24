@@ -46,8 +46,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 describe('Unit Tests - src/utils/format.ts', () => {
-  it('APP_VERSION should be 1.2.0', () => {
-    assert.equal(APP_VERSION, '1.2.0');
+  it('APP_VERSION should be 1.3.0', () => {
+    assert.equal(APP_VERSION, '1.3.0');
   });
 
   it('formatRupiah formats positive numbers in IDR without decimals', () => {
@@ -209,7 +209,7 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
     );
   });
 
-  it("app_versions is readable and contains versions '1.0.0', '1.1.0', and '1.2.0'", async () => {
+  it("app_versions is readable and contains versions '1.0.0', '1.1.0', '1.2.0', and '1.3.0'", async () => {
     const { data, error } = await supabase
       .from('app_versions')
       .select('version');
@@ -220,5 +220,6 @@ describe('Live Integration & Security Tests - Supabase DEV', () => {
     assert.ok(versions.includes('1.0.0'), `Expected '1.0.0' in ${JSON.stringify(versions)}`);
     assert.ok(versions.includes('1.1.0'), `Expected '1.1.0' in ${JSON.stringify(versions)}`);
     assert.ok(versions.includes('1.2.0'), `Expected '1.2.0' in ${JSON.stringify(versions)}`);
+    assert.ok(versions.includes('1.3.0'), `Expected '1.3.0' in ${JSON.stringify(versions)}`);
   });
 });

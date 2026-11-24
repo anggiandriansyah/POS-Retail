@@ -1,4 +1,10 @@
-export type UserRole = 'owner' | 'kasir';
+export type UserRole = 'owner' | 'kasir' | 'admin' | 'user';
+
+export function isAdminRole(role?: string | null): boolean {
+  return role === 'owner' || role === 'admin';
+}
+
+export type DiscountType = 'nominal' | 'percent';
 
 export type ShiftStatus = 'OPEN' | 'CLOSED';
 
@@ -7,6 +13,19 @@ export type PettyCashType = 'IN' | 'OUT';
 export type StockRequestStatus = 'PENDING' | 'APPROVED' | 'RESTOCKED' | 'REJECTED';
 
 export type PaymentMethod = 'cash' | 'qris' | 'transfer';
+
+export interface StoreSettings {
+  id?: number;
+  store_name: string;
+  address: string;
+  phone: string;
+  footer_note: string;
+  tax_enabled: boolean;
+  tax_rate: number;
+  updated_by?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
 
 export interface FeedbackMessage {
   type: 'error' | 'success';
@@ -32,7 +51,7 @@ export interface Profile {
   full_name: string;
   username?: string | null;
   email?: string | null;
-  role: UserRole | string;
+  role: UserRole;
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;
@@ -74,6 +93,9 @@ export interface TransactionItem {
   cost_price?: number | null;
   qty: number;
   subtotal: number;
+  discount_type?: DiscountType | string;
+  discount_value?: number;
+  discount_amount?: number;
 }
 
 export interface Transaction {
@@ -83,6 +105,12 @@ export interface Transaction {
   cashier_name?: string | null;
   shift_id?: string | null;
   payment_method: string;
+  subtotal_amount?: number;
+  discount_type?: DiscountType | string;
+  discount_value?: number;
+  discount_amount?: number;
+  tax_rate?: number;
+  tax_amount?: number;
   total_amount: number;
   cash_received: number;
   change_amount: number;
@@ -124,14 +152,23 @@ export interface PublicReceipt {
   created_at: string;
   cashier_name?: string | null;
   payment_method: string;
+  subtotal_amount?: number;
+  discount_type?: DiscountType | string;
+  discount_value?: number;
+  discount_amount?: number;
+  tax_rate?: number;
+  tax_amount?: number;
   total_amount: number;
   cash_received: number;
   change_amount: number;
   items?: TransactionItem[];
+  store_settings?: StoreSettings | null;
 }
 
 export interface CartItem extends Product {
   qty: number;
+  discount_type?: DiscountType;
+  discount_value?: number;
 }
 
 export interface ReceiptModalData {

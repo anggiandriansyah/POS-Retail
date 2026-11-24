@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import {
   Activity,
   Barcode,
@@ -13,6 +13,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { readCachedStoreName } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
 import type { FeedbackMessage } from '../types/pos';
 import { APP_VERSION, STORE_INFO } from '../utils/format';
@@ -60,6 +61,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+  const [storeName, setStoreName] = useState<string>(STORE_INFO.name);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const cached = readCachedStoreName();
+      if (cached) {
+        setStoreName(cached);
+      }
+    }, 0);
+    return () => clearTimeout(id);
+  }, []);
 
   const isDevEnv = process.env.NEXT_PUBLIC_APP_ENV !== 'production';
 
@@ -202,7 +214,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <h1>
-                  {STORE_INFO.name}{' '}
+                  {storeName}{' '}
                   {isDevEnv && <span className="env-badge">DEV</span>}
                 </h1>
                 <span className="login-version-pill">
@@ -252,7 +264,7 @@ export default function LoginPage() {
               <Store size={22} />
             </div>
             <div>
-              <strong>{STORE_INFO.name}</strong>
+              <strong>{storeName}</strong>
               <span className="muted-text" style={{ display: 'block', fontSize: '0.78rem' }}>
                 POS Retail • <code>v{APP_VERSION}</code>
               </span>

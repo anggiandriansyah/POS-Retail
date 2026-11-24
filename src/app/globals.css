@@ -543,6 +543,16 @@ code {
   box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 76px;
+}
+
 .input-password-wrap {
   position: relative;
   display: flex;
@@ -575,8 +585,13 @@ code {
   gap: 14px;
 }
 
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
 .form-grid label,
 .product-form label,
+.settings-form label:not(.settings-toggle-row),
 .login-form label,
 .shift-form label,
 .shift-open-form label {
@@ -588,7 +603,8 @@ code {
   color: var(--text-secondary);
 }
 
-.product-form {
+.product-form,
+.settings-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1147,10 +1163,56 @@ code {
 .inventory-layout,
 .reports-layout,
 .shift-layout,
-.live-monitor-layout {
+.live-monitor-layout,
+.settings-layout {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.settings-layout {
+  max-width: 780px;
+  width: 100%;
+}
+
+.settings-tax-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.settings-tax-section h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.settings-toggle-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.settings-toggle-row strong {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.settings-toggle-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .pos-layout {
