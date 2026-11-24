@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Standar Operasional Prosedur (SOP) Rilis & Dokumentasi Deployment</title>
+<style>
+  @page { size: A4; margin: 16mm 16mm 16mm 16mm; }
+  @media print {
+    body { font-size: 9.5pt; line-height: 1.45; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b; background: #ffffff; margin: 0; padding: 0; font-size: 10pt; line-height: 1.5;
+  }
+  .header-cover { border-bottom: 3px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px; }
+  .doc-badge {
+    display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+    padding: 2px 8px; font-size: 8pt; font-weight: 700; border-radius: 9999px; text-transform: uppercase;
+  }
+  h1 { font-size: 18pt; font-weight: 800; color: #0f172a; margin: 6px 0 4px 0; }
+  .subtitle { font-size: 10.5pt; color: #64748b; margin: 0 0 10px 0; }
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 8pt;
+  }
+  .meta-item strong { display: block; color: #475569; font-size: 7pt; text-transform: uppercase; }
+  .meta-item span { color: #0f172a; font-weight: 600; }
+  h2 { font-size: 12.5pt; color: #1e3a8a; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
+  h3 { font-size: 10.5pt; color: #0f172a; margin-top: 14px; margin-bottom: 6px; }
+  p, ul, ol { margin: 0 0 8px 0; }
+  ul, ol { padding-left: 18px; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 7.5pt; font-weight: 700; }
+  .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .tag-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+  .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  .policy-box { background: #fdf2f8; border-left: 4px solid #db2777; padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 9pt; }
+  .warning-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; color: #b91c1c; }
+  .flow-step {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .step-badge {
+    background: #2563eb; color: #fff; font-weight: 700; border-radius: 50%; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center; font-size: 8.5pt; flex-shrink: 0; margin-top: 2px;
+  }
+  .signature-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
+  }
+  .sig-card {
+    border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; text-align: center;
+    background: #fafafa; font-size: 8pt;
+  }
+  .sig-role { font-weight: 700; color: #475569; font-size: 7.5pt; margin-bottom: 28px; }
+  .sig-name { font-weight: 700; border-top: 1px solid #94a3b8; padding-top: 4px; color: #0f172a; }
+  .footer-note { font-size: 8pt; color: #94a3b8; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+</style>
+</head>
+<body>
+<div class="header-cover">
+  <div class="doc-badge">STANDARD OPERATING PROCEDURE • SOP-REL-01</div>
+  <h1>Standar Operasional Prosedur (SOP) Rilis & Dokumentasi Deployment</h1>
+  <div class="subtitle">Pedoman Resmi Kewajiban Deliverables Technical Writer (TW) dan Alur Paska-Deployment</div>
+  <div class="meta-grid">
+    <div class="meta-item"><strong>Aplikasi</strong><span>POS Toko Retail</span></div>
+    <div class="meta-item"><strong>Tipe Dokumen</strong><span>Standard Operating Procedure (SOP)</span></div>
+    <div class="meta-item"><strong>Tanggal Efektif</strong><span>24 November 2026</span></div>
+    <div class="meta-item"><strong>Status</strong><span>KESEPAKATAN MENGIKAT (MANDATORY)</span></div>
+  </div>
+</div>
+
+<h2>1. Latar Belakang & Tujuan Kebijakan</h2>
+<p>Dokumen ini menetapkan <strong>Standar Operasional Prosedur (SOP)</strong> resmi yang mengikat bagi seluruh tim pengembang perangkat lunak pada proyek <strong>POS Toko Retail</strong>. Tujuan utama SOP ini adalah memastikan setiap pembaruan sistem yang didistribusikan ke lingkungan pengujian (DEV) maupun produksi (PRODUCTION) memiliki rekam jejak tertulis yang lengkap, transparan, terverifikasi, dan mudah dipahami oleh pemilik bisnis, kasir, dan tim audit teknis.</p>
+
+<div class="policy-box">
+  <strong>KETETAPAN KESEPAKATAN (MANDATORY RELEASE RULE):</strong><br>
+  <em>"Setiap kali proses deployment selesai dilakukan (pada rilis Sprint berjalan maupun sprint-sprint selanjutnya), Technical Writer (TW) MEMILIKI KEWAJIBAN MUTLAK untuk menerbitkan dan memperbarui 4 paket dokumen resmi dalam format PDF siap cetak / siap edar sebelum siklus rilis dinyatakan resmi ditutup (Definition of Done)."</em>
+</div>
+
+<h2>2. Daftar Dokumen Wajib Paska-Deployment (Deliverables TW)</h2>
+<p>Tepat setelah build deployment dinyatakan <strong>Ready</strong> di Vercel dan migrasi database selesai di Supabase, Technical Writer wajib memproduksi 4 dokumen PDF berikut:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 25%;">Nama Dokumen & File</th>
+      <th style="width: 45%;">Isi Pokok & Cakupan Analisis</th>
+      <th style="width: 15%;">Format & Lokasi</th>
+      <th style="width: 15%;">Target Pembaca</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Dokumen Versioning & Enhancement</strong><br><code>01_DOKUMEN_VERSIONING_vX.Y.pdf</code></td>
+      <td>• Evolusi sistem dari versi pertama hingga versi terkini.<br>• Rincian fitur baru, enhancement, dan bugfix.<br>• Perubahan database (tabel, kolom, trigger, RPC, RLS).<br>• Catatan kompatibilitas arsitektur & panduan upgrade.</td>
+      <td>PDF (A4)<br><code>docs/pdf/</code></td>
+      <td>Tech Lead, Developer, System Analyst</td>
+    </tr>
+    <tr>
+      <td><strong>2. Buku Panduan Pengguna (User Manual)</strong><br><code>02_USER_MANUAL_GUIDE_vX.Y.Z.pdf</code></td>
+      <td>• Panduan operasional versi terkini (<em>latest</em>).<br>• POV Kasir/Staff: Shift, kasir, diskon, struk, petty cash.<br>• POV Owner/Admin: Produk, live monitor, pengaturan toko, laporan, filter tanggal, export CSV ke Excel, kelola staff.<br>• FAQ & Troubleshooting praktis.</td>
+      <td>PDF (A4)<br><code>docs/pdf/</code></td>
+      <td>Kasir, Staff Toko, Pemilik Toko (Owner)</td>
+    </tr>
+    <tr>
+      <td><strong>3. Laporan Pengujian Akhir (Final Test Report)</strong><br><code>03_LAPORAN_PENGUJIAN_AKHIR_vX.Y.Z.pdf</code></td>
+      <td>• Bukti aktual Quality Gates: Typecheck, Lint, Unit Test, Live Integration, E2E Matrix, dan Production Build.<br>• Matriks Ketertelusuran Kebutuhan (Traceability Matrix).<br>• Lembar Hasil UAT manual checklist & status skipped test.</td>
+      <td>PDF (A4)<br><code>docs/pdf/</code></td>
+      <td>QA Lead, Auditor Mutu, Product Owner</td>
+    </tr>
+    <tr>
+      <td><strong>4. Sertifikasi Deployment (Release Sign-Off)</strong><br><code>04_SERTIFIKASI_DEPLOYMENT_vX.Y.Z.pdf</code></td>
+      <td>• Surat pengesahan resmi rilis produksi.<br>• Metadata deployment: Git Commit SHA, status Vercel, migrasi Supabase, integrasi OAuth.<br>• Quality Gate Sign-Off, Analisis Risiko, Rollback Plan.<br>• Lembar pengesahan & tanda tangan pengembang.</td>
+      <td>PDF (A4)<br><code>docs/pdf/</code></td>
+      <td>Product Owner, DevOps, Manajemen</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. Alur Kerja Paska-Deployment (Workflow Steps)</h2>
+<p>Setiap anggota tim wajib mematuhi alur kerja paska-deployment berikut secara berurutan:</p>
+
+<div class="flow-step">
+  <div class="step-badge">1</div>
+  <div>
+    <strong>Deployment Selesai & Terverifikasi (DevOps / Lead Dev):</strong><br>
+    DevOps memastikan migrasi database berhasil dieksekusi di Supabase dan deployment branch <code>main</code> berstatus <code>Ready</code> (HTTP 200) di Vercel. Kredensial, commit SHA, dan log hasil pengujian diserahkan ke Technical Writer.
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="step-badge">2</div>
+  <div>
+    <strong>Penyusunan Konten Dokumen (Technical Writer):</strong><br>
+    TW memeriksa source code terbaru, migrasi SQL, hasil test suite, dan antarmuka UI aktual untuk memastikan seluruh penjelasan fitur akurat dan tidak ada fitur fiktif.
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="step-badge">3</div>
+  <div>
+    <strong>Kompilasi ke Format PDF Vektor (Technical Writer):</strong><br>
+    TW mengompilasi dokumen menggunakan stylesheet cetak A4 profesional, memastikan tabel tidak terpotong (<em>page-break-inside: avoid</em>), tipografi tajam, dan menyimpannya di folder <code>docs/pdf/</code>.
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="step-badge">4</div>
+  <div>
+    <strong>Pembaruan Indeks Katalog (Technical Writer):</strong><br>
+    TW memperbarui file <code>docs/README.md</code> dan <code>README.md</code> utama proyek agar selalu menautkan ke file PDF versi terbaru.
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="step-badge">5</div>
+  <div>
+    <strong>Sinkronisasi Repositori Git (DevOps / TW):</strong><br>
+    Seluruh file PDF dan dokumentasi markdown di-commit dan di-push ke branch <code>develop</code> dan <code>main</code> pada repositori GitHub.
+  </div>
+</div>
+
+<div class="flow-step">
+  <div class="step-badge">6</div>
+  <div>
+    <strong>Penyerahan Laporan Resmi ke Product Owner:</strong><br>
+    Ringkasan hasil rilis beserta tautan langsung ke dokumen PDF disampaikan kepada Pemilik Toko / Product Owner untuk mendapatkan persetujuan akhir.
+  </div>
+</div>
+
+<h2>4. Ketentuan Mutu Format Dokumen PDF</h2>
+<div class="info-box">
+  <strong>Standar Desain & Keamanan PDF:</strong><br>
+  1. <strong>Ukuran Standar:</strong> Kertas A4 dengan margin 16mm, ramah cetak (printer-friendly) dan nyaman dibaca di layar tablet/HP.<br>
+  2. <strong>Keamanan Data:</strong> DILARANG KERAS mencantumkan secret token, API key privat, atau password database di dalam dokumen.<br>
+  3. <strong>Vektor & Tipografi:</strong> Menggunakan font sistem modern (San-Serif clean) agar teks tetap tajam saat di-zoom dan dapat di-copy paste secara presisi.<br>
+  4. <strong>Integritas Penamaan:</strong> Penamaan file PDF wajib menggunakan awalan angka urut (<code>01_...</code> s.d. <code>05_...</code>) agar tersusun rapi saat diunduh.
+</div>
+
+<h2>5. Lembar Pengesahan Kesepakatan SOP</h2>
+<p>SOP ini disetujui bersama dan berlaku efektif sejak <strong>24 November 2026</strong>:</p>
+
+<div class="signature-grid">
+  <div class="sig-card">
+    <div class="sig-role">Lead Developer / FE Architect</div>
+    <div class="sig-name">Anggi Andriansyah</div>
+    <span class="tag tag-green" style="margin-top: 4px;">AGREED</span>
+  </div>
+  <div class="sig-card">
+    <div class="sig-role">QA & Testing Lead</div>
+    <div class="sig-name">Antigravity QA Team</div>
+    <span class="tag tag-green" style="margin-top: 4px;">AGREED</span>
+  </div>
+  <div class="sig-card">
+    <div class="sig-role">Technical Writer Lead</div>
+    <div class="sig-name">Documentation Team</div>
+    <span class="tag tag-green" style="margin-top: 4px;">AGREED</span>
+  </div>
+  <div class="sig-card">
+    <div class="sig-role">Product Owner / Business</div>
+    <div class="sig-name">Owner POS Retail</div>
+    <span class="tag tag-green" style="margin-top: 4px;">AGREED</span>
+  </div>
+</div>
+
+<div class="footer-note">
+  POS Retail System Documentation • Hak Cipta © 2026 PT POS Retail Indonesia • SOP Rilis Resmi
+</div>
+</body>
+</html>
