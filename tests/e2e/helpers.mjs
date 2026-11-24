@@ -53,6 +53,16 @@ export function loadDevEnv() {
 
   const parsedUrl = new URL(supabaseUrl);
   assert.equal(
+    parsedUrl.protocol,
+    'https:',
+    `DEV safety guard: expected https: protocol, got ${parsedUrl.protocol}`
+  );
+  assert.equal(
+    parsedUrl.port,
+    '',
+    `DEV safety guard: expected default port (''), got ${parsedUrl.port}`
+  );
+  assert.equal(
     parsedUrl.hostname,
     EXPECTED_DEV_HOST,
     `DEV safety guard: expected host ${EXPECTED_DEV_HOST}, got ${parsedUrl.hostname}`
@@ -168,6 +178,19 @@ export async function signInWithRole(role) {
     `Failed to fetch profile for ${role}: ${profErr?.message}`
   );
 
+  if (role === 'owner' || role === 'admin') {
+    assert.ok(
+      profile.role === 'owner' || profile.role === 'admin',
+      `Role mismatch for ${role}: expected owner or admin, got ${profile.role}`
+    );
+  } else {
+    assert.equal(
+      profile.role,
+      role,
+      `Role mismatch for ${role}: expected ${role}, got ${profile.role}`
+    );
+  }
+
   return { client, user: authData.user, profile };
 }
 
@@ -275,17 +298,31 @@ export async function createTestProduct(ownerClient, runTag, overrides = {}) {
 
 export async function cleanupTestProduct(ownerClient, productId) {
   if (!productId) return;
-  await ownerClient.from('stock_logs').delete().eq('product_id', productId);
-  const { error } = await ownerClient
+  const { error: directDelErr } = await ownerClient
     .from('products')
     .delete()
     .eq('id', productId);
-  if (error) {
-    await ownerClient
+  if (!directDelErr) return;
+
+  const { data: txRefs } = await ownerClient
+    .from('transaction_items')
+    .select('id')
+    .eq('product_id', productId)
+    .limit(1);
+
+  if (!txRefs || txRefs.length === 0) {
+    await ownerClient.from('stock_logs').delete().eq('product_id', productId);
+    const { error: retryDelErr } = await ownerClient
       .from('products')
-      .update({ is_active: false, stock: 0 })
+      .delete()
       .eq('id', productId);
+    if (!retryDelErr) return;
   }
+
+  await ownerClient
+    .from('products')
+    .update({ is_active: false, stock: 0 })
+    .eq('id', productId);
 }
 
 export async function ensureOpenShift(client, userId, openingCash = 100000) {
@@ -347,6 +384,15 @@ export async function closeShiftWithExpectedCash(client, shift) {
   });
   assert.equal(error, null, `close_shift failed: ${error?.message}`);
   return data;
+}
+
+export async function closeOpenedShiftSafely(client, shiftState) {
+  if (!shiftState?.openedByTest || !shiftState?.shift?.id) return null;
+  try {
+    return await closeShiftWithExpectedCash(client, shiftState.shift);
+  } catch {
+    return null;
+  }
 }
 
 export function workspacePath(relPath) {
@@ -516,10 +562,12 @@ export function parseCsvRoundTrip(csvText) {
   let row = [];
   let field = '';
   let inQuotes = false;
+  let endedOnRowSeparator = false;
 
   for (let i = 0; i < withoutBom.length; i += 1) {
     const ch = withoutBom[i];
     if (inQuotes) {
+      endedOnRowSeparator = false;
       if (ch === '"') {
         if (withoutBom[i + 1] === '"') {
           field += '"';
@@ -531,8 +579,10 @@ export function parseCsvRoundTrip(csvText) {
         field += ch;
       }
     } else if (ch === '"') {
+      endedOnRowSeparator = false;
       inQuotes = true;
     } else if (ch === ',') {
+      endedOnRowSeparator = false;
       row.push(field);
       field = '';
     } else if (ch === '\r' && withoutBom[i + 1] === '\n') {
@@ -540,17 +590,20 @@ export function parseCsvRoundTrip(csvText) {
       rows.push(row);
       row = [];
       field = '';
+      endedOnRowSeparator = true;
       i += 1;
     } else if (ch === '\n') {
       row.push(field);
       rows.push(row);
       row = [];
       field = '';
+      endedOnRowSeparator = true;
     } else {
+      endedOnRowSeparator = false;
       field += ch;
     }
   }
-  if (field.length > 0 || row.length > 0) {
+  if (field.length > 0 || row.length > 0 || endedOnRowSeparator) {
     row.push(field);
     rows.push(row);
   }
