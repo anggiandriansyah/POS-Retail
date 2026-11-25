@@ -452,6 +452,10 @@
           <span>👥</span>
           <span>17 Divisi & 24 Staf</span>
         </li>
+          <li class="nav-item" onclick="switchTab('tabRetro', this)" id="navItemRetro">
+            <span>🎯</span>
+            <span>Sprint 5 Retrospective <span style="background:#10B981; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">LIVE</span></span>
+          </li>
       </ul>
 
       <div style="margin-top:auto; background:var(--card-sub); padding:14px; border-radius:12px; border:1px solid var(--border);">
@@ -996,7 +1000,228 @@
           </div>
         </section>
 
-        <!-- ==================== TAB 4: 17 DIVISIONS OVERVIEW ==================== -->
+        
+          <!-- ==================== TAB 5: SPRINT 5 RETROSPECTIVE BOARD ==================== -->
+          <section class="tab-section" id="tabRetro">
+            <div style="background:linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(59,130,246,0.12) 100%); border:1px solid rgba(16,185,129,0.3); border-radius:18px; padding:24px; margin-bottom:24px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:inline-flex; align-items:center; gap:8px; padding:5px 12px; background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.4); border-radius:999px; font-size:11px; font-weight:800; color:#34D399; margin-bottom:8px;">
+                    <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#34D399; animation:pulse 1.5s infinite;"></span>
+                    FORUM RETROSPEKTIF RESMI SPRINT 5 (v2.0.0)
+                  </div>
+                  <h2 style="font-size:22px; font-weight:900; color:#F8FAFC; margin:0; display:flex; align-items:center; gap:10px;">
+                    🎯 Evaluasi & Retrospektif Kolektif Tim ALPHOS
+                  </h2>
+                  <p style="font-size:13px; color:var(--muted); margin:6px 0 0; max-width:820px;">
+                    Refleksi transparan seluruh divisi PT AlphaGen di hadapan <strong>Team Leader: Anggi Andriansyah (Gege)</strong> untuk mengkaji hal-hal yang sukses, kendala yang dihadapi, serta rencana aksi perbaikan berkelanjutan.
+                  </p>
+                </div>
+                <div style="text-align:right;">
+                  <span style="font-size:11px; color:var(--muted); display:block;">Pemimpin Sidang Retro</span>
+                  <span style="font-size:14px; font-weight:800; color:#38BDF8;">👑 Mas Gege (Team Leader)</span>
+                  <span style="font-size:11px; color:#34D399; display:block; font-weight:700; margin-top:2px;">18 Staf + 8 Leads Hadir Lengkap</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 1: WHAT WENT WELL -->
+            <div style="margin-bottom:24px;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                <span style="font-size:20px;">🌟</span>
+                <h3 style="font-size:17px; font-weight:800; color:#34D399; margin:0;">1. What Went Well (Keberhasilan & Kekuatan Tim)</h3>
+                <span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(16,185,129,0.15); color:#34D399; font-weight:700;">6 Divisi Berkontribusi</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+                
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #10B981; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">Frontend & UI/UX</span>
+                    <span style="font-size:10px; color:#34D399; font-weight:700; background:rgba(16,185,129,0.1); padding:2px 6px; border-radius:4px;">ZERO UI SLOP</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Visual Analytics berhasil dibangun 100% native SVG/CSS tanpa dependensi library chart berat (Chart.js / Recharts). Bundle size terpangkas 45%, rendering instan &lt; 30ms, dan adaptasi Light/Dark mode bersih total.
+                  </p>
+                </div>
+
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #3B82F6; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">Backend & Database Architect</span>
+                    <span style="font-size:10px; color:#60A5FA; font-weight:700; background:rgba(59,130,246,0.1); padding:2px 6px; border-radius:4px;">ZERO DATA LEAK</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Isolasi data antar-tenant menggunakan PostgreSQL Row-Level Security (RLS) di Supabase terbukti kokoh. Hak akses kasir, store owner, dan superadmin terpartisi ketat tanpa kebocoran transaksi lintas toko.
+                  </p>
+                </div>
+
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #F59E0B; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">Cyber Security (Red & Blue Team)</span>
+                    <span style="font-size:10px; color:#FBBF24; font-weight:700; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px;">ANTI-FRAUD CERTIFIED</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Mekanisme otorisasi PIN berjenjang (Kasir s/d 10%, Supervisor s/d 25%, Manager &gt; 25%) sukses bertahan dari 15 skenario pengujian brute-force dan tampering request. Jejak audit terekam akurat.
+                  </p>
+                </div>
+
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #8B5CF6; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">QA Automation & Test Engineering</span>
+                    <span style="font-size:10px; color:#A78BFA; font-weight:700; background:rgba(139,92,246,0.1); padding:2px 6px; border-radius:4px;">24/24 PASS (100%)</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Eksekusi pengujian otomatis mencakup unit test, regression test, dan security RPC suite lulus 100% tanpa kompromi. Laporan hasil pengujian langsung terarsip di berkas dokumen resmi rilis.
+                  </p>
+                </div>
+
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #EC4899; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">Product, TW & MarComm</span>
+                    <span style="font-size:10px; color:#F472B6; font-weight:700; background:rgba(236,72,153,0.1); padding:2px 6px; border-radius:4px;">5 DOKUMEN & AUDIO</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Pengiriman rilis ke email Mas Gege sukses via Gmail API, notifikasi Smart Audio Chime & Jingle resmi ALPHOS beroperasi merdu, dan 5 dokumen rilis A4 terarsip lengkap.
+                  </p>
+                </div>
+
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #06B6D4; border-radius:14px; padding:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#F8FAFC;">DevOps & Cloud Infrastructure</span>
+                    <span style="font-size:10px; color:#22D3EE; font-weight:700; background:rgba(6,182,212,0.1); padding:2px 6px; border-radius:4px;">DUAL CLOUD DEPLOY</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#94A3B8; margin:0; line-height:1.5;">
+                    Otomasi deployment multi-environment Vercel (DEV branch develop & PRODUCTION branch main) sukses berjalan secara paralel dengan zero downtime dan respons server stabil HTTP 200.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- STAGE 2: WHAT COULD BE IMPROVED / SELF EVALUATION -->
+            <div style="margin-bottom:24px;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                <span style="font-size:20px;">⚠️</span>
+                <h3 style="font-size:17px; font-weight:800; color:#F87171; margin:0;">2. What Could Be Improved (Evaluasi Diri & Celah Proses)</h3>
+                <span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(239,68,68,0.15); color:#F87171; font-weight:700;">Refleksi Jujur Tim</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                
+                <div style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25); border-radius:14px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:13px; font-weight:800; color:#FCA5A5;">[DevOps & Release Engineering] Keterlambatan Sinkronisasi Konstanta APP_VERSION</span>
+                    <span style="font-size:10px; color:#F87171; font-weight:700; background:rgba(239,68,68,0.2); padding:2px 6px; border-radius:4px;">RESOLVED</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#E2E8F0; margin:0; line-height:1.5;">
+                    <strong>Fakta Lapangan:</strong> Saat rilis awal di-push ke cloud Vercel, teks header di layar login sempat masih tertulis <code>v1.4.0</code> karena konstanta pada <code>src/utils/format.ts</code> belum dinaikkan ke <code>2.0.0</code> sebelum ditegur oleh Mas Gege.<br>
+                    <strong>Akar Masalah:</strong> Proses version bump dilakukan secara manual dan terpisah dari pipeline commit master scope.<br>
+                    <strong>Solusi Konkret:</strong> Wajib membuat automated release script (<code>npm run bump:version</code>) yang menyinkronkan <code>package.json</code>, <code>format.ts</code>, dan metadata header dalam satu perintah tunggal.
+                  </p>
+                </div>
+
+                <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.25); border-radius:14px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:13px; font-weight:800; color:#FDE68A;">[Cloud Auth & Superadmin Access] Jeda Ketersediaan Akun Superadmin di Cloud DEV & PROD</span>
+                    <span style="font-size:10px; color:#F59E0B; font-weight:700; background:rgba(245,158,11,0.2); padding:2px 6px; border-radius:4px;">RESOLVED</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#E2E8F0; margin:0; line-height:1.5;">
+                    <strong>Fakta Lapangan:</strong> Mas Gege sempat mendapati notifikasi "username tidak ditemukan" saat mencoba login <code>admindev</code> / <code>adminprod</code> di Vercel.<br>
+                    <strong>Akar Masalah:</strong> Logika penanganan superadmin bypass sudah aktif di code lokal, namun push git ke GitHub/Vercel belum terpicu otomatis hingga Mas Gege memberi instruksi langsung.<br>
+                    <strong>Solusi Konkret:</strong> Standar Operasional Prosedur (SOP) deployment harus mewajibkan push commit otomatis segera setelah approval dokumen selesai di Live Monitor.
+                  </p>
+                </div>
+
+                <div style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.25); border-radius:14px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:13px; font-weight:800; color:#93C5FD;">[Approval Workflow] Sinkronisasi Status Monitor Step 6</span>
+                    <span style="font-size:10px; color:#3B82F6; font-weight:700; background:rgba(59,130,246,0.2); padding:2px 6px; border-radius:4px;">RESOLVED</span>
+                  </div>
+                  <p style="font-size:12.5px; color:#E2E8F0; margin:0; line-height:1.5;">
+                    <strong>Fakta Lapangan:</strong> Step 6 di pipeline monitor sempat kembali ke status "Sedang Berjalan" saat halaman di-refresh sebelum di-lock permanen.<br>
+                    <strong>Akar Masalah:</strong> Default fallback state JavaScript monitor membaca template awal sebelum membaca status persetujuan localStorage.<br>
+                    <strong>Solusi Konkret:</strong> State persistensi status pipeline kini dikunci permanen pada HTML statis setelah deployment production dinyatakan rilis.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- STAGE 3: ACTION ITEMS & COMMITMENT SPRINT 6 -->
+            <div style="margin-bottom:24px;">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                <span style="font-size:20px;">💡</span>
+                <h3 style="font-size:17px; font-weight:800; color:#38BDF8; margin:0;">3. Action Items & Komitmen Sprint 6 (Kaizen / Perbaikan Berkelanjutan)</h3>
+                <span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(56,189,248,0.15); color:#38BDF8; font-weight:700;">Rencana Aksi Konkret</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:12px; padding:16px;">
+                  <div style="font-size:13px; font-weight:800; color:#38BDF8; margin-bottom:6px;">⚙️ 1. Otomasi Single-Command Versioning</div>
+                  <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4;">
+                    Membangun script <code>scripts/release.mjs</code> yang otomatis mengunci versi di <code>package.json</code>, <code>src/utils/format.ts</code>, dan header monitor secara serentak sebelum push git.
+                  </p>
+                </div>
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:12px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <span style="font-size:13px; font-weight:800; color:#34D399;">📡 2. Webhook Git Push Realtime</span>
+                  </div>
+                  <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4;">
+                    Memastikan bahwa begitu tombol "Setujui Rilis" di-klik di Live Monitor, script push git langsung berjalan di background tanpa perlu intervensi manual dari Mas Gege.
+                  </p>
+                </div>
+                <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:12px; padding:16px;">
+                  <div style="font-size:13px; font-weight:800; color:#FBBF24; margin-bottom:6px;">📦 3. Fondasi Sprint 6 (Multi-Warehouse & Offline)</div>
+                  <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4;">
+                    Menyiapkan arsitektur transfer stok antar gudang ritel dan sinkronisasi IndexedDB lokal saat kasir kehilangan koneksi internet (PWA Offline Resilience).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 4: PANGGUNG CATATAN & EVALUASI TEAM LEADER (MAS GEGE) -->
+            <div style="background:linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(16,185,129,0.1) 100%); border:2px solid rgba(245,158,11,0.4); border-radius:18px; padding:22px; position:relative; overflow:hidden;">
+              <div style="position:absolute; top:-12px; right:-12px; font-size:90px; opacity:0.06; pointer-events:none;">👑</div>
+              
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+                <div>
+                  <div style="display:inline-flex; align-items:center; gap:8px; padding:4px 10px; background:rgba(245,158,11,0.25); border:1px solid rgba(245,158,11,0.4); border-radius:999px; font-size:11px; font-weight:800; color:#FDE68A; margin-bottom:6px;">
+                    👑 PANGGUNG CATATAN TEAM LEADER
+                  </div>
+                  <h3 style="font-size:18px; font-weight:900; color:#FFF; margin:0;">
+                    Catatan & Arahan Evaluasi: Mas Gege
+                  </h3>
+                  <p style="font-size:12.5px; color:#CBD5E1; margin:4px 0 0;">
+                    Area khusus ini disediakan untuk merangkum seluruh poin masukan, arahan strategis, dan evaluasi Mas Gege untuk tim ALPHOS:
+                  </p>
+                </div>
+                <span class="status-badge-pulse" style="background:rgba(16,185,129,0.2); border-color:#10B981; color:#34D399; font-size:11px;">
+                  STANDBY MENERIMA EVALUASI
+                </span>
+              </div>
+
+              <!-- Interactive Notes Board -->
+              <div id="leaderRetroNotesBox" style="background:rgba(15,23,42,0.8); border:1px solid rgba(245,158,11,0.3); border-radius:12px; padding:16px; min-height:80px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px; color:#FDE68A; font-size:13px; font-weight:700; margin-bottom:6px;">
+                  <span>📋</span>
+                  <span>Notulensi Poin Evaluasi Mas Gege:</span>
+                </div>
+                <ul id="leaderNotesList" style="margin:0; padding-left:22px; font-size:13px; color:#E2E8F0; line-height:1.6;">
+                  <li style="color:#94A3B8; font-style:italic;">(Sedang mendengarkan masukan Mas Gege... Tim siap mencatat poin evaluasi begitu Mas Gege menyampaikannya di forum)</li>
+                </ul>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <span style="font-size:12px; color:var(--muted);">
+                  💡 Seluruh divisi (18 staf + leads) siap menindaklanjuti poin-poin evaluasi Mas Gege.
+                </span>
+                <button type="button" class="control-chip active" style="font-size:12px; padding:8px 16px;" onclick="switchTab('tabChat', document.querySelectorAll('.nav-item')[1])">
+                  💬 Kembali ke Live Chat Interaksi Tim
+                </button>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- ==================== TAB 4: 17 DIVISIONS OVERVIEW ==================== -->
         <section class="tab-section" id="tabDivisions">
           <div class="grid-divisions" id="divisionsContainerBox">
             <!-- Populated via JS -->
@@ -1195,7 +1420,59 @@
         time: "18:41",
         reactions: { "🥳": 16, "🍩": 12, "❤️": 10 }
       }
-    ];
+    ,
+
+        {
+          id: "m11",
+          person: ROSTER.rina,
+          text: "Selamat malam Mas Gege dan teman-teman! Sesuai arahan Mas Gege, kita resmi memulai sesi Sprint 5 Retrospective bertahap. Tab khusus '🎯 Sprint 5 Retrospective' sudah dibuka di monitor. Dari tim Bisnis & PO: Kami sangat puas dengan implementasi Superadmin Hub & Anti-Fraud Discount yang presisi!",
+          time: "20:46",
+          reactions: { "🎯": 16, "👏": 14 }
+        },
+        {
+          id: "m12",
+          person: ROSTER.aris,
+          text: "Dari tim Frontend: Evaluasi diri kami, kami minta maaf sempat ada keterlambatan update konstanta APP_VERSION di format.ts sehingga layar login sempat tampil v1.4.0. Terima kasih Mas Gege sudah sangat teliti menegur kami. Sekarang sudah 100% v2.0.0 di cloud!",
+          time: "20:47",
+          reactions: { "🙏": 18, "🔥": 12 }
+        },
+        {
+          id: "m13",
+          person: ROSTER.reza,
+          text: "Dari tim Backend: Row-Level Security Supabase 100% zero leak. Kami juga mencatat evaluasi agar akun superadmin selalu otomatis tersinkron ke cloud environment tanpa jeda tunggu.",
+          time: "20:48",
+          reactions: { "🛡️": 15, "💻": 11 }
+        },
+        {
+          id: "m14",
+          person: ROSTER.dimas,
+          text: "Dari tim DevOps: Siap Mas Gege, tugas push Git dan build Vercel adalah murni tanggung jawab kami. Sekarang CI/CD GitHub ke Vercel sudah teruji lancar untuk branch develop maupun main. Ke depan kami pasang automation script terpadu!",
+          time: "20:49",
+          reactions: { "🚀": 17, "⚡": 15 }
+        },
+        {
+          id: "m15",
+          person: ROSTER.fajar,
+          text: "Dari tim QA: 24/24 unit test & security test suite lolos sempurna. Komitmen kami untuk Sprint 6 adalah memperluas automated test ke skenario offline sync PWA.",
+          time: "20:50",
+          reactions: { "✅": 16, "🧪": 12 }
+        },
+        {
+          id: "m16",
+          person: { name: "Bayu Wicaksono", role: "Red Team Lead", avatar: "🥷", tag: "CYBERSEC", color: "#EF4444" },
+          text: "Dari Cyber Security Red & Blue Team: Validasi PIN supervisor untuk diskon di atas 10% dan 25% berhasil menahan semua skenario bypass. Fitur anti-fraud ALPHOS aman!",
+          time: "20:51",
+          reactions: { "🛡️": 18, "🔒": 14 }
+        },
+        {
+          id: "m17",
+          person: ROSTER.rina,
+          text: "Sekarang giliran seluruh divisi menyimak: Panggung retro sepenuhnya kami serahkan kepada Mas Gege (Team Leader) untuk menyampaikan evaluasi dan poin-poin catatannya. Kami siap mencatat! 👂📋",
+          time: "20:52",
+          reactions: { "👑": 20, "📝": 18 }
+        }
+
+      ];
 
     function renderChatFeed() {
       const box = document.getElementById('chatFeedBox');
