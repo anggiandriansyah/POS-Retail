@@ -41,20 +41,19 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
 ---
 
 ### 📋 Kebijakan Open Hiring Staff PT AlphaGen (Approved by Team Leader Gege)
-- **Total Kuota Approved:** **20 Orang Staff** (18 Divisi Inti + 2 IT Cyber Security)
+- **Total Kuota Approved:** **22 Orang Staff** (18 Divisi Inti + 2 IT Cyber Security + 2 Data Analyst)
 - **Syarat Mutlak Kandidat:**
   1. Pengalaman kerja profesional relevan **minimal 2 tahun**.
   2. **Utamakan Skill & Portofolio Nyata** (problem solving, kemampuan teknis mendalam, sertifikasi praktis/bug bounty/SOC, dan kesiapan kolaborasi agile startup).
-- **Distribusi Headcount Staff Approved (20 Staff):**
+- **Distribusi Headcount Staff Approved (22 Staff):**
   - **Bisnis:** 1 Staff (Business Analyst)
   - **Product Owner (PO):** 1 Staff (Associate PO)
   - **System Architect (SA):** 1 Staff (Technical System Analyst)
   - **IT Solution Architect:** 1 Staff (Solutions Engineer)
   - **Frontend (FE):** 2 Staff (1 Core POS Logic + 1 UI/Design System)
   - **Backend (BE):** 2 Staff (1 API/RPC Supabase + 1 DB Optimization/Security)
-  - **IT Cyber Security (NEW):** 2 Staff:
-    * **1 Red Team Specialist:** Penetration tester, vulnerability assessment, ethical hacking API/Supabase & web POS, simulasi serangan data transaksi.
-    * **1 Blue Team Specialist:** Defensive security, Row Level Security (RLS) hardening, IAM access least privilege, anomaly/log detection, dan incident response.
+  - **IT Cyber Security:** 2 Staff (1 Red Team Specialist + 1 Blue Team Specialist)
+  - **Data Analyst:** 2 Staff (1 Business BI + 1 Retail Analytics)
   - **QA Tester Manual:** 2 Staff (Exploratory & Edge Cases Tester)
   - **QA Tester Automation:** 1 Staff (SDET / Automation Engineer)
   - **Performance Tester:** 1 Staff (Performance & Benchmark Engineer)
@@ -63,4 +62,24 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
   - **Technical Writer (TW):** 1 Staff (Technical Documentation Specialist)
   - **UI/UX:** 2 Staff (1 Product UI Designer + 1 UX Researcher)
   - **Marcomm:** 1 Staff (Product Marketing & Content Creator)
+
+---
+
+### 📜 Standar Prosedur Operasional (SOP) Approval Deployment PT AlphaGen (v2.0.0+)
+Seluruh perubahan versi dan peluncuran kode wajib melalui tahapan verifikasi dokumen riwayat (Changelog, Versioning, User Guide, Sertifikasi Rilis) dan memperoleh pengesahan formal bertingkat:
+
+#### 1. Gerbang Lingkungan DEV (Push ke `develop` / Supabase DEV):
+Wajib disahkan dan disetujui (*Sign-Off*) oleh:
+* 👤 **Team Leader:** Anggi Andriansyah (Gege)
+* 💻 **Lead Developers:** FE Lead, BE Lead, Mobile Lead
+* 🧪 **QA Lead:** QA Automation & Manual Lead
+* 🎯 **PO Lead:** Product Owner Lead
+* 📊 **Bisnis Lead:** Business Lead
+
+#### 2. Gerbang Lingkungan PRODUCTION (Deploy ke `main` / Supabase PROD):
+Wajib disahkan dan disetujui (*Production Sign-Off*) oleh:
+* 👤 **Team Leader:** Anggi Andriansyah (Gege)
+* ☁️ **DevOps Lead:** DevOps & Infrastructure Lead
+* 🛡️ **IT Security Lead:** Cyber Security Lead (Red & Blue Team)
+* *(Catatan Integritas: TW Lead wajib memastikan 5 Dokumen Rilis resmi PDF & Dokumen After-Deployment telah terarsip lengkap sebelum merge branch main dieksekusi).*
 
