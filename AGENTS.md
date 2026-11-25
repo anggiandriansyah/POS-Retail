@@ -37,3 +37,26 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
 13. **UI/UX Design Lead:** Memimpin konsistensi design tokens, hierarki visual, kontras WCAG AA, dan identitas merek Konsep 2.
 14. **Marcomm Lead:** Memimpin komunikasi rilis, materi pemasaran produk ritel, dan *release kit*.
 
+---
+
+### 📋 Kebijakan Open Hiring Staff PT AlphaGen (Approved by Team Leader Gege)
+- **Total Kuota Approved:** **18 Orang Staff**
+- **Syarat Mutlak Kandidat:**
+  1. Pengalaman kerja profesional relevan **minimal 2 tahun**.
+  2. **Utamakan Skill & Portofolio Nyata** (problem solving, kemampuan teknis mendalam, komunikasi profesional, dan kesiapan kolaborasi agile startup).
+- **Distribusi Headcount Staff Approved (18 Staff):**
+  - **Bisnis:** 1 Staff (Business Analyst)
+  - **Product Owner (PO):** 1 Staff (Associate PO)
+  - **System Architect (SA):** 1 Staff (Technical System Analyst)
+  - **IT Solution Architect:** 1 Staff (Solutions Engineer)
+  - **Frontend (FE):** 2 Staff (1 Core POS Logic + 1 UI/Design System)
+  - **Backend (BE):** 2 Staff (1 API/RPC Supabase + 1 DB Optimization/Security)
+  - **QA Tester Manual:** 2 Staff (Exploratory & Edge Cases Tester)
+  - **QA Tester Automation:** 1 Staff (SDET / Automation Engineer)
+  - **Performance Tester:** 1 Staff (Performance & Benchmark Engineer)
+  - **Regression Tester:** 1 Staff (Release Verification Specialist)
+  - **DevOps:** 1 Staff (Cloud & SRE Engineer)
+  - **Technical Writer (TW):** 1 Staff (Technical Documentation Specialist)
+  - **UI/UX:** 2 Staff (1 Product UI Designer + 1 UX Researcher)
+  - **Marcomm:** 1 Staff (Product Marketing & Content Creator)
+
