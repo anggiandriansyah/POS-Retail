@@ -1909,8 +1909,514 @@
       { icon: "📢", name: "Marketing Communications", staff: "1 Lead + 1 Staff", desc: "Materi promosi peluncuran ALPHOS 2.0 dan audio sonic branding." }
     ];
 
+
+    // =========================================================================
+    // 👥 24 KARYAWAN PT ALPHAGEN (SIMULATOR STATUS, ENERGI & MOOD REALISTIS)
+    // =========================================================================
+    let staffList = [
+      {
+        id: "emp_1",
+        name: "Rina Kartika",
+        role: "Head of SDM (HRD) & PO Bisnis",
+        avatar: "👩‍💼",
+        energy: 92,
+        moodEmoji: "✨",
+        moodText: "Ceria & Antusias",
+        moodReason: "Donat J.CO Alcapone favorit di pantry masih ada, sprint berjalan mulus.",
+        status: "working",
+        task: "Menyusun skema user stories & acceptance criteria untuk portal internal ALPHOS Command Center.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_2",
+        name: "Bimo Wicaksono",
+        role: "Lead Frontend Engineer",
+        avatar: "💻",
+        energy: 88,
+        moodEmoji: "🤩",
+        moodText: "Sangat Bersemangat",
+        moodReason: "Visual Analytics native SVG sukses render < 30ms tanpa lib pihak ketiga.",
+        status: "working",
+        task: "Menyiapkan responsive viewport container fluid untuk smartphone Android & iOS.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_3",
+        name: "Reza Pratama",
+        role: "Lead Backend & DB Architect",
+        avatar: "⚙️",
+        energy: 85,
+        moodEmoji: "🧠",
+        moodText: "Konsentrasi Mendalam",
+        moodReason: "Kopi Flat White mesin Venuella mantap, isolasi RLS multi-tenant aman.",
+        status: "working",
+        task: "Merancang RPC single-session token validator untuk mendeteksi user aktif dual device.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_4",
+        name: "Aris Nugraha",
+        role: "DevOps & Cloud Infrastructure Lead",
+        avatar: "🚀",
+        energy: 95,
+        moodEmoji: "⚡",
+        moodText: "Lega & Puas",
+        moodReason: "Pipeline Vercel & GitHub develop/main sinkron sempurna tanpa error.",
+        status: "completed",
+        task: "Kalibrasi versioning v1.5.0 dan auto-deployment dual cloud Vercel tuntas 100%.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_5",
+        name: "Siti Rahma",
+        role: "Lead UI/UX Designer",
+        avatar: "🎨",
+        energy: 90,
+        moodEmoji: "💡",
+        moodText: "Kreatif & Berbunga",
+        moodReason: "Konsep bar 'ALPHOS • Smart Retail OS' disetujui langsung oleh Mas Gege.",
+        status: "working",
+        task: "Membuat mockup 3-in-1 switcher visual analytics (Line, Bar, Pie Chart) dan clean bell icon.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_6",
+        name: "Fajar Hidayat",
+        role: "Lead QA Automation",
+        avatar: "🤖",
+        energy: 78,
+        moodEmoji: "☕",
+        moodText: "Santai Rehat",
+        moodReason: "Habis running 24 unit test suites dengan 100% pass, mata butuh rehat sejenak.",
+        status: "break",
+        task: "Automated regression testing Sprint 5",
+        breakReason: "Sedang menyeduh teh hijau di pantry lantai 2 sambil ngobrol santai.",
+        breakSeconds: 180
+      },
+      {
+        id: "emp_7",
+        name: "Dimas Suryo",
+        role: "Lead Cyber Security (Blue Team)",
+        avatar: "🛡️",
+        energy: 87,
+        moodEmoji: "🥷",
+        moodText: "Waspada Tenang",
+        moodReason: "Log monitoring SOC menunjukkan zero unauthorized attempt pada portal superadmin.",
+        status: "working",
+        task: "Mengaudit endpoint auth Google OAuth callback dan enkripsi session token perangkat.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_8",
+        name: "Bayu Wicaksono",
+        role: "Red Team Specialist (Pen-Tester)",
+        avatar: "🕵️",
+        energy: 84,
+        moodEmoji: "🎯",
+        moodText: "Fokus Tertantang",
+        moodReason: "Mencari celah parameter tampering pada PIN diskon kasir berjenjang.",
+        status: "working",
+        task: "Stress-testing skenario bypass supervisor PIN dengan 15 jenis payload injeksi.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_9",
+        name: "Maya Dewi",
+        role: "Staff Backend Engineer",
+        avatar: "👩‍💻",
+        energy: 65,
+        moodEmoji: "🍩",
+        moodText: "Sedang Istirahat",
+        moodReason: "Lapar setelah coding query agregasi GMV tenant, nyemil donat dulu.",
+        status: "break",
+        task: "Optimasi index database Supabase",
+        breakReason: "Mengambil donat J.CO Avocado Dicaprio dan ngopi di sofa pantry.",
+        breakSeconds: 240
+      },
+      {
+        id: "emp_10",
+        name: "Andi Saputra",
+        role: "Staff Frontend Engineer",
+        avatar: "👨‍💻",
+        energy: 89,
+        moodEmoji: "🔥",
+        moodText: "On Fire",
+        moodReason: "Paham betul arahan Mas Gege terkait layout mobile Android/iOS yang eye-catching.",
+        status: "working",
+        task: "Mengimplementasikan CSS media query @container untuk navigasi kasir mobile.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_11",
+        name: "Tari Wulandari",
+        role: "Lead Technical Writer",
+        avatar: "📝",
+        energy: 94,
+        moodEmoji: "📚",
+        moodText: "Tenang & Rapi",
+        moodReason: "5 bundel berkas PDF A4 rilis resmi sudah tersimpan aman di direktori docs/pdf.",
+        status: "completed",
+        task: "Penerbitan dokumen sertifikasi deployment dan User Manual Guide v1.5.0 tuntas.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_12",
+        name: "Nita Savitri",
+        role: "Data Analyst & Telemetry",
+        avatar: "📊",
+        energy: 91,
+        moodEmoji: "📈",
+        moodText: "Senang Berprestasi",
+        moodReason: "Data omset kasir dan transaksi laci kas sinkron realtime tanpa selisih Rp 1 pun.",
+        status: "completed",
+        task: "Verifikasi kalkulasi laba margin dan breakdown QRIS vs Tunai pada database.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_13",
+        name: "Doni Saputra",
+        role: "Staff QA Manual Tester",
+        avatar: "🔍",
+        energy: 72,
+        moodEmoji: "☕",
+        moodText: "Stretching Ringan",
+        moodReason: "Tangan agak pegal habis ngetes 50 skenario checkout kasir di berbagai browser.",
+        status: "break",
+        task: "Validasi checkout barcode kasir",
+        breakReason: "Sedang jalan santai di lorong kantor dan mengisi tumbler air minum.",
+        breakSeconds: 150
+      },
+      {
+        id: "emp_14",
+        name: "Kevin Alamsyah",
+        role: "Staff Cyber Security Analyst",
+        avatar: "🕵️‍♂️",
+        energy: 86,
+        moodEmoji: "🔒",
+        moodText: "Disiplin & Teliti",
+        moodReason: "Brute-force lockout berjalan sesuai SOP perbankan (3x gagal PIN langsung terkunci).",
+        status: "working",
+        task: "Menulis laporan security audit hasil penetration testing anti-fraud Sprint 5.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_15",
+        name: "Cindy Permata",
+        role: "Compliance & Data Privacy Officer",
+        avatar: "⚖️",
+        energy: 93,
+        moodEmoji: "📜",
+        moodText: "Lega & Percaya Diri",
+        moodReason: "Kebijakan isolasi multi-tenant memenuhi standar kepatuhan regulasi PDP ritel.",
+        status: "completed",
+        task: "Pemeriksaan klausul privasi data tenant dan isolasi skema database rampung.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_16",
+        name: "Budi Santoso",
+        role: "Staff DevOps Engineer",
+        avatar: "☁️",
+        energy: 89,
+        moodEmoji: "📡",
+        moodText: "Fokus Siaga",
+        moodReason: "Healthcheck server Vercel menunjukkan response time rata-rata 42ms.",
+        status: "working",
+        task: "Menyiapkan webhook monitoring status Git commit langsung ke Live Command Center.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_17",
+        name: "Tiara Melati",
+        role: "Marketing Communications Specialist",
+        avatar: "📣",
+        energy: 96,
+        moodEmoji: "🎉",
+        moodText: "Penuh Energi",
+        moodReason: "Email sertifikasi rilis resmi ke Mas Gege sukses delivered via Gmail API.",
+        status: "completed",
+        task: "Penyusunan copy rilis email dan materi promosi ALPHOS Smart Retail OS selesai.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_18",
+        name: "Hendra Gunawan",
+        role: "Staff Frontend (PWA Specialist)",
+        avatar: "📱",
+        energy: 83,
+        moodEmoji: "⚡",
+        moodText: "Fokus Tinggi",
+        moodReason: "Manifest PWA dan service worker berhasil lolos audit Lighthouse 100/100.",
+        status: "working",
+        task: "Menyelidiki trigger audio lonceng yang sempat tidak berbunyi pada browser mobile.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_19",
+        name: "Larasati Putri",
+        role: "Staff UI/UX Researcher",
+        avatar: "📐",
+        energy: 70,
+        moodEmoji: "🍩",
+        moodText: "Recharge Energi",
+        moodReason: "Koleksi feedback visual selesai dirangkum, waktunya isi amunisi camilan.",
+        status: "break",
+        task: "Merangkum usability feedback",
+        breakReason: "Sedang makan sepotong donat J.CO Tiramisu bersama tim MarComm di pantry.",
+        breakSeconds: 300
+      },
+      {
+        id: "emp_20",
+        name: "Agus Pratama",
+        role: "Staff Database Administrator",
+        avatar: "💾",
+        energy: 88,
+        moodEmoji: "🛡️",
+        moodText: "Tenang Stabil",
+        moodReason: "Replika database Supabase sync 0 delay, backup snapshot tersimpan rapi.",
+        status: "working",
+        task: "Menyiapkan skrip isolasi database dev (supabase dev) vs prod (supabase prod).",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_21",
+        name: "Rizky Ramadhan",
+        role: "Staff QA Automation (Mobile App)",
+        avatar: "📲",
+        energy: 90,
+        moodEmoji: "🧪",
+        moodText: "Antusias Eksploratif",
+        moodReason: "Emulator Android kasir lancar diuji dengan scanner barcode USB & kamera.",
+        status: "completed",
+        task: "Pengujian fungsional kasir Android React Native v1.4.0 dinyatakan PASS 100%.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_22",
+        name: "Dewi Anggraini",
+        role: "Staff Technical Writer",
+        avatar: "📄",
+        energy: 87,
+        moodEmoji: "✍️",
+        moodText: "Rapi & Teratur",
+        moodReason: "Indeks dokumentasi README.md dan navigasi berkas markdown tertata bersih.",
+        status: "working",
+        task: "Menulis petunjuk integrasi Google OAuth bagi merchant toko ritel di USER_GUIDE.md.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_23",
+        name: "Faris Maulana",
+        role: "Staff Network & Security Monitoring",
+        avatar: "📡",
+        energy: 85,
+        moodEmoji: "🛰️",
+        moodText: "Fokus Pengawasan",
+        moodReason: "Konektivitas SSL/TLS HTTPS Vercel dan Supabase berstatus A+ Grade.",
+        status: "working",
+        task: "Memantau latensi round-trip time jaringan POS ke cloud server Vercel.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_24",
+        name: "Gita Cahyani",
+        role: "Staff Product Support & Merchant Care",
+        avatar: "🎧",
+        energy: 94,
+        moodEmoji: "🤝",
+        moodText: "Ramah & Semangat",
+        moodReason: "Seluruh keluhan kasir toko ritel tertangani dengan zero ticket backlog.",
+        status: "working",
+        task: "Menyiapkan template FAQ untuk fitur baru Anti-Fraud Diskon dan Notifikasi Chime.",
+        breakReason: "",
+        breakSeconds: 0
+      }
+    ];
+
+    let currentStaffFilter = 'all';
+
+    function renderEmployeesGrid() {
+      const container = document.getElementById('employeesGridContainer');
+      if (!container) return;
+
+      const workingCount = staffList.filter(s => s.status === 'working').length;
+      const breakCount = staffList.filter(s => s.status === 'break').length;
+      const completedCount = staffList.filter(s => s.status === 'completed').length;
+      
+      const elWork = document.getElementById('cntWorking');
+      const elBreak = document.getElementById('cntBreak');
+      const elComp = document.getElementById('cntCompleted');
+      if (elWork) elWork.innerText = workingCount;
+      if (elBreak) elBreak.innerText = breakCount;
+      if (elComp) elComp.innerText = completedCount;
+
+      const filtered = staffList.filter(s => {
+        if (currentStaffFilter === 'all') return true;
+        return s.status === currentStaffFilter;
+      });
+
+      container.innerHTML = filtered.map(s => {
+        let badgeHtml = '';
+        let actionContentHtml = '';
+
+        if (s.status === 'working') {
+          badgeHtml = `<span style="background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.4); color:#60A5FA; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-flex; align-items:center; gap:5px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#60A5FA; animation:pulse 1.2s infinite;"></span>
+            ⚡ Sedang Bekerja
+          </span>`;
+          actionContentHtml = `
+            <div style="font-size:11.5px; color:#94A3B8; margin-top:8px; line-height:1.4;">
+              <span style="font-weight:700; color:#CBD5E1;">Tugas Aktif:</span> ${s.task}
+            </div>
+          `;
+        } else if (s.status === 'break') {
+          const min = Math.floor(s.breakSeconds / 60);
+          const sec = s.breakSeconds % 60;
+          const timeStr = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+          badgeHtml = `<span style="background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.45); color:#FDE68A; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-flex; align-items:center; gap:5px;">
+            ☕ Sedang Istirahat • <span style="font-family:monospace; font-weight:900; color:#FBBF24;">⏳ ${timeStr}</span>
+          </span>`;
+          actionContentHtml = `
+            <div style="background:rgba(245,158,11,0.08); border:1px dashed rgba(245,158,11,0.3); border-radius:8px; padding:8px 10px; margin-top:8px;">
+              <div style="font-size:11px; font-weight:700; color:#FDE68A;">Alasan Istirahat:</div>
+              <div style="font-size:11.5px; color:#E2E8F0; margin-top:2px; line-height:1.35;">${s.breakReason}</div>
+            </div>
+          `;
+        } else if (s.status === 'completed') {
+          badgeHtml = `<span style="background:rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.4); color:#34D399; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-flex; align-items:center; gap:5px;">
+            ✅ Task Selesai
+          </span>`;
+          actionContentHtml = `
+            <div style="font-size:11.5px; color:#34D399; margin-top:8px; line-height:1.4;">
+              <span style="font-weight:700;">Deliverable:</span> ${s.task}
+            </div>
+          `;
+        }
+
+        let energyGrad = 'linear-gradient(90deg, #10B981, #34D399)';
+        if (s.energy < 75) energyGrad = 'linear-gradient(90deg, #F59E0B, #FBBF24)';
+        if (s.energy < 50) energyGrad = 'linear-gradient(90deg, #EF4444, #F87171)';
+
+        return `
+          <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s ease;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="width:40px; height:40px; border-radius:10px; background:#1E293B; border:1px solid #334155; display:flex; align-items:center; justify-content:center; font-size:22px;">
+                    ${s.avatar}
+                  </div>
+                  <div>
+                    <div style="font-size:14.5px; font-weight:800; color:#F8FAFC;">${s.name}</div>
+                    <div style="font-size:11px; color:var(--muted); font-weight:600;">${s.role}</div>
+                  </div>
+                </div>
+                ${badgeHtml}
+              </div>
+
+              <!-- Energy Bar -->
+              <div style="margin:8px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:10.5px; font-weight:700; color:var(--muted); margin-bottom:4px;">
+                  <span>⚡ Bar Energi Fisik</span>
+                  <span style="color:#F1F5F9;">${s.energy}%</span>
+                </div>
+                <div style="width:100%; height:6px; background:#1E293B; border-radius:999px; overflow:hidden;">
+                  <div style="width:${s.energy}%; height:100%; background:${energyGrad}; border-radius:999px;"></div>
+                </div>
+              </div>
+
+              <!-- Mood & Suasana Hati -->
+              <div style="background:rgba(15,23,42,0.6); border:1px solid #1E293B; border-radius:10px; padding:8px 10px; margin-top:8px;">
+                <div style="display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; color:#F8FAFC;">
+                  <span>${s.moodEmoji}</span>
+                  <span>Suasana Hati: ${s.moodText}</span>
+                </div>
+                <div style="font-size:11px; color:#94A3B8; margin-top:3px; font-style:italic; line-height:1.35;">
+                  "${s.moodReason}"
+                </div>
+              </div>
+
+              <!-- Active Work / Break / Completed Info -->
+              ${actionContentHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterStaffStatus(status, el) {
+      currentStaffFilter = status;
+      document.querySelectorAll('#subViewEmployeesBox .control-chip').forEach(c => c.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderEmployeesGrid();
+    }
+
+    function toggleStaffView(view) {
+      const empBox = document.getElementById('subViewEmployeesBox');
+      const divBox = document.getElementById('subViewDivisionsBox');
+      const btnEmp = document.getElementById('btnViewEmployees');
+      const btnDiv = document.getElementById('btnViewDivisions');
+
+      if (view === 'staff') {
+        empBox.style.display = 'block';
+        divBox.style.display = 'none';
+        btnEmp.classList.add('active');
+        btnDiv.classList.remove('active');
+        renderEmployeesGrid();
+      } else {
+        empBox.style.display = 'none';
+        divBox.style.display = 'block';
+        btnDiv.classList.add('active');
+        btnEmp.classList.remove('active');
+        renderDivisions();
+      }
+    }
+
+    setInterval(() => {
+      let changed = false;
+      staffList.forEach(s => {
+        if (s.status === 'break' && s.breakSeconds > 0) {
+          s.breakSeconds--;
+          changed = true;
+          if (s.breakSeconds <= 0) {
+            s.status = 'working';
+            s.moodEmoji = '💪';
+            s.moodText = 'Segar Kembali';
+            s.moodReason = 'Selesai istirahat dan ngopi, siap gaspol melanjutkan pekerjaan!';
+            s.task = 'Melanjutkan review kode dan sinkronisasi tugas tim ALPHOS.';
+            s.energy = Math.min(100, s.energy + 15);
+          }
+        }
+      });
+      if (changed) {
+        const tabDiv = document.getElementById('tabDivisions');
+        if (tabDiv && tabDiv.classList.contains('active')) {
+          renderEmployeesGrid();
+        }
+      }
+    }, 1000);
+
     function renderDivisions() {
       const box = document.getElementById('divisionsContainerBox');
+      if (!box) return;
       box.innerHTML = divisionsList.map(d => `
         <div class="div-card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
