@@ -434,7 +434,7 @@
       <ul class="nav-list">
         <li class="nav-item" onclick="switchTab('tabFlow', this)">
           <span>🚀</span>
-          <span>Sprint 5 Live Flow</span>
+          <span>Sprint 6 Live Flow (Active)</span>
         </li>
         <li class="nav-item active" onclick="switchTab('tabChat', this)">
           <span>💬</span>
@@ -442,11 +442,11 @@
         </li>
         <li class="nav-item" onclick="switchTab('tabApproval', this)" id="navItemApproval">
           <span>✍️</span>
-          <span>Approval & Dokumen <span id="approvalBadgePill" style="background:#EF4444; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">1 Pending</span></span>
+          <span>Approval & Dokumen <span id="approvalBadgePill" style="background:#10B981; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">✔ Selesai (Approved)</span></span>
         </li>
         <li class="nav-item" onclick="switchTab('tabBacklog', this)">
           <span>📋</span>
-          <span>Sprint Evolution (1 - 5)</span>
+          <span>Sprint Evolution & Backlog (Sprint 1 - 6)</span>
         </li>
         <li class="nav-item" onclick="switchTab('tabDivisions', this)">
           <span>👥</span>
@@ -454,7 +454,7 @@
         </li>
           <li class="nav-item" onclick="switchTab('tabRetro', this)" id="navItemRetro">
             <span>🎯</span>
-            <span>Sprint 5 Retrospective <span style="background:#10B981; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">LIVE</span></span>
+            <span>Sprint 5 Retrospective <span style="background:#10B981; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">SELESAI (DONE)</span></span>
           </li>
       </ul>
 
@@ -535,6 +535,29 @@
               </div>
             </div>
             
+            
+            <!-- SPRINT 5 COMPLETED & SPRINT 6 ACTIVE BANNER -->
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%); border: 1.5px solid #10B981; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 20px rgba(16,185,129,0.15);">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 28px;">🏆</span>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 15px; font-weight: 800; color: #34D399;">SPRINT 5 RESMI SELESAI (100% PRODUCTION LIVE)</span>
+                    <span style="background: #10B981; color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 999px;">LULUS & RETRO SELESAI</span>
+                  </div>
+                  <div style="font-size: 12px; color: #E2E8F0; margin-top: 3px;">
+                    Rilis ALPHOS v1.5.0 sukses dideploy ke Production. Digital Sign-off disahkan oleh Mas Gege, retrospektif tuntas, dan tim resmi masuk ke <strong>Sprint 6 (Hotfix & Riset Paket Langganan)</strong>.
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #60A5FA; font-size: 11.5px; font-weight: 800; padding: 6px 14px; border-radius: 9999px; display: flex; align-items: center; gap: 6px;">
+                  <span style="width: 7px; height: 7px; border-radius: 50%; background: #60A5FA; animation: pulse 1.2s infinite;"></span>
+                  SPRINT 6 AKTIF BERJALAN
+                </span>
+              </div>
+            </div>
+
             <div class="pipeline-track">
               <!-- Step 1 -->
               <div class="pipe-step done">
@@ -678,14 +701,72 @@
         <section class="tab-section" id="tabBacklog">
           <div class="sprint-history-grid">
             
-            <!-- Sprint 5 (Active) -->
-            <div class="sprint-card" style="border-color:#3B82F6;">
+
+            <!-- Sprint 6 (Active / In-Progress) -->
+            <div class="sprint-card" style="border-color: #3B82F6; background: rgba(59, 130, 246, 0.05); box-shadow: 0 4px 20px rgba(59,130,246,0.15);">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:16px; font-weight:800; color:#60A5FA;">🚀 Sprint 5 (v1.5.0) — Generation 2.0 B2B Multi-Tenant Ecosystem</h3>
-                  <p style="font-size:12px; color:var(--muted); margin-top:2px;">Target Rilis: Major Release 2.0.0 • Role Superadmin & Visual Analytics</p>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: #3B82F6; color: white; font-size: 10.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px;">CURRENT ACTIVE SPRINT</span>
+                    <span style="color: #94A3B8; font-size: 11px;">Mulai: 26 November 2026</span>
+                  </div>
+                  <h3 style="font-size: 16.5px; font-weight: 800; color: #60A5FA; margin-top: 4px;">
+                    🚀 Sprint 6 — Hotfix v1.5.1 & Research Model Langganan Alphos POS Web
+                  </h3>
+                  <p style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+                    Fokus Ganda: Penyelesaian Hotfix v1.5.1 + Riset ATM Paket Langganan Gen Alpha (Free), Gen Beta (Rp20k), Gen Gamma (Rp30k) untuk Rilis Sprint 7
+                  </p>
                 </div>
-                <span class="sprint-tag tag-running">⚡ SEDANG BERJALAN</span>
+                <span class="sprint-tag tag-running" style="font-size: 11.5px; padding: 6px 14px;">⚡ SEDANG BERJALAN</span>
+              </div>
+              
+              <div style="margin-top: 14px; font-size: 12.5px; font-weight: 800; color: #F1F5F9; display: flex; align-items: center; gap: 6px;">
+                <span>📋</span> <span>Backlog & Task List Sprint 6:</span>
+              </div>
+              <ul class="backlog-checklist" style="margin-top: 8px;">
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - Hotfix v1.5.1] Mobile Viewport Responsiveness:</strong> Optimasi safe-area notch iPhone (WebKit iOS) & fluid layout HP Android bersama Hendra & Daniel.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - Hotfix v1.5.1] Clean Bell Icon & Sound:</strong> Slicing ikon lonceng murni di topbar, memindahkan audio switch ke Pengaturan Toko, dan memastikan audio chime berbunyi.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - Hotfix v1.5.1] Security & DB Isolation:</strong> RPC token validator Supabase untuk deteksi multi-session login & pemisahan tegas instance DB DEV vs PROD.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - Research ATM] Competitor Deep-Dive:</strong> Survey menyeluruh sistem langganan POS (Moka, Pawoon, Majoo, Qasir, Olsera) via Google, TikTok Bisnis, dan YouTube.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - Research ATM] 3 Tiers Subscription Matrix:</strong> Perumusan fitur Gen Alpha (Free Rp0), Gen Beta (Rp20.000/bln), dan Gen Gamma (Rp30.000/bln).</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - UI/UX] Lock-Badge & Upgrade Modal:</strong> Desain komponen visual penanda fitur andalan terkunci di akun free dan modal upgrade 2-klik yang seamless.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - FE Architecture] Feature Gating Next.js:</strong> Penyiapan skema client-side feature flags & wrapper paywall untuk persiapan rilis Sprint 7.</div>
+                </li>
+                <li class="backlog-item">
+                  <span class="check-icon" style="color:#60A5FA;">⚡</span>
+                  <div><strong>[IN PROGRESS - AlphaGen Talent] Mentorship 4 Mahasiswa Magang:</strong> Pelaksanaan sprint 1-on-1 bersama Lead Divisi (QA, UI/UX, TW, Backend) menuju evaluasi Sprint 3 & Sprint 6.</div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Sprint 5 (Done / Completed) -->
+            <div class="sprint-card" style="border-color:#10B981;">
+              <div class="sprint-card-header">
+                <div>
+                  <h3 style="font-size:16px; font-weight:800; color:#34D399;">✅ Sprint 5 (v1.5.0) — Generation 2.0 B2B Multi-Tenant Ecosystem</h3>
+                  <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 25 November 2026 • Status: 100% Selesai & Sukses Live di Production</p>
+                </div>
+                <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
               </div>
               <ul class="backlog-checklist">
                 <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Role & Dashboard Superadmin B2B Platform (PT AlphaGen POV)</li>
@@ -694,7 +775,8 @@
                 <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Progressive Web App (PWA) Support (Full-screen installable)</li>
                 <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Role-Based Discount Control (Anti-Fraud Prevention)</li>
                 <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Jingle Audio Sonic Branding Resmi ALPHOS by AlphaGen</li>
-                <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Pembentukan 17 Divisi & Tata Kelola Approval 3 Tingkat</li>
+                <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Pembentukan 17 Divisi, Onboarding Daniel Christianto & 4 Mahasiswa Magang</li>
+                <li class="backlog-item"><span class="check-icon check-done">✔</span> [COMPLETED] Retrospektif Sprint 5 & Penyelarasan Rilis v1.5.0</li>
               </ul>
             </div>
 
@@ -942,7 +1024,7 @@
           </div>
 
           <!-- Formal Sign-Off Action Card -->
-          <div class="signoff-box" id="signoffFormBox">
+          <div class="signoff-box" id="signoffFormBox" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
               <div>
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -970,7 +1052,7 @@
           </div>
 
           <!-- Success Certificate (Hidden initially, shows upon sign-off) -->
-          <div id="signoffSuccessBox" style="display:none; background:linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.25) 100%); border:2px solid #10B981; border-radius:18px; padding:28px; text-align:center;">
+          <div id="signoffSuccessBox" style="display:block; background:linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.25) 100%); border:2px solid #10B981; border-radius:18px; padding:28px; text-align:center;">
             <div style="font-size:48px; margin-bottom:10px;">🎉 🏆 📜</div>
             <h3 style="font-size:20px; font-weight:800; color:#34D399; margin:0;">
               SPRINT 5 RESMI DISETUJUI & DITANDATANGANI!
@@ -3086,7 +3168,7 @@
       document.querySelectorAll('.approval-check').forEach(chk => chk.checked = bool);
     }
 
-    let isSprint5SignedOff = false;
+    let isSprint5SignedOff = true;
 
     function signOffSprint5() {
       const checks = document.querySelectorAll('.approval-check');
