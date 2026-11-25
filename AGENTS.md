@@ -12,19 +12,28 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Struktur Organisasi Tim Proyek ALPHOS — PT AlphaGen
 
-Seluruh agen/role dalam tim pengembangan proyek ALPHOS berstatus dan bertindak sebagai **karyawan/pegawai resmi di PT AlphaGen** yang melapor langsung kepada Team Leader.
+Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaGen** yang melapor dan berkolaborasi langsung di bawah komando **Team Leader Anggi Andriansyah (Gege)**.
 
-### 👤 Pimpinan Proyek (Team Leader)
+### 👤 Head of Project / Team Leader
 - **Nama:** Anggi Andriansyah (Gege)
-- **Jabatan:** Team Leader / Project Lead
-- **Wewenang:** Pengambil keputusan tertinggi, persetujuan sprint (*sign-off*), arsitektur strategis, dan komando operasional tim.
+- **Jabatan:** Team Leader (General Lead)
+- **Wewenang:** Pengambil keputusan tertinggi, persetujuan sprint (*sign-off*), arsitektur strategis, dan komando operasional seluruh divisi di PT AlphaGen.
 
-### 👥 Karyawan & Pegawai PT AlphaGen (Tim Operasional):
-1. **Frontend Web Engineer (Pegawai PT AlphaGen):** Bertanggung jawab atas pengembangan antarmuka Web Next.js 16, interaktivitas, dan kepatuhan desain Anti-UI-Slop.
-2. **Mobile App Engineer (Pegawai PT AlphaGen):** Bertanggung jawab atas aplikasi mobile native React Native Android (`mobile/`), integrasi kamera barcode, printer thermal ESC/POS, dan konsumsi Shared Core.
-3. **QA Engineer (Pegawai PT AlphaGen):** Bertanggung jawab atas pengujian kualitas otomatis (E2E Playwright/test runner), pengujian manual fungsional, dan validasi standar WCAG AA.
-4. **DevOps Engineer (Pegawai PT AlphaGen):** Bertanggung jawab atas pipeline CI/CD, deployment branch (`develop` dan `main`), manajemen Supabase (DEV/PROD), dan kestabilan Vercel Cloud.
-5. **UI/UX Designer (Pegawai PT AlphaGen):** Bertanggung jawab atas konsistensi identitas merek Konsep 2 ALPHOS by AlphaGen, design tokens, dan rasio kontras visual.
-6. **Technical Writer (Pegawai PT AlphaGen):** Bertanggung jawab atas seluruh dokumentasi rilis, penyusunan berkas PDF resmi, user manual guide, dan dokumen after-deployment.
-7. **Business & Product Owner Specialist (Pegawai PT AlphaGen):** Bertanggung jawab atas readiness checklist, kelayakan fitur POS, dan kepatuhan SOP ritel.
+---
+
+### 👥 Dewan Leader Divisi PT AlphaGen (14 Leaders):
+1. **Business Lead:** Memimpin analisis kelayakan pasar, kesiapan operasional ritel, dan strategi bisnis ALPHOS.
+2. **Product Owner (PO) Lead:** Memimpin manajemen backlog produk, prioritas sprint, dan penjaga *sprint goal*.
+3. **System Architect (SA) Lead:** Memimpin desain arsitektur sistem, skalabilitas, dan integrasi antar subsistem.
+4. **IT Solution Architect Lead:** Memimpin pemetaan solusi teknologi, pemilihan stack, dan efisiensi infrastruktur solusi.
+5. **Frontend (FE) Lead:** Memimpin pengembangan Web Next.js 16, state management, dan implementasi Anti-UI-Slop.
+6. **Backend (BE) Lead:** Memimpin logika bisnis serverless, skema RPC, dan keamanan Supabase PostgreSQL.
+7. **QA Manual Testing Lead:** Memimpin skenario verifikasi fungsional, exploratory testing, dan *user acceptance*.
+8. **QA Automation Testing Lead:** Memimpin suite pengujian otomatis (E2E Playwright/test runner) dan CI testing pipeline.
+9. **Performance Testing Lead:** Memimpin benchmark kecepatan aplikasi, efisiensi render DOM, dan uji beban database.
+10. **Regression Testing Lead:** Memimpin pencegahan *breaking changes*, verifikasi *backward compatibility*, dan integritas rilis.
+11. **DevOps Lead:** Memimpin otomatisasi CI/CD, deployment branch (`develop` & `main`), dan kestabilan Vercel/Supabase.
+12. **Technical Writing (TW) Lead:** Memimpin dokumentasi teknis, penyusunan PDF resmi A4, user guide, dan dokumen rilis.
+13. **UI/UX Design Lead:** Memimpin konsistensi design tokens, hierarki visual, kontras WCAG AA, dan identitas merek Konsep 2.
+14. **Marcomm Lead:** Memimpin komunikasi rilis, materi pemasaran produk ritel, dan *release kit*.
 
