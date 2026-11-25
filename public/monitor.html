@@ -450,7 +450,7 @@
         </li>
         <li class="nav-item" onclick="switchTab('tabDivisions', this)">
           <span>👥</span>
-          <span>17 Divisi & 24 Staf</span>
+          <span>17 Divisi & 41 Karyawan</span>
         </li>
           <li class="nav-item" onclick="switchTab('tabRetro', this)" id="navItemRetro">
             <span>🎯</span>
@@ -1020,7 +1020,7 @@
                 <div style="text-align:right;">
                   <span style="font-size:11px; color:var(--muted); display:block;">Pemimpin Sidang Retro</span>
                   <span style="font-size:14px; font-weight:800; color:#38BDF8;">👑 Mas Gege (Team Leader)</span>
-                  <span style="font-size:11px; color:#34D399; display:block; font-weight:700; margin-top:2px;">18 Staf + 8 Leads Hadir Lengkap</span>
+                  <span style="font-size:11px; color:#34D399; display:block; font-weight:700; margin-top:2px;">41 Karyawan Lengkap Hadir (17 Divisi)</span>
                 </div>
               </div>
             </div>
@@ -1237,12 +1237,12 @@
                     👥 Status Karyawan & Suasana Kantor ALPHOS
                   </h2>
                   <p style="font-size:13px; color:var(--muted); margin:4px 0 0; max-width:800px;">
-                    Pantau kondisi riil 24 karyawan PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
+                    Pantau kondisi riil 41 karyawan PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
                   </p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                   <button type="button" class="control-chip active" id="btnViewEmployees" onclick="toggleStaffView('staff')">
-                    👤 Status Karyawan (24)
+                    👤 Status Karyawan (41)
                   </button>
                   <button type="button" class="control-chip" id="btnViewDivisions" onclick="toggleStaffView('divisions')">
                     🏢 17 Divisi Perusahaan
@@ -1257,7 +1257,7 @@
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                   <button type="button" class="control-chip active" onclick="filterStaffStatus('all', this)">
-                    🌐 Semua (24)
+                    🌐 Semua (41)
                   </button>
                   <button type="button" class="control-chip" onclick="filterStaffStatus('working', this)" style="border-color:rgba(59,130,246,0.4);">
                     ⚡ Sedang Bekerja (<span id="cntWorking">14</span>)
@@ -1337,7 +1337,7 @@
         'tabChat': 'Live Interaksi Tim (Anti-Slop & Mindset Nyata)',
         'tabApproval': 'Portal Verifikasi Kelengkapan Dokumen & Sign-off Sprint 5',
         'tabBacklog': 'Daftar Backlog & Riwayat Sprint Evolution (1 - 5)',
-        'tabDivisions': 'Formasi Lengkap 17 Divisi & 24 Staf PT AlphaGen'
+        'tabDivisions': 'Formasi Lengkap 17 Divisi & 41 Karyawan PT AlphaGen'
       };
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Command Center';
 
@@ -1914,15 +1914,17 @@
     // 👥 24 KARYAWAN PT ALPHAGEN (SIMULATOR STATUS, ENERGI & MOOD REALISTIS)
     // =========================================================================
     let staffList = [
+      // 1. SDM / HRD (3 Orang)
       {
         id: "emp_1",
         name: "Rina Kartika",
         role: "Head of SDM (HRD) & PO Bisnis",
+        division: "SDM & HRD",
         avatar: "👩‍💼",
-        energy: 92,
+        energy: 94,
         moodEmoji: "✨",
-        moodText: "Ceria & Antusias",
-        moodReason: "Donat J.CO Alcapone favorit di pantry masih ada, sprint berjalan mulus.",
+        moodText: "Ceria & Berenergi",
+        moodReason: "Donat J.CO Alcapone favorit di pantry masih ada 4 kotak, meeting retro berjalan lancar.",
         status: "working",
         task: "Menyusun skema user stories & acceptance criteria untuk portal internal ALPHOS Command Center.",
         breakReason: "",
@@ -1930,24 +1932,90 @@
       },
       {
         id: "emp_2",
+        name: "Melati Putri",
+        role: "HR & People Welfare Specialist",
+        division: "SDM & HRD",
+        avatar: "👩‍🦰",
+        energy: 88,
+        moodEmoji: "☕",
+        moodText: "Santai Rehat",
+        moodReason: "Habis restock kapsul kopi mesin Venuella di lantai 2, rehat sejenak.",
+        status: "break",
+        task: "Penyusunan jadwal piket operasional",
+        breakReason: "Sedang duduk di sofa pantry menikmati cappuccino hangat.",
+        breakSeconds: 210
+      },
+      {
+        id: "emp_3",
+        name: "Bagus Wicaksono",
+        role: "Talent Acquisition & Onboarding",
+        division: "SDM & HRD",
+        avatar: "👨‍💼",
+        energy: 90,
+        moodEmoji: "📋",
+        moodText: "Fokus Teratur",
+        moodReason: "Proses rekrutmen gelombang 2 berjalan tertib tanpa kendala administrasi.",
+        status: "working",
+        task: "Menyusun berkas kontrak dan NDA keamanan data untuk tim engineering baru.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 2. Frontend Engineering (3 Orang)
+      {
+        id: "emp_4",
         name: "Bimo Wicaksono",
         role: "Lead Frontend Engineer",
+        division: "Frontend",
         avatar: "💻",
-        energy: 88,
+        energy: 89,
         moodEmoji: "🤩",
         moodText: "Sangat Bersemangat",
-        moodReason: "Visual Analytics native SVG sukses render < 30ms tanpa lib pihak ketiga.",
+        moodReason: "Visual Analytics native SVG sukses render < 30ms tanpa library berat.",
         status: "working",
-        task: "Menyiapkan responsive viewport container fluid untuk smartphone Android & iOS.",
+        task: "Mematangkan layout container fluid responsive untuk smartphone Android & iOS.",
         breakReason: "",
         breakSeconds: 0
       },
       {
-        id: "emp_3",
+        id: "emp_5",
+        name: "Andi Saputra",
+        role: "Senior Frontend Developer",
+        division: "Frontend",
+        avatar: "👨‍💻",
+        energy: 92,
+        moodEmoji: "🔥",
+        moodText: "On Fire",
+        moodReason: "CSS media query mobile kasir rapi total dan siap rilis di Hotfix.",
+        status: "working",
+        task: "Slicing mockup clean bell icon tanpa shape kotak di header bar aplikasi.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_6",
+        name: "Hendra Gunawan",
+        role: "PWA & Mobile Web Specialist",
+        division: "Frontend",
+        avatar: "📱",
+        energy: 85,
+        moodEmoji: "⚡",
+        moodText: "Fokus Tinggi",
+        moodReason: "Service worker PWA berhasil cache aset offline kasir dengan 100/100 score.",
+        status: "working",
+        task: "Menyelidiki trigger audio lonceng agar langsung unlock audio context saat diklik.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 3. Backend & Database (3 Orang)
+      {
+        id: "emp_7",
         name: "Reza Pratama",
         role: "Lead Backend & DB Architect",
+        division: "Backend",
         avatar: "⚙️",
-        energy: 85,
+        energy: 86,
         moodEmoji: "🧠",
         moodText: "Konsentrasi Mendalam",
         moodReason: "Kopi Flat White mesin Venuella mantap, isolasi RLS multi-tenant aman.",
@@ -1957,25 +2025,44 @@
         breakSeconds: 0
       },
       {
-        id: "emp_4",
-        name: "Aris Nugraha",
-        role: "DevOps & Cloud Infrastructure Lead",
-        avatar: "🚀",
-        energy: 95,
-        moodEmoji: "⚡",
-        moodText: "Lega & Puas",
-        moodReason: "Pipeline Vercel & GitHub develop/main sinkron sempurna tanpa error.",
-        status: "completed",
-        task: "Kalibrasi versioning v1.5.0 dan auto-deployment dual cloud Vercel tuntas 100%.",
+        id: "emp_8",
+        name: "Maya Dewi",
+        role: "Staff Database & API Engineer",
+        division: "Backend",
+        avatar: "👩‍💻",
+        energy: 68,
+        moodEmoji: "🍩",
+        moodText: "Sedang Istirahat",
+        moodReason: "Lapar setelah coding query agregasi GMV tenant, nyemil donat dulu.",
+        status: "break",
+        task: "Optimasi index database Supabase",
+        breakReason: "Mengambil donat J.CO Avocado Dicaprio dan ngopi di sofa pantry.",
+        breakSeconds: 240
+      },
+      {
+        id: "emp_9",
+        name: "Agus Pratama",
+        role: "Senior Database Administrator (DBA)",
+        division: "Backend",
+        avatar: "💾",
+        energy: 91,
+        moodEmoji: "🛡️",
+        moodText: "Tenang Stabil",
+        moodReason: "Replika database Supabase sync 0 delay, backup snapshot tersimpan rapi.",
+        status: "working",
+        task: "Menyiapkan skrip isolasi database DEV (supabase dev) vs PROD (supabase prod).",
         breakReason: "",
         breakSeconds: 0
       },
+
+      // 4. UI/UX Design (3 Orang)
       {
-        id: "emp_5",
+        id: "emp_10",
         name: "Siti Rahma",
         role: "Lead UI/UX Designer",
+        division: "UI/UX",
         avatar: "🎨",
-        energy: 90,
+        energy: 93,
         moodEmoji: "💡",
         moodText: "Kreatif & Berbunga",
         moodReason: "Konsep bar 'ALPHOS • Smart Retail OS' disetujui langsung oleh Mas Gege.",
@@ -1985,25 +2072,44 @@
         breakSeconds: 0
       },
       {
-        id: "emp_6",
-        name: "Fajar Hidayat",
-        role: "Lead QA Automation",
-        avatar: "🤖",
-        energy: 78,
-        moodEmoji: "☕",
-        moodText: "Santai Rehat",
-        moodReason: "Habis running 24 unit test suites dengan 100% pass, mata butuh rehat sejenak.",
+        id: "emp_11",
+        name: "Larasati Putri",
+        role: "UI Interaction & Design System",
+        division: "UI/UX",
+        avatar: "📐",
+        energy: 72,
+        moodEmoji: "🍩",
+        moodText: "Recharge Energi",
+        moodReason: "Koleksi feedback visual selesai dirangkum, waktunya isi amunisi camilan.",
         status: "break",
-        task: "Automated regression testing Sprint 5",
-        breakReason: "Sedang menyeduh teh hijau di pantry lantai 2 sambil ngobrol santai.",
-        breakSeconds: 180
+        task: "Merangkum usability feedback",
+        breakReason: "Sedang makan sepotong donat J.CO Tiramisu bersama tim MarComm di pantry.",
+        breakSeconds: 300
       },
       {
-        id: "emp_7",
+        id: "emp_12",
+        name: "Gilang Ramadhan",
+        role: "UX Researcher & Prototyper",
+        division: "UI/UX",
+        avatar: "🖋️",
+        energy: 87,
+        moodEmoji: "🔍",
+        moodText: "Kritis & Teliti",
+        moodReason: "Testing alur interaksi checkout 3-klik kasir berjalan sangat mulus.",
+        status: "working",
+        task: "Menyusun skenario A/B testing visual filter waktu (pill switcher vs dropdown).",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 5. IT Cyber Security (3 Orang)
+      {
+        id: "emp_13",
         name: "Dimas Suryo",
         role: "Lead Cyber Security (Blue Team)",
+        division: "Security",
         avatar: "🛡️",
-        energy: 87,
+        energy: 88,
         moodEmoji: "🥷",
         moodText: "Waspada Tenang",
         moodReason: "Log monitoring SOC menunjukkan zero unauthorized attempt pada portal superadmin.",
@@ -2013,9 +2119,10 @@
         breakSeconds: 0
       },
       {
-        id: "emp_8",
+        id: "emp_14",
         name: "Bayu Wicaksono",
         role: "Red Team Specialist (Pen-Tester)",
+        division: "Security",
         avatar: "🕵️",
         energy: 84,
         moodEmoji: "🎯",
@@ -2027,53 +2134,29 @@
         breakSeconds: 0
       },
       {
-        id: "emp_9",
-        name: "Maya Dewi",
-        role: "Staff Backend Engineer",
-        avatar: "👩‍💻",
-        energy: 65,
-        moodEmoji: "🍩",
-        moodText: "Sedang Istirahat",
-        moodReason: "Lapar setelah coding query agregasi GMV tenant, nyemil donat dulu.",
-        status: "break",
-        task: "Optimasi index database Supabase",
-        breakReason: "Mengambil donat J.CO Avocado Dicaprio dan ngopi di sofa pantry.",
-        breakSeconds: 240
-      },
-      {
-        id: "emp_10",
-        name: "Andi Saputra",
-        role: "Staff Frontend Engineer",
-        avatar: "👨‍💻",
-        energy: 89,
-        moodEmoji: "🔥",
-        moodText: "On Fire",
-        moodReason: "Paham betul arahan Mas Gege terkait layout mobile Android/iOS yang eye-catching.",
+        id: "emp_15",
+        name: "Kevin Alamsyah",
+        role: "SOC Analyst & Compliance",
+        division: "Security",
+        avatar: "🕵️‍♂️",
+        energy: 86,
+        moodEmoji: "🔒",
+        moodText: "Disiplin & Siaga",
+        moodReason: "Brute-force lockout berjalan sesuai SOP perbankan (3x gagal PIN langsung terkunci).",
         status: "working",
-        task: "Mengimplementasikan CSS media query @container untuk navigasi kasir mobile.",
+        task: "Menulis laporan security audit hasil penetration testing anti-fraud Sprint 5.",
         breakReason: "",
         breakSeconds: 0
       },
+
+      // 6. Data Analyst & Intelligence (3 Orang)
       {
-        id: "emp_11",
-        name: "Tari Wulandari",
-        role: "Lead Technical Writer",
-        avatar: "📝",
-        energy: 94,
-        moodEmoji: "📚",
-        moodText: "Tenang & Rapi",
-        moodReason: "5 bundel berkas PDF A4 rilis resmi sudah tersimpan aman di direktori docs/pdf.",
-        status: "completed",
-        task: "Penerbitan dokumen sertifikasi deployment dan User Manual Guide v1.5.0 tuntas.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_12",
+        id: "emp_16",
         name: "Nita Savitri",
-        role: "Data Analyst & Telemetry",
+        role: "Lead Data Analyst & Telemetry",
+        division: "Data Analyst",
         avatar: "📊",
-        energy: 91,
+        energy: 92,
         moodEmoji: "📈",
         moodText: "Senang Berprestasi",
         moodReason: "Data omset kasir dan transaksi laci kas sinkron realtime tanpa selisih Rp 1 pun.",
@@ -2083,11 +2166,44 @@
         breakSeconds: 0
       },
       {
-        id: "emp_13",
+        id: "emp_17",
+        name: "Ilham Kurniawan",
+        role: "Business Intelligence Specialist",
+        division: "Data Analyst",
+        avatar: "📉",
+        energy: 85,
+        moodEmoji: "🧮",
+        moodText: "Fokus Analitis",
+        moodReason: "Model prediksi tren produk terlaris Top 10 akurat membaca transaksi toko.",
+        status: "working",
+        task: "Membangun query visual agregasi untuk pie chart komposisi kategori belanja.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_18",
+        name: "Nadya Safitri",
+        role: "Metrics & Telemetry Engineer",
+        division: "Data Analyst",
+        avatar: "📋",
+        energy: 89,
+        moodEmoji: "🎯",
+        moodText: "Rapi & Terukur",
+        moodReason: "Dashboard telemetry mencatat latensi query rata-rata database hanya 18ms.",
+        status: "working",
+        task: "Mengonfigurasi metrik event tracking untuk klik icon lonceng notifikasi kasir.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 7. QA Manual Testing (3 Orang)
+      {
+        id: "emp_19",
         name: "Doni Saputra",
-        role: "Staff QA Manual Tester",
+        role: "Lead QA Manual Tester",
+        division: "QA Manual",
         avatar: "🔍",
-        energy: 72,
+        energy: 74,
         moodEmoji: "☕",
         moodText: "Stretching Ringan",
         moodReason: "Tangan agak pegal habis ngetes 50 skenario checkout kasir di berbagai browser.",
@@ -2097,123 +2213,300 @@
         breakSeconds: 150
       },
       {
-        id: "emp_14",
-        name: "Kevin Alamsyah",
-        role: "Staff Cyber Security Analyst",
-        avatar: "🕵️‍♂️",
-        energy: 86,
-        moodEmoji: "🔒",
-        moodText: "Disiplin & Teliti",
-        moodReason: "Brute-force lockout berjalan sesuai SOP perbankan (3x gagal PIN langsung terkunci).",
-        status: "working",
-        task: "Menulis laporan security audit hasil penetration testing anti-fraud Sprint 5.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_15",
-        name: "Cindy Permata",
-        role: "Compliance & Data Privacy Officer",
-        avatar: "⚖️",
-        energy: 93,
-        moodEmoji: "📜",
-        moodText: "Lega & Percaya Diri",
-        moodReason: "Kebijakan isolasi multi-tenant memenuhi standar kepatuhan regulasi PDP ritel.",
-        status: "completed",
-        task: "Pemeriksaan klausul privasi data tenant dan isolasi skema database rampung.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_16",
-        name: "Budi Santoso",
-        role: "Staff DevOps Engineer",
-        avatar: "☁️",
-        energy: 89,
-        moodEmoji: "📡",
-        moodText: "Fokus Siaga",
-        moodReason: "Healthcheck server Vercel menunjukkan response time rata-rata 42ms.",
-        status: "working",
-        task: "Menyiapkan webhook monitoring status Git commit langsung ke Live Command Center.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_17",
-        name: "Tiara Melati",
-        role: "Marketing Communications Specialist",
-        avatar: "📣",
-        energy: 96,
-        moodEmoji: "🎉",
-        moodText: "Penuh Energi",
-        moodReason: "Email sertifikasi rilis resmi ke Mas Gege sukses delivered via Gmail API.",
-        status: "completed",
-        task: "Penyusunan copy rilis email dan materi promosi ALPHOS Smart Retail OS selesai.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_18",
-        name: "Hendra Gunawan",
-        role: "Staff Frontend (PWA Specialist)",
-        avatar: "📱",
-        energy: 83,
-        moodEmoji: "⚡",
-        moodText: "Fokus Tinggi",
-        moodReason: "Manifest PWA dan service worker berhasil lolos audit Lighthouse 100/100.",
-        status: "working",
-        task: "Menyelidiki trigger audio lonceng yang sempat tidak berbunyi pada browser mobile.",
-        breakReason: "",
-        breakSeconds: 0
-      },
-      {
-        id: "emp_19",
-        name: "Larasati Putri",
-        role: "Staff UI/UX Researcher",
-        avatar: "📐",
-        energy: 70,
-        moodEmoji: "🍩",
-        moodText: "Recharge Energi",
-        moodReason: "Koleksi feedback visual selesai dirangkum, waktunya isi amunisi camilan.",
-        status: "break",
-        task: "Merangkum usability feedback",
-        breakReason: "Sedang makan sepotong donat J.CO Tiramisu bersama tim MarComm di pantry.",
-        breakSeconds: 300
-      },
-      {
         id: "emp_20",
-        name: "Agus Pratama",
-        role: "Staff Database Administrator",
-        avatar: "💾",
+        name: "Rian Hidayat",
+        role: "Manual Regression Specialist",
+        division: "QA Manual",
+        avatar: "🧑‍💻",
         energy: 88,
-        moodEmoji: "🛡️",
-        moodText: "Tenang Stabil",
-        moodReason: "Replika database Supabase sync 0 delay, backup snapshot tersimpan rapi.",
+        moodEmoji: "🧪",
+        moodText: "Teliti & Semangat",
+        moodReason: "Fitur shift kasir dan pencatatan kas laci lulus uji coba manual 100%.",
         status: "working",
-        task: "Menyiapkan skrip isolasi database dev (supabase dev) vs prod (supabase prod).",
+        task: "Menguji skenario multi-tenant login di URL DEV vs URL PROD pada browser incognito.",
         breakReason: "",
         breakSeconds: 0
       },
       {
         id: "emp_21",
+        name: "Putri Lestari",
+        role: "Usability & Cashier Workflow QA",
+        division: "QA Manual",
+        avatar: "👩‍🔬",
+        energy: 86,
+        moodEmoji: "🛒",
+        moodText: "Kritis Berbobot",
+        moodReason: "Simulasi struk cetak PDF thermal dan WhatsApp receipt berjalan tanpa glitch.",
+        status: "working",
+        task: "Eksplorasi edge-case kasir saat menginput nominal diskon 99% dan pembatalan transaksi.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 8. QA Automation (2 Orang)
+      {
+        id: "emp_22",
+        name: "Fajar Hidayat",
+        role: "Lead QA Automation Engineer",
+        division: "QA Automation",
+        avatar: "🤖",
+        energy: 80,
+        moodEmoji: "☕",
+        moodText: "Santai Rehat",
+        moodReason: "Habis running 24 unit test suites dengan 100% pass, mata butuh rehat sejenak.",
+        status: "break",
+        task: "Automated regression testing Sprint 5",
+        breakReason: "Sedang menyeduh teh hijau di pantry lantai 2 sambil ngobrol santai.",
+        breakSeconds: 180
+      },
+      {
+        id: "emp_23",
         name: "Rizky Ramadhan",
-        role: "Staff QA Automation (Mobile App)",
+        role: "Mobile App E2E Test Engineer",
+        division: "QA Automation",
         avatar: "📲",
-        energy: 90,
+        energy: 92,
         moodEmoji: "🧪",
-        moodText: "Antusias Eksploratif",
+        moodText: "Puas & Bangga",
         moodReason: "Emulator Android kasir lancar diuji dengan scanner barcode USB & kamera.",
         status: "completed",
         task: "Pengujian fungsional kasir Android React Native v1.4.0 dinyatakan PASS 100%.",
         breakReason: "",
         breakSeconds: 0
       },
+
+      // 9. Bisnis & Analisis Pasar (2 Orang)
       {
-        id: "emp_22",
-        name: "Dewi Anggraini",
-        role: "Staff Technical Writer",
-        avatar: "📄",
+        id: "emp_24",
+        name: "Rama Wijaya",
+        role: "Lead Business & Market Analyst",
+        division: "Bisnis & Pasar",
+        avatar: "💼",
+        energy: 94,
+        moodEmoji: "🤝",
+        moodText: "Optimis Tinggi",
+        moodReason: "Positioning 'ALPHOS • Smart Retail OS' membuka peluang B2B tier enterprise.",
+        status: "completed",
+        task: "Penyusunan feasibility study dan proyeksi MRR tenant untuk Sprint 6 selesai.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_25",
+        name: "Citra Anindya",
+        role: "B2B SaaS Growth Specialist",
+        division: "Bisnis & Pasar",
+        avatar: "👩‍💼",
+        energy: 90,
+        moodEmoji: "📊",
+        moodText: "Antusias Ekspansi",
+        moodReason: "Feedback calon merchant menyukai fitur anti-fraud diskon dan kontrol shift laci kas.",
+        status: "working",
+        task: "Merumuskan paket langganan Starter, Pro, dan Enterprise untuk peluncuran resmi.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 10. Product Owner (2 Orang)
+      {
+        id: "emp_26",
+        name: "Tari Wulandari",
+        role: "Lead Product Owner (PO)",
+        division: "Product Owner",
+        avatar: "🎯",
+        energy: 95,
+        moodEmoji: "📚",
+        moodText: "Tenang & Rapi",
+        moodReason: "5 bundel berkas PDF A4 rilis resmi sudah tersimpan aman di direktori docs/pdf.",
+        status: "completed",
+        task: "Penerbitan dokumen sertifikasi deployment dan User Manual Guide v1.5.0 tuntas.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_27",
+        name: "Aditya Nugraha",
+        role: "Associate PO - Retail Operations",
+        division: "Product Owner",
+        avatar: "🧑‍💼",
+        energy: 88,
+        moodEmoji: "📝",
+        moodText: "Cekatan & Rapi",
+        moodReason: "Sprint backlog terkurasi rapi menyambut keputusan retro dari Team Leader Gege.",
+        status: "working",
+        task: "Memecah epics Sprint 6: Multi-Warehouse Transfer dan IndexedDB PWA Offline.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 11. System Architecture / SA (2 Orang)
+      {
+        id: "emp_28",
+        name: "Budi Santoso",
+        role: "Principal System Architect",
+        division: "System Architecture",
+        avatar: "🏗️",
+        energy: 91,
+        moodEmoji: "💡",
+        moodText: "Visi Matang",
+        moodReason: "Arsitektur isolasi multi-tenant terbukti tahan beban 10.000 transaksi bersamaan.",
+        status: "working",
+        task: "Merancang skema partisi database untuk branch dedicated superadmin/develop.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_29",
+        name: "Irfan Hakim",
+        role: "Microservices & Integration Architect",
+        division: "System Architecture",
+        avatar: "📐",
         energy: 87,
+        moodEmoji: "⚙️",
+        moodText: "Fokus Teknis",
+        moodReason: "Desain decoupled webhook realtime monitor berjalan efisien tanpa lag.",
+        status: "working",
+        task: "Meninjau diagram dependensi arsitektur data flow antara POS dan Superadmin Hub.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 12. IT Solution Architecture (2 Orang)
+      {
+        id: "emp_30",
+        name: "Dwi Prakoso",
+        role: "Lead IT Solution Architect",
+        division: "Solution Architecture",
+        avatar: "💡",
+        energy: 90,
+        moodEmoji: "🌐",
+        moodText: "Solutif & Tenang",
+        moodReason: "Integrasi cloud Vercel CDN dan Supabase Edge Functions beroperasi stabil.",
+        status: "completed",
+        task: "Arsitektur solusi integrasi Google OAuth dan dual domain URL terpetakan tuntas.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_31",
+        name: "Faisal Bahri",
+        role: "Cloud Solution & Storage Engineer",
+        division: "Solution Architecture",
+        avatar: "☁️",
+        energy: 86,
+        moodEmoji: "📦",
+        moodText: "Fokus Siaga",
+        moodReason: "Storage bucket Supabase untuk logo toko dan struk digital terkonfigurasi aman.",
+        status: "working",
+        task: "Menyiapkan CDN caching policy untuk file audio lonceng dan jingle resmi ALPHOS.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 13. Performance Testing (2 Orang)
+      {
+        id: "emp_32",
+        name: "Randy Pratama",
+        role: "Lead Performance Test Engineer",
+        division: "Performance Test",
+        avatar: "⚡",
+        energy: 93,
+        moodEmoji: "🚀",
+        moodText: "Puas Berenergi",
+        moodReason: "Stress test 500 virtual users checkout bersamaan mencatat zero request timeout.",
+        status: "completed",
+        task: "Uji beban throughput transaksi kasir pada environment Supabase DEV dinyatakan PASS.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_33",
+        name: "Yoga Permana",
+        role: "Load & Stress Test Specialist",
+        division: "Performance Test",
+        avatar: "⏱️",
+        energy: 76,
+        moodEmoji: "☕",
+        moodText: "Rehat Sejenak",
+        moodReason: "Habis memantau grafik CPU utilization dan memory leak selama 3 jam nonstop.",
+        status: "break",
+        task: "Pemantauan memory leak frontend",
+        breakReason: "Sedang minum air dingin dan mengobrol dengan tim DevOps di balkon kantor.",
+        breakSeconds: 270
+      },
+
+      // 14. Regression Testing (2 Orang)
+      {
+        id: "emp_34",
+        name: "Eko Prasetyo",
+        role: "Lead Regression Testing Engineer",
+        division: "Regression Test",
+        avatar: "🛡️",
+        energy: 91,
+        moodEmoji: "✅",
+        moodText: "Lega & Tenang",
+        moodReason: "Seluruh 72 test case Tier 1 dari Sprint 1 sampai Sprint 5 konsisten hijau.",
+        status: "completed",
+        task: "Verifikasi backward-compatibility skema database dan fungsi kasir tuntas 100%.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_35",
+        name: "Dian Anggraini",
+        role: "Automated Regression Specialist",
+        division: "Regression Test",
+        avatar: "👩‍💻",
+        energy: 88,
+        moodEmoji: "🎯",
+        moodText: "Sangat Fokus",
+        moodReason: "Script tes regresi otomatis langsung terpicu setiap ada commit baru di Git.",
+        status: "working",
+        task: "Menambahkan skenario tes regresi untuk validasi role admindev vs adminprod.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 15. DevOps & Cloud Infrastructure (2 Orang)
+      {
+        id: "emp_36",
+        name: "Aris Nugraha",
+        role: "Lead DevOps & Cloud Engineer",
+        division: "DevOps & Cloud",
+        avatar: "🚀",
+        energy: 96,
+        moodEmoji: "⚡",
+        moodText: "Lega & Puas",
+        moodReason: "Pipeline Vercel & GitHub develop/main sinkron sempurna tanpa drama deployment.",
+        status: "completed",
+        task: "Kalibrasi versioning v1.5.0 dan auto-deployment dual cloud Vercel tuntas 100%.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_37",
+        name: "Faris Maulana",
+        role: "Cloud Site Reliability Engineer (SRE)",
+        division: "DevOps & Cloud",
+        avatar: "🛰️",
+        energy: 89,
+        moodEmoji: "📡",
+        moodText: "Waspada Stabil",
+        moodReason: "Healthcheck server Vercel menunjukkan response time rata-rata 42ms.",
+        status: "working",
+        task: "Mengonfigurasi domain baru alphos.vercel.app dan alphos-team.vercel.app di DNS.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 16. Technical Writing / TW (2 Orang)
+      {
+        id: "emp_38",
+        name: "Dewi Anggraini",
+        role: "Lead Technical Writer",
+        division: "Technical Writing",
+        avatar: "📄",
+        energy: 90,
         moodEmoji: "✍️",
         moodText: "Rapi & Teratur",
         moodReason: "Indeks dokumentasi README.md dan navigasi berkas markdown tertata bersih.",
@@ -2223,25 +2516,44 @@
         breakSeconds: 0
       },
       {
-        id: "emp_23",
-        name: "Faris Maulana",
-        role: "Staff Network & Security Monitoring",
-        avatar: "📡",
-        energy: 85,
-        moodEmoji: "🛰️",
-        moodText: "Fokus Pengawasan",
-        moodReason: "Konektivitas SSL/TLS HTTPS Vercel dan Supabase berstatus A+ Grade.",
+        id: "emp_39",
+        name: "Galih Perdana",
+        role: "API Documentation & SOP Writer",
+        division: "Technical Writing",
+        avatar: "📑",
+        energy: 87,
+        moodEmoji: "📖",
+        moodText: "Teliti Berkas",
+        moodReason: "Dokumen SOP Hotfix v1.5.1 dan alur persetujuan deployment selesai disusun.",
         status: "working",
-        task: "Memantau latensi round-trip time jaringan POS ke cloud server Vercel.",
+        task: "Menyusun dokumentasi arsitektur portal terpisah ALPHOS Command Center.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // 17. Marketing Communications / MarComm (3 Orang)
+      {
+        id: "emp_40",
+        name: "Tiara Melati",
+        role: "Lead Marketing Communications",
+        division: "MarComm",
+        avatar: "📣",
+        energy: 97,
+        moodEmoji: "🎉",
+        moodText: "Penuh Energi",
+        moodReason: "Email sertifikasi rilis resmi ke Mas Gege sukses delivered via Gmail API.",
+        status: "completed",
+        task: "Penyusunan copy rilis email dan materi promosi ALPHOS Smart Retail OS selesai.",
         breakReason: "",
         breakSeconds: 0
       },
       {
-        id: "emp_24",
+        id: "emp_41",
         name: "Gita Cahyani",
         role: "Staff Product Support & Merchant Care",
+        division: "MarComm",
         avatar: "🎧",
-        energy: 94,
+        energy: 92,
         moodEmoji: "🤝",
         moodText: "Ramah & Semangat",
         moodReason: "Seluruh keluhan kasir toko ritel tertangani dengan zero ticket backlog.",
