@@ -68,7 +68,11 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
 ### 📜 Standar Prosedur Operasional (SOP) Approval Deployment PT AlphaGen (v2.0.0+)
 Seluruh perubahan versi dan peluncuran kode wajib melalui tahapan verifikasi dokumen riwayat (Changelog, Versioning, User Guide, Sertifikasi Rilis) dan memperoleh pengesahan formal bertingkat:
 
-#### 1. Gerbang Lingkungan DEV (Push ke `develop` / Supabase DEV):
+#### 0. Lingkungan DEV LOKAL (Localhost / Sandbox Mesin Tim):
+* **Aturan:** **Otomatis & Mandiri (Tanpa Approval Team Leader).**
+* Developer, QA, dan Desainer bebas melakukan *fast iteration*, pengujian unit, compile, dan verifikasi lokal secara cepat tanpa birokrasi agar akselerasi pengembangan maksimal.
+
+#### 1. Gerbang Lingkungan CLOUD DEV (Push ke `develop` / Supabase DEV / Vercel Preview):
 Wajib disahkan dan disetujui (*Sign-Off*) oleh:
 * 👤 **Team Leader:** Anggi Andriansyah (Gege)
 * 💻 **Lead Developers:** FE Lead, BE Lead, Mobile Lead
@@ -76,10 +80,10 @@ Wajib disahkan dan disetujui (*Sign-Off*) oleh:
 * 🎯 **PO Lead:** Product Owner Lead
 * 📊 **Bisnis Lead:** Business Lead
 
-#### 2. Gerbang Lingkungan PRODUCTION (Deploy ke `main` / Supabase PROD):
+#### 2. Gerbang Lingkungan PRODUCTION (Deploy ke `main` / Supabase PROD / Vercel Live):
 Wajib disahkan dan disetujui (*Production Sign-Off*) oleh:
 * 👤 **Team Leader:** Anggi Andriansyah (Gege)
 * ☁️ **DevOps Lead:** DevOps & Infrastructure Lead
 * 🛡️ **IT Security Lead:** Cyber Security Lead (Red & Blue Team)
-* *(Catatan Integritas: TW Lead wajib memastikan 5 Dokumen Rilis resmi PDF & Dokumen After-Deployment telah terarsip lengkap sebelum merge branch main dieksekusi).*
+* *(Prasyarat Mutlak: TW Lead wajib memastikan 5 Dokumen Rilis resmi PDF & Dokumen After-Deployment telah terarsip lengkap sebelum merge branch main dieksekusi).*
 
