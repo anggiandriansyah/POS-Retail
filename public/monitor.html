@@ -1222,11 +1222,72 @@
           </section>
 
           <!-- ==================== TAB 4: 17 DIVISIONS OVERVIEW ==================== -->
-        <section class="tab-section" id="tabDivisions">
-          <div class="grid-divisions" id="divisionsContainerBox">
-            <!-- Populated via JS -->
-          </div>
-        </section>
+        <!-- ==================== TAB 4: 17 DIVISIONS & LIVE EMPLOYEE ROSTER ==================== -->
+          <section class="tab-section" id="tabDivisions">
+            
+            <!-- Top Header Banner -->
+            <div style="background:linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(139,92,246,0.12) 100%); border:1px solid rgba(59,130,246,0.3); border-radius:18px; padding:22px; margin-bottom:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.4); border-radius:999px; font-size:11px; font-weight:800; color:#60A5FA; margin-bottom:6px;">
+                    <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#60A5FA; animation:pulse 1.5s infinite;"></span>
+                    LIVE HUMAN WORK & OFFICE SIMULATOR
+                  </div>
+                  <h2 style="font-size:22px; font-weight:900; color:#F8FAFC; margin:0; display:flex; align-items:center; gap:10px;">
+                    👥 Status Karyawan & Suasana Kantor ALPHOS
+                  </h2>
+                  <p style="font-size:13px; color:var(--muted); margin:4px 0 0; max-width:800px;">
+                    Pantau kondisi riil 24 karyawan PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
+                  </p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <button type="button" class="control-chip active" id="btnViewEmployees" onclick="toggleStaffView('staff')">
+                    👤 Status Karyawan (24)
+                  </button>
+                  <button type="button" class="control-chip" id="btnViewDivisions" onclick="toggleStaffView('divisions')">
+                    🏢 17 Divisi Perusahaan
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Employee Sub-view (Default Active) -->
+            <div id="subViewEmployeesBox">
+              <!-- Filter Chips & Legend -->
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button type="button" class="control-chip active" onclick="filterStaffStatus('all', this)">
+                    🌐 Semua (24)
+                  </button>
+                  <button type="button" class="control-chip" onclick="filterStaffStatus('working', this)" style="border-color:rgba(59,130,246,0.4);">
+                    ⚡ Sedang Bekerja (<span id="cntWorking">14</span>)
+                  </button>
+                  <button type="button" class="control-chip" onclick="filterStaffStatus('break', this)" style="border-color:rgba(245,158,11,0.4);">
+                    ☕ Sedang Break (<span id="cntBreak">4</span>)
+                  </button>
+                  <button type="button" class="control-chip" onclick="filterStaffStatus('completed', this)" style="border-color:rgba(16,185,129,0.4);">
+                    ✅ Task Selesai (<span id="cntCompleted">6</span>)
+                  </button>
+                </div>
+                <div style="font-size:12px; color:var(--muted); display:flex; gap:14px; align-items:center;">
+                  <span>💡 <em>Countdown break otomatis berubah menjadi 'Sedang Bekerja' saat habis.</em></span>
+                </div>
+              </div>
+
+              <!-- Employee Cards Grid -->
+              <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:16px;" id="employeesGridContainer">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Divisions Sub-view (Toggleable) -->
+            <div id="subViewDivisionsBox" style="display:none;">
+              <div class="grid-divisions" id="divisionsContainerBox">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+          </section>
 
       </div>
     </main>
@@ -1867,6 +1928,7 @@
     // Init
     renderChatFeed();
     renderDivisions();
+      renderEmployeesGrid();
 
     // =========================================================================
     // 📁 SPRINT 5 COMPLETE RELEASE DOCUMENT REPOSITORY
