@@ -3,6 +3,7 @@
 import { useThemeLang } from '../contexts/useThemeLang';
 import type { PublicReceipt, StoreSettings, Transaction, TransactionItem } from '../types/pos';
 import { STORE_INFO, formatDateTime, formatRupiah } from '../utils/format';
+import AlphosLogo from './AlphosLogo';
 
 export type ReceiptStoreInfo = Partial<StoreSettings> & {
   name?: string;
@@ -20,7 +21,7 @@ export default function ReceiptContent({
   items,
   storeInfo,
 }: ReceiptContentProps) {
-  const { dict } = useThemeLang();
+  const { dict, lang } = useThemeLang();
   const r = dict.receipt;
 
   const receiptStore = 'store_settings' in transaction ? transaction.store_settings : undefined;
@@ -45,6 +46,9 @@ export default function ReceiptContent({
   return (
     <div className="receipt-paper" id="printable-receipt">
       <div className="receipt-header">
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.35rem' }}>
+          <AlphosLogo variant="thermal" width={160} height={34} />
+        </div>
         <h3>{storeName}</h3>
         <p>{storeAddress}</p>
         <p>
@@ -61,7 +65,7 @@ export default function ReceiptContent({
         </div>
         <div>
           <span>{r.date}</span>
-          <span>{formatDateTime(transaction.created_at)}</span>
+          <span>{formatDateTime(transaction.created_at, lang)}</span>
         </div>
         {transaction.cashier_name && (
           <div>

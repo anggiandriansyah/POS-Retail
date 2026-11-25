@@ -2,232 +2,43 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Sertifikasi Rilis Deployment (Deployment Certification) v1.3.0</title>
+<title>Sertifikasi Deployment DEV v1.4.0 — ALPHOS by AlphaGen</title>
 <style>
-  @page { size: A4; margin: 16mm 16mm 16mm 16mm; }
-  @media print {
-    body { font-size: 9.5pt; line-height: 1.45; }
-    .page-break { page-break-before: always; }
-    .no-break { page-break-inside: avoid; }
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #1e293b; background: #ffffff; margin: 0; padding: 0; font-size: 10pt; line-height: 1.5;
-  }
-  .header-cover { border-bottom: 3px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px; }
-  .doc-badge {
-    display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
-    padding: 2px 8px; font-size: 8pt; font-weight: 700; border-radius: 9999px; text-transform: uppercase;
-  }
-  h1 { font-size: 18pt; font-weight: 800; color: #0f172a; margin: 6px 0 4px 0; }
-  .subtitle { font-size: 10.5pt; color: #64748b; margin: 0 0 10px 0; }
-  .meta-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-    background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 8pt;
-  }
-  .meta-item strong { display: block; color: #475569; font-size: 7pt; text-transform: uppercase; }
-  .meta-item span { color: #0f172a; font-weight: 600; }
-  h2 { font-size: 12.5pt; color: #1e3a8a; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; }
-  h3 { font-size: 10.5pt; color: #0f172a; margin-top: 14px; margin-bottom: 6px; }
-  p, ul, ol { margin: 0 0 8px 0; }
-  ul, ol { padding-left: 18px; }
-  li { margin-bottom: 4px; }
-  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px 0; font-size: 8.5pt; }
-  th, td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; vertical-align: top; }
-  th { background: #f1f5f9; color: #0f172a; font-weight: 700; }
-  tr:nth-child(even) td { background: #f8fafc; }
-  .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 7.5pt; font-weight: 700; }
-  .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-  .tag-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
-  .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-  .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
-  .warning-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 8px 12px; margin: 10px 0; border-radius: 0 5px 5px 0; font-size: 8.5pt; }
-  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; color: #b91c1c; }
-  .signature-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-    margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
-  }
-  .sig-card {
-    border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; text-align: center;
-    background: #fafafa; font-size: 8pt;
-  }
-  .sig-role { font-weight: 700; color: #475569; font-size: 7.5pt; margin-bottom: 28px; }
-  .sig-name { font-weight: 700; border-top: 1px solid #94a3b8; padding-top: 4px; color: #0f172a; }
-  .footer-note { font-size: 8pt; color: #94a3b8; text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+  @page { size: A4; margin: 16mm; }
+  body { font-family: system-ui, -apple-system, sans-serif; color: #0F172A; background: #FFFFFF; margin: 0; font-size: 10pt; line-height: 1.5; }
+  .header { border-bottom: 3px solid #059669; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+  .badge { display: inline-block; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; padding: 3px 9px; border-radius: 999px; font-size: 8pt; font-weight: 700; }
+  h1 { font-size: 17pt; color: #0F172A; margin: 8px 0 4px 0; }
+  h2 { font-size: 12pt; color: #059669; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-top: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #CBD5E1; padding: 6px 8px; text-align: left; }
+  th { background: #F1F5F9; color: #0F172A; }
+  code { background: #F1F5F9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; }
+  .footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 8pt; color: #64748B; text-align: center; }
 </style>
 </head>
 <body>
-<div class="header-cover">
-  <div class="doc-badge">RELEASE CERTIFICATE • v1.3.0</div>
-  <h1>Sertifikasi Rilis Deployment (Deployment Certification) v1.3.0</h1>
-  <div class="subtitle">Dokumen Bukti Pengesahan Rilis Resmi ke Lingkungan Production (Production Sign-Off)</div>
-  <div class="meta-grid">
-    <div class="meta-item"><strong>Aplikasi</strong><span>POS Toko Retail</span></div>
-    <div class="meta-item"><strong>Versi Diuji</strong><span>v1.3.0</span></div>
-    <div class="meta-item"><strong>Tanggal Pengujian</strong><span>24 November 2026</span></div>
-    <div class="meta-item"><strong>Hasil Akhir</strong><span>QUALITY GATE PASSED</span></div>
+  <div class="header">
+    <div><svg width="340" height="80" viewBox="0 0 320 74" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(6, 6)"><path d="M 44 19 C 31 15, 14 25, 14 37 C 14 48, 25 52, 34 45 L 39 52 L 53 19" stroke="#059669" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></g><text x="74" y="42" fill="#0F172A" font-size="28" font-weight="800" font-family="system-ui, sans-serif" letter-spacing="2.5">ALPHOS</text><text x="76" y="58" fill="#059669" font-size="10" font-weight="700" font-family="system-ui, sans-serif" letter-spacing="3">by <tspan fill="#10B981">AlphaGen</tspan></text></svg></div>
+    <div style="text-align:right">
+      <span class="badge">DEV CERTIFICATION • v1.4.0</span>
+      <div style="font-size:8pt;color:#475569;margin-top:4px;">Versi 1.4.0 • 25 November 2026</div>
+    </div>
   </div>
-</div>
-
-<h2>1. Pernyataan Sertifikasi Rilis Resmi</h2>
-<p>Dengan diterbitkannya dokumen ini, Tim Rekayasa Perangkat Lunak menyatakan bahwa <strong>POS Toko Retail Versi 1.3.0</strong> telah berhasil menyelesaikan seluruh tahapan pengujian, verifikasi keamanan, migrasi database, dan telah secara resmi dinyatakan <strong>LAYAK DAN SIAP OPERASIONAL</strong> di lingkungan Production.</p>
-
-<div class="info-box">
-  <strong>Status Rilis: PRODUCTION READY & LIVE</strong><br>
-  Semua fungsionalitas utama Sprint 3 (Pengaturan Toko Dinamis, Diskon Item & Nota, Pajak PPN, Export Laporan CSV, dan Kompatibilitas Dual-Role) telah aktif dan terverifikasi secara langsung di server produksi.
-</div>
-
-<h2>2. Metadata Deployment & Verifikasi Lingkungan</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Lingkungan Pengembangan (DEV)</th>
-      <th>Lingkungan Produksi (PRODUCTION)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>URL Aplikasi</strong></td>
-      <td><a href="https://pos-retail-git-develop-anggiandriansyah.vercel.app/">pos-retail-git-develop-anggiandriansyah.vercel.app</a></td>
-      <td><a href="https://pos-retail-umber.vercel.app/">pos-retail-umber.vercel.app</a></td>
-    </tr>
-    <tr>
-      <td><strong>Platform Hosting</strong></td>
-      <td>Vercel (Branch: <code>develop</code>)</td>
-      <td>Vercel (Branch: <code>main</code>)</td>
-    </tr>
-    <tr>
-      <td><strong>Git Commit SHA</strong></td>
-      <td><code>9fea9784558235317396b0ca0f519c6dbbcdc018</code></td>
-      <td><code>d8559c550b2e3d28f54d6a643cc14433378ef7be</code> (Merge commit)</td>
-    </tr>
-    <tr>
-      <td><strong>Waktu & Durasi Build</strong></td>
-      <td>24 Nov 2026, 19:21:33 WIB (18 detik) — Status: Ready</td>
-      <td>24 Nov 2026, 19:45:46 WIB (23 detik) — Status: Ready</td>
-    </tr>
-    <tr>
-      <td><strong>Database Supabase</strong></td>
-      <td>Project ID: <code>tcbhaiyhtndnqgatysmh</code></td>
-      <td>Project ID: <code>sbtzajhgchpcdscrwtha</code></td>
-    </tr>
-    <tr>
-      <td><strong>Status Migrasi DB</strong></td>
-      <td>Sukses (5 Batch eksekusi SQL)</td>
-      <td>Sukses (5 Batch eksekusi SQL)</td>
-    </tr>
-    <tr>
-      <td><strong>Catatan Versi DB</strong></td>
-      <td><code>app_versions</code>: 1.0.0, 1.1.0, 1.2.0, 1.3.0</td>
-      <td><code>app_versions</code>: 1.0.0, 1.1.0, 1.2.0, 1.3.0</td>
-    </tr>
-    <tr>
-      <td><strong>HTTP Response & Uptime</strong></td>
-      <td>HTTP 200 OK (Badge DEV aktif)</td>
-      <td>HTTP 200 OK (Clean Production UI)</td>
-    </tr>
-    <tr>
-      <td><strong>Google OAuth Client ID</strong></td>
-      <td colspan="2"><code>117610608709-ht5g68954bhpem9ba40jhtkflbqfemlo.apps.googleusercontent.com</code> (Status: Enabled)</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>3. Checklist Verifikasi Mutu (Quality Gate Sign-Off)</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Komponen Evaluasi</th>
-      <th>Kriteria Keberhasilan</th>
-      <th>Hasil Evaluasi</th>
-      <th>Verifikator</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Kompilasi TypeScript</strong></td>
-      <td>Zero error (<code>tsc --noEmit</code>)</td>
-      <td><span class="tag tag-green">LULUS (0 Error)</span></td>
-      <td>Lead Developer</td>
-    </tr>
-    <tr>
-      <td><strong>Code Linter Health</strong></td>
-      <td>Zero warning & error (<code>oxlint</code>)</td>
-      <td><span class="tag tag-green">LULUS (0 Warning / 0 Error)</span></td>
-      <td>Lead Developer</td>
-    </tr>
-    <tr>
-      <td><strong>Unit & Integration Test</strong></td>
-      <td>100% test lulus pada Supabase DEV</td>
-      <td><span class="tag tag-green">LULUS (19/19 Pass)</span></td>
-      <td>QA Automation</td>
-    </tr>
-    <tr>
-      <td><strong>E2E Combinatorial Suite</strong></td>
-      <td>Zero test fail pada skenario Tier 1-4</td>
-      <td><span class="tag tag-green">LULUS (93 Pass / 0 Fail)</span></td>
-      <td>QA Automation</td>
-    </tr>
-    <tr>
-      <td><strong>Turbopack Build</strong></td>
-      <td>Build Next.js sukses tanpa breaking dynamic import</td>
-      <td><span class="tag tag-green">LULUS (Build 808ms)</span></td>
-      <td>DevOps Engineer</td>
-    </tr>
-    <tr>
-      <td><strong>RLS & Database Security</strong></td>
-      <td>Anon diblokir dari tabel privat, RPC SECURITY DEFINER aman</td>
-      <td><span class="tag tag-green">LULUS (Security Locked)</span></td>
-      <td>Security Auditor</td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="page-break"></div>
-
-<h2>4. Analisis Risiko & Rencana Pemulihan (Rollback Plan)</h2>
-<p>Untuk mengantisipasi keadaan darurat pada operasional toko, telah disiapkan prosedur pemulihan bencana sebagai berikut:</p>
-<ul>
-  <li><strong>Karakteristik Migrasi Database:</strong> Seluruh penambahan skema pada <code>v1_3_0_store_settings_discounts_tax.sql</code> bersifat <em>additive</em> (penambahan tabel <code>store_settings</code> dan penambahan kolom baru dengan nilai default). Data transaksi lama tidak ada yang dihapus atau diubah formatnya.</li>
-  <li><strong>Prosedur Rollback Aplikasi (Jika Diperlukan):</strong>
-    <ol>
-      <li>Kembalikan pointer Git branch <code>main</code> ke commit versi sebelumnya (<code>4ebd1cc76e4f36d927a6bdbb6f38b2f281f7b6df</code> - v1.2.0).</li>
-      <li>Vercel akan secara otomatis melakukan auto-build dan mendistribusikan versi 1.2.0 dalam waktu kurang dari 30 detik.</li>
-      <li>Database tetap kompatibel dan tidak akan mengalami crash karena skema 1.3.0 mendukung penuh kode versi 1.2.0.</li>
-    </ol>
-  </li>
-</ul>
-
-<h2>5. Lembar Pengesahan & Tanda Tangan Rilis (Signatures)</h2>
-<p>Dokumen ini disahkan secara resmi oleh tim pengembang dan penjamin mutu pada tanggal <strong>24 November 2026</strong>:</p>
-
-<div class="signature-grid">
-  <div class="sig-card">
-    <div class="sig-role">Lead Developer / FE Architect</div>
-    <div class="sig-name">Anggi Andriansyah</div>
-    <span class="tag tag-green" style="margin-top: 4px;">APPROVED</span>
-  </div>
-  <div class="sig-card">
-    <div class="sig-role">QA Lead & Automation</div>
-    <div class="sig-name">Antigravity QA Team</div>
-    <span class="tag tag-green" style="margin-top: 4px;">APPROVED</span>
-  </div>
-  <div class="sig-card">
-    <div class="sig-role">DevOps & Release Engineer</div>
-    <div class="sig-name">Cloud & Release Team</div>
-    <span class="tag tag-green" style="margin-top: 4px;">APPROVED</span>
-  </div>
-  <div class="sig-card">
-    <div class="sig-role">Product Owner / Business</div>
-    <div class="sig-name">Owner POS Retail</div>
-    <span class="tag tag-green" style="margin-top: 4px;">APPROVED</span>
-  </div>
-</div>
-
-<div class="footer-note">
-  POS Retail System Documentation • Hak Cipta © 2026 PT POS Retail Indonesia
-</div>
+  <h1>Sertifikasi Deployment DEV v1.4.0 — ALPHOS by AlphaGen</h1>
+  <p style="color:#475569;margin-top:0">Lembar pengesahan kandidat rilis DEV sebelum persetujuan ke Production</p>
+  
+      <h2>1. Ruang Lingkup Lingkungan (DEV Only)</h2>
+      <table>
+        <thead><tr><th>Lingkungan</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DEV (Aktif Diuji)</strong></td><td>Supabase <code>tcbhaiyhtndnqgatysmh</code> • Branch <code>develop</code> • Vercel DEV Preview</td><td>VERIFIED &amp; READY</td></tr>
+          <tr><td><strong>PRODUCTION</strong></td><td>Supabase <code>sbtzajhgchpcdscrwtha</code> • Branch <code>main</code></td><td>UNTOUCHED / TIDAK DISENTUH</td></tr>
+        </tbody>
+      </table>
+      <h2>2. Kesiapan Rilis & Rollback Plan</h2>
+      <p>Rilis DEV v1.4.0 terisolasi penuh dari Production (<code>prodHits=0</code>). Jika diperlukan rollback pada DEV, branch <code>develop</code> dapat dikembalikan ke tag v1.3.0 tanpa dampak ke skema database Production.</p>
+    
+  <div class="footer">ALPHOS by AlphaGen • Dokumentasi Resmi v1.4.0 (DEV tcbhaiyhtndnqgatysmh)</div>
 </body>
 </html>

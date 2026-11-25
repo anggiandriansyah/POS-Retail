@@ -2,350 +2,49 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dokumen Riwayat Versi & Enhancement (Versioning)</title>
+<title>Dokumen Riwayat Versi & Enhancement (v1.0.0 s.d. v1.4.0)</title>
 <style>
-  @page {
-    size: A4;
-    margin: 18mm 18mm 18mm 18mm;
-  }
-  @media print {
-    body {
-      font-size: 10pt;
-      line-height: 1.5;
-    }
-    .page-break {
-      page-break-before: always;
-    }
-    .no-break {
-      page-break-inside: avoid;
-    }
-  }
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #1e293b;
-    background: #ffffff;
-    margin: 0;
-    padding: 0;
-    font-size: 10.5pt;
-    line-height: 1.6;
-  }
-  .header-cover {
-    border-bottom: 3px solid #2563eb;
-    padding-bottom: 20px;
-    margin-bottom: 25px;
-  }
-  .doc-badge {
-    display: inline-block;
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
-    padding: 3px 10px;
-    font-size: 8.5pt;
-    font-weight: 700;
-    border-radius: 9999px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 20pt;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 6px 0 4px 0;
-    line-height: 1.25;
-  }
-  .subtitle {
-    font-size: 11pt;
-    color: #64748b;
-    margin: 0 0 12px 0;
-    font-weight: 500;
-  }
-  .meta-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 8.5pt;
-    margin-top: 14px;
-  }
-  .meta-item strong {
-    display: block;
-    color: #475569;
-    font-size: 7.5pt;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .meta-item span {
-    color: #0f172a;
-    font-weight: 600;
-  }
-  h2 {
-    font-size: 13pt;
-    color: #1e3a8a;
-    border-bottom: 1.5px solid #e2e8f0;
-    padding-bottom: 5px;
-    margin-top: 24px;
-    margin-bottom: 12px;
-  }
-  h3 {
-    font-size: 11pt;
-    color: #0f172a;
-    margin-top: 16px;
-    margin-bottom: 6px;
-  }
-  p, ul, ol {
-    margin: 0 0 10px 0;
-  }
-  ul, ol {
-    padding-left: 20px;
-  }
-  li {
-    margin-bottom: 4px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 12px 0 18px 0;
-    font-size: 8.5pt;
-  }
-  th, td {
-    border: 1px solid #cbd5e1;
-    padding: 6px 9px;
-    text-align: left;
-    vertical-align: top;
-  }
-  th {
-    background: #f1f5f9;
-    color: #0f172a;
-    font-weight: 700;
-  }
-  tr:nth-child(even) td {
-    background: #f8fafc;
-  }
-  .tag {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 7.5pt;
-    font-weight: 700;
-  }
-  .tag-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-  .tag-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
-  .tag-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-  .tag-purple { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
-  .info-box {
-    background: #eff6ff;
-    border-left: 4px solid #2563eb;
-    padding: 10px 14px;
-    margin: 12px 0;
-    border-radius: 0 6px 6px 0;
-    font-size: 9pt;
-  }
-  .warning-box {
-    background: #fffbeb;
-    border-left: 4px solid #d97706;
-    padding: 10px 14px;
-    margin: 12px 0;
-    border-radius: 0 6px 6px 0;
-    font-size: 9pt;
-  }
-  .signature-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px dashed #cbd5e1;
-  }
-  .sig-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 10px;
-    text-align: center;
-    background: #fafafa;
-    font-size: 8.5pt;
-  }
-  .sig-role {
-    font-weight: 700;
-    color: #475569;
-    font-size: 8pt;
-    margin-bottom: 35px;
-  }
-  .sig-name {
-    font-weight: 700;
-    border-top: 1px solid #94a3b8;
-    padding-top: 4px;
-    color: #0f172a;
-  }
-  .footer-note {
-    font-size: 8pt;
-    color: #94a3b8;
-    text-align: center;
-    margin-top: 25px;
-    padding-top: 10px;
-    border-top: 1px solid #e2e8f0;
-  }
-  code {
-    background: #f1f5f9;
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-family: Consolas, monospace;
-    font-size: 8.5pt;
-    color: #b91c1c;
-  }
+  @page { size: A4; margin: 16mm; }
+  body { font-family: system-ui, -apple-system, sans-serif; color: #0F172A; background: #FFFFFF; margin: 0; font-size: 10pt; line-height: 1.5; }
+  .header { border-bottom: 3px solid #059669; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+  .badge { display: inline-block; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; padding: 3px 9px; border-radius: 999px; font-size: 8pt; font-weight: 700; }
+  h1 { font-size: 17pt; color: #0F172A; margin: 8px 0 4px 0; }
+  h2 { font-size: 12pt; color: #059669; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; margin-top: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #CBD5E1; padding: 6px 8px; text-align: left; }
+  th { background: #F1F5F9; color: #0F172A; }
+  code { background: #F1F5F9; padding: 1px 4px; border-radius: 3px; font-family: Consolas, monospace; font-size: 8.5pt; }
+  .footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 8pt; color: #64748B; text-align: center; }
 </style>
 </head>
 <body>
-
-<div class="header-cover">
-  <div class="doc-badge">POS RETAIL SYSTEM • DOKUMENTASI RESMI</div>
-  <h1>Dokumen Riwayat Versi & Enhancement (Versioning)</h1>
-  <div class="subtitle">Rangkuman Komprehensif Evolusi Fitur, Skema Database, dan Arsitektur dari v1.0.0 hingga v1.3.0</div>
-  <div class="meta-grid">
-    <div class="meta-item"><strong>Aplikasi</strong><span>POS Toko Retail</span></div>
-    <div class="meta-item"><strong>Versi Target</strong><span>v1.3.0 (Production)</span></div>
-    <div class="meta-item"><strong>Tanggal Dokumen</strong><span>24 November 2026</span></div>
-    <div class="meta-item"><strong>Status</strong><span>TERVERIFIKASI & RESMI</span></div>
+  <div class="header">
+    <div><svg width="340" height="80" viewBox="0 0 320 74" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(6, 6)"><path d="M 44 19 C 31 15, 14 25, 14 37 C 14 48, 25 52, 34 45 L 39 52 L 53 19" stroke="#059669" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></g><text x="74" y="42" fill="#0F172A" font-size="28" font-weight="800" font-family="system-ui, sans-serif" letter-spacing="2.5">ALPHOS</text><text x="76" y="58" fill="#059669" font-size="10" font-weight="700" font-family="system-ui, sans-serif" letter-spacing="3">by <tspan fill="#10B981">AlphaGen</tspan></text></svg></div>
+    <div style="text-align:right">
+      <span class="badge">VERSIONING • v1.4.0</span>
+      <div style="font-size:8pt;color:#475569;margin-top:4px;">Versi 1.4.0 • 25 November 2026</div>
+    </div>
   </div>
-</div>
-
-
-<h2>1. Ikhtisar Rilis & Matriks Evolusi Versi</h2>
-<p>Dokumen ini mencatat seluruh perjalanan pengembangan sistem <strong>POS Toko Retail</strong> dari versi dasar MVP (Fase 1) hingga rilis mutakhir <strong>v1.3.0</strong> (Fase 2 Sprint 3) yang telah beroperasi di lingkungan Production.</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Versi</th>
-      <th>Tanggal Rilis</th>
-      <th>Fokus Utama</th>
-      <th>Arsitektur & Runtime</th>
-      <th>Database & RPC</th>
-      <th>Status Rilis</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>v1.0.0</strong></td>
-      <td>Awal Nov 2026</td>
-      <td>MVP Kasir Retail: Katalog produk, keranjang kasir, struk belanja, pencatatan transaksi dasar.</td>
-      <td>Vite + React 18 SPA, JavaScript murni.</td>
-      <td>Tabel <code>products</code>, <code>transactions</code>, <code>transaction_items</code>. Anon read/write.</td>
-      <td><span class="tag tag-amber">Deprecated</span></td>
-    </tr>
-    <tr>
-      <td><strong>v1.1.0</strong></td>
-      <td>24 Nov 2026 (Pagi)</td>
-      <td>Fase 2 Sprint 2: Autentikasi Supabase Auth, pemisahan role Owner & Kasir, shift kasir, petty cash, RLS lock.</td>
-      <td>Vite + React 18, Supabase Client Auth.</td>
-      <td>Tabel <code>profiles</code>, <code>shifts</code>, <code>petty_cash_logs</code>, <code>app_versions</code>. RPC <code>process_sale</code> (4 arg), <code>close_shift</code>, <code>get_public_receipt</code>.</td>
-      <td><span class="tag tag-amber">Superseded</span></td>
-    </tr>
-    <tr>
-      <td><strong>v1.2.0</strong></td>
-      <td>24 Nov 2026 (Siang)</td>
-      <td>Fase 2 Sprint 2 Refinement: Migrasi Next.js 16 App Router + TypeScript, username/email login, Google OAuth, bilingual (ID/EN), dark/light mode, live monitor realtime, barcode camera/photo scan.</td>
-      <td>Next.js 16.4.6 (App Router + Turbopack) + TypeScript murni, responsive PWA-ready.</td>
-      <td>Tabel <code>stock_requests</code>, username field, RPC <code>resolve_login_email</code>, publication <code>supabase_realtime</code>.</td>
-      <td><span class="tag tag-amber">Superseded</span></td>
-    </tr>
-    <tr>
-      <td><strong>v1.3.0</strong></td>
-      <td>24 Nov 2026 (Malam)</td>
-      <td>Fase 2 Sprint 3: Pengaturan toko dinamis, diskon per item & nota (Rp/%), opsi pajak PPN 11%, filter tanggal & export CSV penjualan/stok, kompatibilitas dual role (admin/owner & user/kasir), shared-core siap React Native.</td>
-      <td>Next.js 16.4.6 App Router, TypeScript, Turbopack, browser-free shared core utils.</td>
-      <td>Tabel singleton <code>store_settings</code>, 6 kolom diskon/pajak pada transactions, RPC <code>process_sale</code> (7 arg atomic), <code>get_public_receipt</code> dinamis.</td>
-      <td><span class="tag tag-green">PRODUCTION LIVE</span></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>2. Rincian Perubahan Per Versi</h2>
-
-<h3>Versi 1.3.0 — Fitur Promo/Diskon, Pajak, Pengaturan Toko Dinamis & Export CSV (Terkini)</h3>
-<p><strong>Tanggal Rilis:</strong> 24 November 2026 | <strong>Lingkungan:</strong> DEV & PRODUCTION</p>
-<ul>
-  <li><strong>Pengaturan Profil Toko Dinamis (US-3.1):</strong>
-    <ul>
-      <li>Tabel baru <code>public.store_settings</code> (singleton <code>id = 1</code>) menyimpan nama toko, alamat, telepon, catatan footer struk belanja, dan tarif pajak default.</li>
-      <li>Form interaktif <em>Pengaturan Toko</em> untuk Owner/Admin dengan sinkronisasi langsung ke Supabase Realtime.</li>
-      <li>Struk digital publik (<code>/receipt/[invoice]</code>) secara otomatis menampilkan identitas toko dinamis dari tabel tersebut.</li>
-    </ul>
-  </li>
-  <li><strong>Diskon Fleksibel & Pajak PPN (US-3.2):</strong>
-    <ul>
-      <li><strong>Diskon Per Item:</strong> Kasir dapat memberikan diskon nominal (<code>Rp</code>) atau persentase (<code>%</code>) pada setiap baris belanjaan.</li>
-      <li><strong>Diskon Nota / Order Global:</strong> Diskon tambahan di tingkat total belanja (nominal atau persentase).</li>
-      <li><strong>Opsi Pajak PPN:</strong> Kotak centang (toggle) untuk menerapkan PPN secara opsional (default 11%).</li>
-      <li>Perhitungan sisi server tervalidasi pada RPC <code>process_sale</code> (7 parameter) yang kebal manipulasi client-side.</li>
-    </ul>
-  </li>
-  <li><strong>Filter Laporan & Export Data ke Excel/CSV (US-3.3):</strong>
-    <ul>
-      <li>Filter rentang tanggal (<em>Start Date</em> dan <em>End Date</em>) pada riwayat transaksi penjualan dan riwayat mutasi stok barang.</li>
-      <li>Tombol <strong>Export Penjualan (CSV)</strong> dan <strong>Export Mutasi Stok (CSV)</strong> menggunakan modul <code>src/utils/csv.ts</code> yang memenuhi standar RFC-4180, dilengkapi UTF-8 BOM agar langsung rapi dibuka di Microsoft Excel, dan proteksi dari <em>CSV formula injection</em> (karakter <code>=, +, -, @</code>).</li>
-    </ul>
-  </li>
-  <li><strong>Kompatibilitas Dual-Role (Admin/User & Owner/Kasir):</strong>
-    <ul>
-      <li>Sistem mendukung 4 role: <code>owner</code>, <code>admin</code>, <code>kasir</code>, <code>user</code> melalui fungsi helper <code>isAdminRole()</code> dan constraint database. Akun lama tetap berjalan normal tanpa perlu migrasi ulang.</li>
-    </ul>
-  </li>
-  <li><strong>Kesiapan Mobile React Native (US-3.4):</strong>
-    <ul>
-      <li>Pembersihan aset warisan Vite dan isolasi modul shared core (<code>src/types/pos.ts</code>, <code>src/utils/format.ts</code>, <code>src/utils/pricing.ts</code>, <code>src/utils/csv.ts</code>, <code>src/i18n/translations.ts</code>) agar murni bebas DOM, siap diimpor langsung oleh aplikasi React Native di Sprint 4.</li>
-    </ul>
-  </li>
-</ul>
-
-<div class="page-break"></div>
-
-<h3>Versi 1.2.0 — Modernisasi Next.js 16, TypeScript, Live Realtime & Barcode Scanner</h3>
-<p><strong>Tanggal Rilis:</strong> 24 November 2026</p>
-<ul>
-  <li><strong>Migrasi Arsitektur Penuh:</strong> Konversi total dari Single Page Application (Vite) ke Next.js 16.4.6 App Router dengan compiler Turbopack dan strict TypeScript.</li>
-  <li><strong>Fleksibilitas Autentikasi:</strong> Login kasir/owner dapat menggunakan <code>@username</code> atau email. Registrasi mandiri mendukung Google OAuth (Google Cloud Console) dan form email/password.</li>
-  <li><strong>Bilingual (ID/EN) & Mode Tampilan:</strong> Fitur pergantian bahasa Indonesia/Inggris instan dan Dark/Light Mode berbasis localStorage.</li>
-  <li><strong>Pemantauan Toko Realtime:</strong> Dashboard <em>Live Monitor</em> bagi Owner untuk melihat transaksi berjalan, stok habis, permintaan restock dari kasir (<em>stock requests</em>), dengan aksi 1-klik Approve / Reject / Restock.</li>
-  <li><strong>Peningkatan Scanner Barcode:</strong> Integrasi <code>BarcodeDetector</code> API dengan continuous autofocus, mode <em>Photo Scan</em> (unggah foto/gambar kemasan), dan pemindai langsung pada form penambahan produk baru.</li>
-</ul>
-
-<h3>Versi 1.1.0 — Autentikasi, Pemisahan Peran, Shift Kasir & Petty Cash</h3>
-<p><strong>Tanggal Rilis:</strong> 24 November 2026</p>
-<ul>
-  <li>Penerapan Supabase Auth dan penguncian RLS (Row Level Security) ketat pada seluruh tabel operasional (role <code>anon</code> diblokir total dari tabel produk, transaksi, dan shift).</li>
-  <li>Siklus Buka/Tutup Shift Kasir: pencatatan modal awal, rekonsiliasi kas akhir, serta fitur <em>Force Close</em> oleh Owner.</li>
-  <li>Pencatatan kas operasional toko (<em>Petty Cash</em>) dengan tipe kas masuk (<code>IN</code>) dan kas keluar (<code>OUT</code>).</li>
-  <li>Struk digital publik yang aman melalui RPC <code>get_public_receipt</code> tanpa membocorkan data sensitif toko.</li>
-</ul>
-
-<h3>Versi 1.0.0 — Fondasi MVP Kasir Retail</h3>
-<p><strong>Tanggal Rilis:</strong> Awal November 2026</p>
-<ul>
-  <li>Pencatatan katalog produk, harga beli, harga jual, barcode, dan stok fisik.</li>
-  <li>Form kasir sederhana: tambah item ke keranjang, hitung total belanja, kalkulasi uang bayar dan kembalian.</li>
-  <li>Tampilan cetak struk nota belanja sederhana via browser print.</li>
-</ul>
-
-<h2>3. Panduan Peningkatan / Upgrade Path</h2>
-<div class="info-box">
-  <strong>Prosedur Upgrade ke v1.3.0:</strong><br>
-  1. Jalankan migrasi SQL <code>supabase/migrations/v1_3_0_store_settings_discounts_tax.sql</code> pada Supabase project.<br>
-  2. Pastikan tabel <code>public.app_versions</code> mencatat record <code>1.3.0</code>.<br>
-  3. Deploy kode aplikasi branch <code>main</code> ke Vercel.<br>
-  4. Pengguna tidak perlu menghapus cache lokal; sesi login dan shift aktif akan tetap dipertahankan.
-</div>
-
-
-<div class="footer-note">
-  POS Retail System Documentation • Hak Cipta © 2026 PT POS Retail Indonesia • Dokumen Otomatis Terverifikasi
-</div>
-
+  <h1>Dokumen Riwayat Versi & Enhancement (v1.0.0 s.d. v1.4.0)</h1>
+  <p style="color:#475569;margin-top:0">Evolusi arsitektur, fitur, skema database, dan branding resmi ALPHOS by AlphaGen</p>
+  
+      <h2>1. Ringkasan Evolusi Versi</h2>
+      <table>
+        <thead><tr><th>Versi</th><th>Fokus Rilis</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>v1.0.0</strong></td><td>MVP Katalog, Kasir & Struk Dasar</td><td>Archived</td></tr>
+          <tr><td><strong>v1.1.0</strong></td><td>Supabase Auth, Role Owner/Kasir, Shift, Petty Cash, RLS Lock</td><td>Superseded</td></tr>
+          <tr><td><strong>v1.2.0</strong></td><td>Next.js 16 App Router + TypeScript, Live Realtime, Barcode Scanner, Google OAuth</td><td>Superseded</td></tr>
+          <tr><td><strong>v1.3.0</strong></td><td>Store Settings Dinamis, Diskon Item/Nota, PPN, Filter Tanggal & Export CSV</td><td>Production Baseline</td></tr>
+          <tr><td><strong>v1.4.0</strong></td><td>Branding ALPHOS by AlphaGen (Konsep 2), Web Anti-UI-Slop Revamp, Aplikasi Mobile React Native (US-4.1–US-4.6), Bluetooth Thermal ESC/POS, serta Peran UI/UX, Markom & QA Manual</td><td>DEV Ready</td></tr>
+        </tbody>
+      </table>
+      <h2>2. Perubahan Utama v1.4.0</h2>
+      <ul>
+        <li><strong>Identitas Brand:</strong> Penerapan komponen logo Konsep 2 (<code>AlphosLogo.tsx</code>) tanpa redaksi POS pada logo dan pembaruan favicon.</li>
+        <li><strong>Mobile React Native:</strong> Subfolder <code>mobile/</code> terhubung ke Shared Core bebas DOM dan Supabase DEV <code>tcbhaiyhtndnqgatysmh</code>.</li>
+      </ul>
+    
+  <div class="footer">ALPHOS by AlphaGen • Dokumentasi Resmi v1.4.0 (DEV tcbhaiyhtndnqgatysmh)</div>
 </body>
 </html>

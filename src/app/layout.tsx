@@ -17,8 +17,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'POS Retail',
-  description: 'POS Retail & Inventaris Barcode',
+  title: 'ALPHOS — Retail & Inventaris',
+  description: 'ALPHOS by AlphaGen — Retail & Inventaris Barcode',
   icons: {
     icon: '/favicon.svg',
   },

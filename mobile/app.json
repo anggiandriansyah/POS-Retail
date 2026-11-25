@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "ALPHOS",
+    "slug": "alphos-mobile",
+    "version": "1.4.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.alphagen.alphos",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.BLUETOOTH_SCAN"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ALPHOS memerlukan akses kamera untuk memindai barcode produk."
+        }
+      ]
+    ]
+  }
+}

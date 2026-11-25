@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Download, Receipt, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import {
   isAdminRole,
@@ -118,6 +119,7 @@ export interface ReportsViewProps {
 
 export default function ReportsView({ products, onOpenReceipt }: ReportsViewProps) {
   const { user, profile, activeShift } = useAuth();
+  const { lang } = useThemeLang();
   const isOwner = isAdminRole(profile?.role);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -378,7 +380,7 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
                       <td>
                         <code>{tx.invoice_number}</code>
                       </td>
-                      <td>{formatDateTime(tx.created_at)}</td>
+                      <td>{formatDateTime(tx.created_at, lang)}</td>
                       {isOwner && <td>{tx.cashier?.full_name || 'Kasir'}</td>}
                       <td>
                         <span className="badge">{tx.payment_method.toUpperCase()}</span>
@@ -432,7 +434,7 @@ export default function ReportsView({ products, onOpenReceipt }: ReportsViewProp
                 ) : (
                   stockLogs.map((log) => (
                     <tr key={log.id}>
-                      <td>{formatDateTime(log.created_at)}</td>
+                      <td>{formatDateTime(log.created_at, lang)}</td>
                       <td>
                         <strong>{log.products?.name || '-'}</strong>{' '}
                         <span className="muted-text">({log.products?.barcode || '-'})</span>

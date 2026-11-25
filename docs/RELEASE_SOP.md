@@ -1,32 +1,15 @@
-# Standar Operasional Prosedur (SOP) Rilis & Dokumentasi Deployment
+# Standar Operasional Prosedur (SOP) Rilis & Dokumentasi Deployment — ALPHOS by AlphaGen
 
-Dokumen ini memuat kesepakatan standar tim rekayasa perangkat lunak sistem **POS Toko Retail** mengenai **Kewajiban Deliverables Technical Writer (TW)** pada setiap siklus rilis / paska-deployment (*Post-Deployment Definition of Done*).
+Dokumen ini memuat kesepakatan standar tim **ALPHOS by AlphaGen** mengenai **Kewajiban Deliverables Technical Writer (TW)** pada setiap siklus rilis dan paska-deployment (*Post-Deployment Definition of Done*).
 
----
+## Ketetapan Kesepakatan (Release Rule)
 
-## 📌 Ketetapan Kesepakatan (Release Rule)
+Setiap kali deployment selesai dilaksanakan (baik ke DEV `tcbhaiyhtndnqgatysmh` maupun PRODUCTION setelah persetujuan user), Technical Writer (TW) wajib menerbitkan dan memperbarui **5 dokumen resmi** dalam format PDF siap cetak di `docs/pdf/`:
 
-> **"Setiap kali deployment selesai dilaksanakan (baik ke DEV maupun PRODUCTION), Technical Writer (TW) WAJIB menerbitkan dan memperbarui 4 paket dokumen resmi dalam format PDF siap cetak / siap edar."**
+1. `01_DOKUMEN_VERSIONING_v1.4.0.pdf` — Riwayat versi, fitur baru, peningkatan, perubahan skema database/RPC/RLS, dan panduan upgrade.
+2. `02_USER_MANUAL_GUIDE_v1.4.0.pdf` — Panduan operasional terbaru untuk Web & Mobile (`Owner/Admin` dan `Kasir/User`), termasuk FAQ dan Troubleshooting.
+3. `03_LAPORAN_PENGUJIAN_AKHIR_v1.4.0.pdf` — Hasil Quality Gates (`typecheck`, `lint`, `test`, E2E Sprint 4, `build:dev`, uji Android/ESC-POS, serta audit QA Manual Anti-UI-Slop & Anti-AI-Slop).
+4. `04_SERTIFIKASI_DEPLOYMENT_v1.4.0.pdf` — Bukti pengesahan rilis resmi (DEV/PROD), metadata commit, analisis risiko, rollback plan, dan lembar tanda tangan.
+5. `05_SOP` (`05_SOP_RILIS_DAN_DOKUMENTASI_v1.4.0.pdf`) — Dokumen SOP rilis dan standar mutu dokumentasi ALPHOS by AlphaGen.
 
----
-
-## 📑 4 Dokumen Wajib Paska-Deployment
-
-Setiap rilis versi baru (misal: `v1.3.0`, `v1.4.0`, dst.) wajib disertai dokumen berikut di folder `docs/pdf/`:
-
-| No | Dokumen Wajib (Format PDF) | Standar Penamaan File | Isi Pokok & Tanggung Jawab TW |
-|:---:|:---|:---|:---|
-| **1** | **Dokumen Riwayat Versi & Enhancement** | `01_DOKUMEN_VERSIONING_v<major>.<minor>.pdf` | • Rangkuman seluruh evolusi fitur baru, enhancement, dan bugfix.<br>• Catatan perubahan skema database (tabel, kolom, RPC, trigger, RLS).<br>• Catatan kompatibilitas & panduan upgrade. |
-| **2** | **Buku Panduan Pengguna (User Manual Guide)** | `02_USER_MANUAL_GUIDE_v<major>.<minor>.<patch>.pdf` | • Panduan operasional terkini (*latest*) untuk **Kasir/Staff** (shift, kasir, diskon, struk, stock request).<br>• Panduan untuk **Owner/Admin** (mode kasir, produk, live monitor, pengaturan toko, laporan/export CSV, kelola kasir).<br>• FAQ & Troubleshooting yang diverifikasi langsung dari UI aktual. |
-| **3** | **Laporan Pengujian Akhir (Final Test Report)** | `03_LAPORAN_PENGUJIAN_AKHIR_v<major>.<minor>.<patch>.pdf` | • Hasil aktual eksekusi Quality Gates: Typecheck, Lint, Unit Test, Live Integration, E2E Matrix, dan Production Build.<br>• Matriks Ketertelusuran Kebutuhan (*Traceability Matrix*) User Story ke Test Case.<br>• Lembar verifikasi UAT manual checklist. |
-| **4** | **Sertifikasi Deployment (Production Sign-Off)** | `04_SERTIFIKASI_DEPLOYMENT_v<major>.<minor>.<patch>.pdf` | • Bukti pengesahan rilis resmi.<br>• Metadata deployment: Git Commit SHA, status Vercel, migrasi Supabase, verifikasi OAuth/integrasi eksternal.<br>• Checklist QA/DevOps, Analisis Risiko, Rencana Pemulihan (*Rollback Plan*), dan Lembar Tanda Tangan Pengesahan. |
-
----
-
-## 🔄 Alur Kerja Paska-Deployment (Post-Deployment Flow)
-
-1. **Deploy Sukses:** DevOps / Lead Developer menyelesaikan build & rilis di Vercel dan Supabase.
-2. **Kompilasi Dokumen TW:** Technical Writer mengompilasi draf HTML berstandar cetak A4 dan mengonversinya menjadi dokumen PDF vektor resolusi tinggi.
-3. **Penyimpanan Dokumen:** Seluruh PDF disimpan di `docs/pdf/` dan dicatat pada `docs/README.md` serta `README.md` utama.
-4. **Sinkronisasi Git:** File dokumentasi PDF di-*commit* dan di-*push* ke branch `develop` dan `main`.
-5. **Laporan ke Pemilik/Stakeholder:** Menyampaikan ringkasan rilis dan tautan PDF langsung kepada Pemilik Toko (Product Owner).
+Seluruh dokumen wajib memakai identitas visual **ALPHOS by AlphaGen (Konsep 2 Light Mode)**, mematuhi standar **Anti-AI-Slop**, dan menjaga batas lingkungan **DEV (`tcbhaiyhtndnqgatysmh`)** agar tidak pernah membocorkan kredensial atau menyentuh **PROD** tanpa izin eksplisit user.

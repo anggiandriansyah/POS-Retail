@@ -1,29 +1,18 @@
-# POS Toko Retail (`v1.3.0`)
+# ALPHOS by AlphaGen (`v1.4.0`)
 
-Aplikasi Kasir & Manajemen Toko Retail Modern berbasis **Next.js 16 (App Router + Turbopack)**, **TypeScript**, dan **Supabase (PostgreSQL + Auth + Realtime + RLS)**.
+Platform Kasir & Inventaris Retail Modern berbasis **Next.js 16 (Web)**, **React Native / Expo (Mobile Android)**, **TypeScript**, dan **Supabase DEV (`tcbhaiyhtndnqgatysmh`)**.
 
-- **🌐 Live Production:** [https://pos-retail-umber.vercel.app/](https://pos-retail-umber.vercel.app/)
-- **🧪 Live DEV Preview:** [https://pos-retail-git-develop-anggiandriansyah.vercel.app/](https://pos-retail-git-develop-anggiandriansyah.vercel.app/)
-
----
-
-## 📚 Dokumentasi Resmi (Format PDF)
-
-Seluruh dokumen teknis, operasional, dan SOP resmi tersimpan di folder [`docs/`](./docs/README.md) dalam format **PDF siap cetak / siap edar**:
-
-1. [**Dokumen Riwayat Versi & Enhancement (v1.0.0 s/d v1.3.0)**](./docs/pdf/01_DOKUMEN_VERSIONING_v1.0_sd_v1.3.pdf) — Rangkuman evolusi fitur, skema database, dan panduan upgrade.
-2. [**Buku Panduan Pengguna (User Manual Guide v1.3.0)**](./docs/pdf/02_USER_MANUAL_GUIDE_v1.3.0.pdf) — Panduan lengkap operasional untuk Kasir dan Owner.
-3. [**Laporan Pengujian Akhir (Final Test Report v1.3.0)**](./docs/pdf/03_LAPORAN_PENGUJIAN_AKHIR_v1.3.0.pdf) — Verifikasi Quality Gate, matriks ketertelusuran kebutuhan, dan hasil UAT.
-4. [**Sertifikasi Deployment Production (Production Sign-Off)**](./docs/pdf/04_SERTIFIKASI_DEPLOYMENT_v1.3.0.pdf) — Pengesahan rilis resmi, metadata deployment, dan analisis risiko/rollback.
-5. [**Standar Operasional Prosedur (SOP) Rilis & Deployment**](./docs/pdf/05_STANDAR_OPERASIONAL_PROSEDUR_SOP_DEPLOYMENT.pdf) — Kebijakan wajib deliverables dokumen paska-deployment untuk Technical Writer.
+- **DEV Preview Web:** [https://pos-retail-git-develop-anggiandriansyah.vercel.app/](https://pos-retail-git-develop-anggiandriansyah.vercel.app/)
+- **Mobile App (`US-4.1`–`US-4.6`):** Subfolder [`mobile/`](./mobile/package.json) menggunakan Shared Core bebas DOM (`src/types/pos.ts`, `src/utils/pricing.ts`, `src/utils/format.ts`, `src/utils/csv.ts`, `src/i18n/translations.ts`).
 
 ---
 
-## 🚀 Fitur Unggulan v1.3.0
-- **Pengaturan Toko Dinamis:** Nama toko, alamat, telepon, catatan footer struk, dan tarif pajak yang dapat dikustomisasi langsung oleh Owner.
-- **Diskon Fleksibel & Pajak PPN:** Diskon per item (`Rp` atau `%`), diskon nota global, dan kotak centang PPN opsional.
-- **Laporan & Export Excel (CSV):** Filter rentang tanggal serta export data transaksi penjualan dan mutasi stok ke CSV berstandar RFC-4180 dengan UTF-8 BOM.
-- **Manajemen Shift & Petty Cash:** Buka/tutup shift kasir dengan jam digital real-time, pencatatan kas masuk/keluar, dan rekonsiliasi kas otomatis.
-- **Autentikasi & Multi-Role:** Dukungan login username/email, Google OAuth, serta 4 role sistem (`owner`, `admin`, `kasir`, `user`).
-- **Live Monitor Realtime:** Pemantauan transaksi dan stok secara langsung dengan aksi 1-klik Approve/Reject permintaan kasir.
-- **Arsitektur Shared Core:** Logika bisnis murni bebas DOM, siap diintegrasikan dengan aplikasi mobile React Native pada Sprint 4.
+## Dokumentasi Resmi (`v1.4.0` — 5 Paket PDF)
+
+Seluruh dokumen teknis, panduan peran (`docs/process/`), dan PDF rilis resmi tersedia di [`docs/README.md`](./docs/README.md):
+
+1. [**`01_DOKUMEN_VERSIONING_v1.4.0.pdf`**](./docs/pdf/01_DOKUMEN_VERSIONING_v1.4.0.pdf)
+2. [**`02_USER_MANUAL_GUIDE_v1.4.0.pdf`**](./docs/pdf/02_USER_MANUAL_GUIDE_v1.4.0.pdf)
+3. [**`03_LAPORAN_PENGUJIAN_AKHIR_v1.4.0.pdf`**](./docs/pdf/03_LAPORAN_PENGUJIAN_AKHIR_v1.4.0.pdf)
+4. [**`04_SERTIFIKASI_DEPLOYMENT_v1.4.0.pdf`**](./docs/pdf/04_SERTIFIKASI_DEPLOYMENT_v1.4.0.pdf)
+5. [**`05_SOP_RILIS_DAN_DOKUMENTASI_v1.4.0.pdf`**](./docs/pdf/05_SOP_RILIS_DAN_DOKUMENTASI_v1.4.0.pdf)
