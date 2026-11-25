@@ -1,11 +1,10 @@
-export const APP_VERSION = '1.3.0';
+export const APP_VERSION = '1.4.0';
 
 export const STORE_INFO = {
-  name: 'Toko Retail Anda',
-  address: 'Jl. Contoh No. 123, Indonesia',
-  phone: '0812-3456-7890',
-  footerNote:
-    'Terima kasih telah berbelanja! Barang yang sudah dibeli tidak dapat ditukar.',
+  name: 'ALPHOS Store',
+  address: 'AlphaGen Retail Center',
+  phone: '-',
+  footerNote: 'Terima kasih telah berbelanja bersama ALPHOS by AlphaGen.',
 } as const;
 
 export function formatRupiah(amount: number | string | null | undefined): string {
@@ -18,17 +17,24 @@ export function formatRupiah(amount: number | string | null | undefined): string
   }).format(numeric);
 }
 
-export function formatDateTime(isoString: string | null | undefined): string {
+export function formatDateTime(
+  isoString: string | null | undefined,
+  lang: 'id' | 'en' = 'id'
+): string {
   if (!isoString) return '-';
-  return new Intl.DateTimeFormat('id-ID', {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return '-';
+  const locale = lang === 'en' ? 'en-US' : 'id-ID';
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: 'medium',
     timeStyle: 'short',
-  }).format(new Date(isoString));
+  }).format(date);
 }
 
 export function formatClockTime(isoString: string | null | undefined): string {
   if (!isoString) return '--:--:--';
   const d = new Date(isoString);
+  if (Number.isNaN(d.getTime())) return '--:--:--';
   const pad = (n: number): string => String(n).padStart(2, '0');
   return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }

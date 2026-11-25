@@ -1,12 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import {
   APP_VERSION,
+  STORE_INFO,
   formatClockTime,
+  formatDateTime,
   formatRupiah,
   generateInvoiceNumber,
 } from '../src/utils/format.ts';
@@ -46,8 +49,31 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 describe('Unit Tests - src/utils/format.ts', () => {
-  it('APP_VERSION should be 1.3.0', () => {
-    assert.equal(APP_VERSION, '1.3.0');
+  it('APP_VERSION should be 1.4.0', () => {
+    assert.equal(APP_VERSION, '1.4.0');
+  });
+
+  it('STORE_INFO provides non-placeholder ALPHOS defaults', () => {
+    assert.ok(STORE_INFO.name.trim().length > 0);
+    assert.ok(STORE_INFO.address.trim().length > 0);
+    assert.ok(STORE_INFO.phone.trim().length > 0);
+    assert.ok(STORE_INFO.footerNote.trim().length > 0);
+    assert.ok(!STORE_INFO.name.includes('Toko Retail Anda'));
+    assert.ok(!STORE_INFO.address.includes('Contoh'));
+  });
+
+  it('formatDateTime supports id/en locales and guards null/undefined/invalid dates', () => {
+    assert.equal(formatDateTime(null), '-');
+    assert.equal(formatDateTime(undefined), '-');
+    assert.equal(formatDateTime(''), '-');
+    assert.equal(formatDateTime('invalid-date-string'), '-');
+
+    const idFormatted = formatDateTime('2026-01-15T09:05:00Z');
+    const enFormatted = formatDateTime('2026-01-15T09:05:00Z', 'en');
+    assert.notEqual(idFormatted, '-');
+    assert.notEqual(enFormatted, '-');
+    assert.ok(idFormatted.includes('2026'));
+    assert.ok(enFormatted.includes('2026'));
   });
 
   it('formatRupiah formats positive numbers in IDR without decimals', () => {
@@ -77,15 +103,74 @@ describe('Unit Tests - src/utils/format.ts', () => {
     assert.ok(randNum >= 100 && randNum <= 999, `Random suffix ${randNum} should be 100..999`);
   });
 
-  it('formatClockTime formats ISO timestamps as HH:MM:SS and handles empty inputs', () => {
+  it('formatClockTime formats ISO timestamps as HH:MM:SS and handles empty/invalid inputs', () => {
     assert.equal(formatClockTime(null), '--:--:--');
     assert.equal(formatClockTime(undefined), '--:--:--');
     assert.equal(formatClockTime(''), '--:--:--');
+    assert.equal(formatClockTime('invalid-date'), '--:--:--');
 
     assert.equal(formatClockTime('2026-01-15T09:05:03'), '09:05:03');
     assert.equal(formatClockTime('2026-01-15T00:00:00'), '00:00:00');
     assert.equal(formatClockTime('2026-01-15T23:59:59'), '23:59:59');
     assert.match(formatClockTime(new Date().toISOString()), /^\d{2}:\d{2}:\d{2}$/);
+  });
+});
+
+describe('Unit Tests - DEV Build Guard & Supabase Isolation', () => {
+  it('scripts/build-dev.mjs --check-only passes with .env.development', () => {
+    const out = execFileSync(process.execPath, [path.join(ROOT_DIR, 'scripts/build-dev.mjs'), '--check-only'], {
+      cwd: ROOT_DIR,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        NEXT_PUBLIC_APP_ENV: 'development',
+        NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey,
+      },
+    });
+    assert.match(out, /Check passed/);
+  });
+
+  it('scripts/build-dev.mjs --check-only rejects PROD Supabase URL and production app env', () => {
+    assert.throws(() => {
+      execFileSync(process.execPath, [path.join(ROOT_DIR, 'scripts/build-dev.mjs'), '--check-only'], {
+        cwd: ROOT_DIR,
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          NEXT_PUBLIC_APP_ENV: 'development',
+          NEXT_PUBLIC_SUPABASE_URL: 'https://sbtzajhgchpcdscrwtha.supabase.co',
+        },
+      });
+    });
+
+    assert.throws(() => {
+      execFileSync(process.execPath, [path.join(ROOT_DIR, 'scripts/build-dev.mjs'), '--check-only'], {
+        cwd: ROOT_DIR,
+        stdio: 'pipe',
+        env: {
+          ...process.env,
+          NEXT_PUBLIC_APP_ENV: 'production',
+          NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
+        },
+      });
+    });
+  });
+
+  it('src/lib/supabaseClient.ts blocks PROD URL when NEXT_PUBLIC_APP_ENV !== production without throwing', () => {
+    const script = `
+      process.env.NEXT_PUBLIC_APP_ENV = 'development';
+      process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://sbtzajhgchpcdscrwtha.supabase.co';
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'dummy-anon-key-value';
+      const mod = await import('./src/lib/supabaseClient.ts');
+      if (mod.isSupabaseConfigured !== false || mod.supabase !== null) {
+        throw new Error('Expected DEV guard to disable PROD client');
+      }
+    `;
+    execFileSync(process.execPath, ['--input-type=module', '-e', script], {
+      cwd: ROOT_DIR,
+      stdio: 'pipe',
+    });
   });
 });
 

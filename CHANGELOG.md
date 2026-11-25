@@ -1,6 +1,23 @@
 # Changelog
 
-Semua perubahan penting pada proyek **POS Toko Retail (`react-supabase-app`)** dicatat di file ini.
+Semua perubahan penting pada proyek **ALPHOS by AlphaGen (`react-supabase-app` Web & `mobile/` Android)** dicatat di file ini.
+
+## [1.4.0] - 2026-11-24 (Fase 2 - Sprint 4 DEV)
+
+### Added
+- **Identitas Resmi ALPHOS by AlphaGen (Konsep 2) & Favicon:** Penambahan komponen `<AlphosLogo />` (`horizontal`, `vertical`, `light`, `thermal`) dengan kurva *Alpha-Checkmark* terbuka tanpa kotak/titik dan tanpa redaksi `"POS"`, serta pembaruan `public/favicon.svg`.
+- **Aplikasi Mobile Android React Native (`mobile/`, `US-4.1`–`US-4.6`):** Rancangan dan implementasi aplikasi Android yang mengonsumsi Shared Core bebas DOM secara langsung dan terhubung ke Supabase DEV (`tcbhaiyhtndnqgatysmh`), mencakup:
+  - `US-4.1` & `US-4.2`: Inisialisasi React Native + Hermes, autentikasi `@username`/email (`resolve_login_email`), routing 4 peran (`owner`/`admin`/`kasir`/`user`), penjaga akun nonaktif, toggle ID/EN, dan toggle Dark/Light Mode.
+  - `US-4.3`: Buka shift dengan modal awal, pencatatan Petty Cash `IN`/`OUT` dengan kategori terlokalisasi, dan tutup shift rekonsiliasi kas (`close_shift`).
+  - `US-4.4`: Kasir mobile, pemindai barcode kamera native (izin kamera, senter, fallback input manual), diskon item/nota (`Rp`/`%`), opsi PPN via `pricing.ts`, checkout atomik `process_sale`, dan share struk WhatsApp.
+  - `US-4.5`: Owner Live Monitor berbasis `supabase_realtime`, peringatan stok menipis, pembuatan Stock Request oleh kasir, serta aksi **Restock / Setujui / Tolak**.
+  - `US-4.6`: Dukungan printer thermal Bluetooth ESC/POS (`58 mm` dan `80 mm`) dengan header *Struk Thermal* **ALPHOS by AlphaGen**, uji cetak, serta fallback pratinjau thermal bila printer fisik tidak terhubung.
+- **Tata Kelola Proses, Audit Dual-Slop & Otomasi 5 PDF (`docs/process/`, `scripts/`):** Penambahan `ROLE_UIUX_GUIDE.md`, `ROLE_MARKOM_GUIDE.md`, `ROLE_QA_MANUAL_GUIDE.md`, `ANTI_UI_AI_SLOP_RUBRIC.md`, `PO_BUSINESS_READINESS_v1.4.0.md`, `MARKOM_RELEASE_KIT_v1.4.0.md`, serta skrip kompilasi A4 Playwright `scripts/build-release-pdfs.mjs`.
+
+### Changed
+- **Revamp UI Web & Template Struk (Standar Anti-UI-Slop):** Pembaruan `layout.tsx`, `globals.css`, `page.tsx`, seluruh 15 permukaan komponen Web, modal struk, halaman `/receipt/[invoice]`, dan pratinjau struk di Pengaturan Toko dengan token kontras WCAG AA Light/Dark, `tabular-nums`, modal konfirmasi menggantikan `window.confirm`/`prompt`, indikator daftar terpotong, nol horizontal overflow pada `375px`, serta paritas i18n ID/EN penuh.
+- **Shared Core `v1.4.0`:** Pembaruan `APP_VERSION = '1.4.0'`, default `STORE_INFO` menjadi `ALPHOS Store`, dukungan parameter bahasa pada `formatDateTime(iso, lang?)`, serta penambahan kunci terjemahan mobile (`mobileNav`, `mobileSettings`, `printer`, `mobileScanner`, `whatsapp`) di `src/i18n/translations.ts`.
+- **Penyelarasan SOP Rilis & 5 Template HTML (`docs/RELEASE_SOP.md`, `docs/html/01..05.html`):** Penyatuan kewajiban rilis dari 4 menjadi **5 paket dokumen PDF resmi**, integrasi Gate 0–4, perancangan ulang 5 template HTML ke Konsep 2 Light Mode, dan penguncian isolasi Supabase DEV (`tcbhaiyhtndnqgatysmh`) sementara PROD (`sbtzajhgchpcdscrwtha`) tetap **NOT TOUCHED / BLOCKED**.
 
 ## [1.3.0] - 2026-11-24 (Fase 2 - Sprint 3 DEV)
 

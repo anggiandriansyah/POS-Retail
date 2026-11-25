@@ -81,15 +81,13 @@ export default function PosCashier({
   const filteredProducts = useMemo(() => {
     const activeProducts = products.filter((p) => p.is_active !== false);
     const q = search.trim().toLowerCase();
-    if (!q) return activeProducts.slice(0, 12);
-    return activeProducts
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.barcode.toLowerCase().includes(q) ||
-          (p.category || '').toLowerCase().includes(q)
-      )
-      .slice(0, 12);
+    if (!q) return activeProducts;
+    return activeProducts.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.barcode.toLowerCase().includes(q) ||
+        (p.category || '').toLowerCase().includes(q)
+    );
   }, [products, search]);
 
   const numericCash =

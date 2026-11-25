@@ -12,7 +12,6 @@ import {
   Radio,
   Settings,
   ShoppingBag,
-  Store,
   Tag,
   Users,
   type LucideIcon,
@@ -25,6 +24,7 @@ import { useThemeLang } from '../contexts/useThemeLang';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 import { isAdminRole, type Product, type ReceiptModalData } from '../types/pos';
 import { APP_VERSION, STORE_INFO } from '../utils/format';
+import AlphosLogo from '../components/AlphosLogo';
 import LoginPage from '../components/LoginPage';
 import ThemeLangToggles from '../components/ThemeLangToggles';
 
@@ -64,7 +64,7 @@ async function queryProducts(): Promise<{ data: Product[]; error: string }> {
 function AuthenticatedApp() {
   const { session, profile, activeShift, loading: authLoading, signOut } = useAuth();
   const { settings } = useStoreSettings();
-  const { dict } = useThemeLang();
+  const { dict, theme } = useThemeLang();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
@@ -146,9 +146,7 @@ function AuthenticatedApp() {
       <header className="topbar no-print">
         <div className="topbar-row">
           <div className="brand">
-            <div className="brand-logo">
-              <Store size={22} />
-            </div>
+            <AlphosLogo variant={theme === 'dark' ? 'horizontal' : 'light'} width={170} height={40} />
             <div>
               <h1>
                 {settings.store_name || STORE_INFO.name}{' '}

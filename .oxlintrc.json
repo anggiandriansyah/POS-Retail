@@ -3,6 +3,7 @@
   "plugins": ["react", "oxc"],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true, "allowExportNames": ["metadata"] }]
+    "react/only-export-components": ["warn", { "allowConstantExport": true, "allowExportNames": ["metadata", "useApp"] }],
+    "react/set-state-in-effect": "off"
   }
 }

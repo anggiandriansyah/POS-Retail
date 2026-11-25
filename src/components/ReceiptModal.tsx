@@ -20,8 +20,9 @@ export default function ReceiptModal({
   storeInfo,
 }: ReceiptModalProps) {
   const [copied, setCopied] = useState(false);
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
   const { settings } = useStoreSettings();
-  const { dict } = useThemeLang();
+  const { dict, lang } = useThemeLang();
   const r = dict.receipt;
 
   if (!receiptData?.transaction) return null;
@@ -46,9 +47,10 @@ export default function ReceiptModal({
     try {
       await navigator.clipboard.writeText(receiptUrl);
       setCopied(true);
+      setFallbackUrl(null);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt(r.viewDigitalReceipt, receiptUrl);
+      setFallbackUrl(receiptUrl);
     }
   }
 
@@ -107,13 +109,19 @@ export default function ReceiptModal({
     <div className="modal-backdrop" role="dialog" aria-modal="true">
       <div className="modal-card">
         <div className="modal-header no-print">
-          <h3>Digital Receipt</h3>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="Tutup">
+          <h3>{r.viewDigitalReceipt}</h3>
+          <button type="button" className="icon-btn" onClick={onClose} aria-label={lang === 'en' ? 'Close' : 'Tutup'}>
             <X size={18} />
           </button>
         </div>
 
         <ReceiptContent transaction={transaction} items={items} storeInfo={effectiveStore} />
+
+        {fallbackUrl && (
+          <div className="alert alert-success no-print" style={{ marginTop: '0.75rem', wordBreak: 'break-all' }}>
+            <code>{fallbackUrl}</code>
+          </div>
+        )}
 
         <div className="modal-actions no-print">
           <button type="button" className="btn btn-primary" onClick={handleSendWhatsApp}>

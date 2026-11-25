@@ -7,6 +7,7 @@ import { DEFAULT_STORE_SETTINGS, useStoreSettings } from '../contexts/useStoreSe
 import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import { isAdminRole, type FeedbackMessage } from '../types/pos';
+import AlphosLogo from './AlphosLogo';
 
 interface SupabaseErrorLike {
   code?: unknown;
@@ -337,6 +338,9 @@ export default function StoreSettingsForm() {
         <h3 style={{ marginTop: 0 }}>{t.previewTitle}</h3>
         <div className="receipt-paper">
           <div className="receipt-header">
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.35rem' }}>
+              <AlphosLogo variant="thermal" width={160} height={34} />
+            </div>
             <h3>{previewName}</h3>
             <p>{previewAddress}</p>
             <p>

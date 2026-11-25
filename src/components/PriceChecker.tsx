@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Tag, AlertTriangle, PackageCheck } from 'lucide-react';
+import { useThemeLang } from '../contexts/useThemeLang';
 import type { Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
 import BarcodeScanner from './BarcodeScanner';
@@ -11,8 +12,11 @@ export interface PriceCheckerProps {
 }
 
 export default function PriceChecker({ products }: PriceCheckerProps) {
+  const { dict } = useThemeLang();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [notFoundBarcode, setNotFoundBarcode] = useState('');
+
+  void dict;
 
   function handleScan(barcode: string) {
     const found = products.find(

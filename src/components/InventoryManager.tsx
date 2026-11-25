@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Edit2, Plus, Search, Trash2 } from 'lucide-react';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import type { FeedbackMessage, Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
@@ -38,6 +39,8 @@ export default function InventoryManager({
   products,
   onProductsChanged,
 }: InventoryManagerProps) {
+  const { dict } = useThemeLang();
+  void dict;
   const [form, setForm] = useState<ProductFormState>(EMPTY_FORM);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -51,6 +54,7 @@ export default function InventoryManager({
   const [adjustQty, setAdjustQty] = useState('1');
   const [adjustNote, setAdjustNote] = useState('Rusak / Kadaluarsa');
   const [adjusting, setAdjusting] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -199,7 +203,7 @@ export default function InventoryManager({
 
   async function handleDelete(product: Product) {
     if (!supabase) return;
-    if (!window.confirm(`Hapus produk "${product.name}"?`)) return;
+    setConfirmDeleteId(null);
     const { error } = await supabase.from('products').delete().eq('id', product.id);
     if (error) {
       setFeedback({ type: 'error', text: `Gagal menghapus: ${error.message}` });
@@ -508,14 +512,33 @@ export default function InventoryManager({
                         >
                           <Edit2 size={14} />
                         </button>
-                        <button
-                          type="button"
-                          className="icon-btn danger"
-                          onClick={() => handleDelete(p)}
-                          title="Hapus Produk"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {confirmDeleteId === p.id ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDelete(p)}
+                            >
+                              Hapus
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline btn-sm"
+                              onClick={() => setConfirmDeleteId(null)}
+                            >
+                              Batal
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            className="icon-btn danger"
+                            onClick={() => setConfirmDeleteId(p.id)}
+                            title="Hapus Produk"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

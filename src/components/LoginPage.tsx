@@ -9,7 +9,6 @@ import {
   EyeOff,
   LogIn,
   ShieldCheck,
-  Store,
   UserPlus,
 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
@@ -17,6 +16,7 @@ import { readCachedStoreName } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
 import type { FeedbackMessage } from '../types/pos';
 import { APP_VERSION, STORE_INFO } from '../utils/format';
+import AlphosLogo from './AlphosLogo';
 import ThemeLangToggles from './ThemeLangToggles';
 
 function GoogleLogo() {
@@ -48,8 +48,9 @@ type LoginMode = 'login' | 'signup' | 'claim_owner';
 
 export default function LoginPage() {
   const { hasOwner, authError, signIn, signUp, signInWithGoogle, claimFirstOwner } = useAuth();
-  const { dict } = useThemeLang();
+  const { dict, theme } = useThemeLang();
   const t = dict.login;
+  const logoVariant = theme === 'dark' ? 'horizontal' : 'light';
 
   const [mode, setMode] = useState<LoginMode>('login');
   const [identifier, setIdentifier] = useState('');
@@ -209,16 +210,14 @@ export default function LoginPage() {
         <aside className="login-hero">
           <div className="login-hero-top">
             <div className="login-brand">
-              <div className="brand-logo brand-logo-lg">
-                <Store size={26} />
-              </div>
+              <AlphosLogo variant={logoVariant} width={220} height={52} />
               <div>
                 <h1>
                   {storeName}{' '}
                   {isDevEnv && <span className="env-badge">DEV</span>}
                 </h1>
                 <span className="login-version-pill">
-                  POS Retail • <code>v{APP_VERSION}</code>
+                  ALPHOS • <code>v{APP_VERSION}</code>
                 </span>
               </div>
             </div>
@@ -260,13 +259,11 @@ export default function LoginPage() {
 
         <section className="login-card card">
           <div className="login-mobile-brand">
-            <div className="brand-logo">
-              <Store size={22} />
-            </div>
+            <AlphosLogo variant={logoVariant} width={170} height={40} />
             <div>
               <strong>{storeName}</strong>
               <span className="muted-text" style={{ display: 'block', fontSize: '0.78rem' }}>
-                POS Retail • <code>v{APP_VERSION}</code>
+                ALPHOS • <code>v{APP_VERSION}</code>
               </span>
             </div>
           </div>
@@ -334,7 +331,7 @@ export default function LoginPage() {
             </>
           )}
 
-          <form onSubmit={handleSubmit} className="login-form">
+          <form onSubmit={handleSubmit} noValidate className="login-form">
             {activeMode === 'login' && (
               <label>
                 {t.identifierLabel}

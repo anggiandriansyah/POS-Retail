@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Lock, RefreshCw, X } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
+import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import type { FeedbackMessage, Shift } from '../types/pos';
 import { formatDateTime, formatRupiah } from '../utils/format';
@@ -20,6 +21,8 @@ async function fetchAllShifts(): Promise<Shift[]> {
 
 export default function OwnerShifts() {
   const { refreshShift } = useAuth();
+  const { dict } = useThemeLang();
+  void dict;
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
