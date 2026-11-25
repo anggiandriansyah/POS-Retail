@@ -21,7 +21,7 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
 
 ---
 
-### 👥 Dewan Leader Divisi PT AlphaGen (15 Divisi):
+### 👥 Dewan Leader Divisi PT AlphaGen (17 Divisi):
 1. **Business Lead:** Memimpin analisis kelayakan pasar, kesiapan operasional ritel, dan strategi bisnis ALPHOS.
 2. **Product Owner (PO) Lead:** Memimpin manajemen backlog produk, prioritas sprint, dan penjaga *sprint goal*.
 3. **System Architect (SA) Lead:** Memimpin desain arsitektur sistem, skalabilitas, dan integrasi antar subsistem.
@@ -29,14 +29,16 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
 5. **Frontend (FE) Lead:** Memimpin pengembangan Web Next.js 16, state management, dan implementasi Anti-UI-Slop.
 6. **Backend (BE) Lead:** Memimpin logika bisnis serverless, skema RPC, dan keamanan Supabase PostgreSQL.
 7. **Cyber Security Lead (Red & Blue Team):** Memimpin audit keamanan ofensif & defensif, proteksi data transaksi, dan sertifikasi kepatuhan POS.
-8. **QA Manual Testing Lead:** Memimpin skenario verifikasi fungsional, exploratory testing, dan *user acceptance*.
-9. **QA Automation Testing Lead:** Memimpin suite pengujian otomatis (E2E Playwright/test runner) dan CI testing pipeline.
-10. **Performance Testing Lead:** Memimpin benchmark kecepatan aplikasi, efisiensi render DOM, dan uji beban database.
-11. **Regression Testing Lead:** Memimpin pencegahan *breaking changes*, verifikasi *backward compatibility*, dan integritas rilis.
-12. **DevOps Lead:** Memimpin otomatisasi CI/CD, deployment branch (`develop` & `main`), dan kestabilan Vercel/Supabase.
-13. **Technical Writing (TW) Lead:** Memimpin dokumentasi teknis, penyusunan PDF resmi A4, user guide, dan dokumen rilis.
-14. **UI/UX Design Lead:** Memimpin konsistensi design tokens, hierarki visual, kontras WCAG AA, dan identitas merek Konsep 2.
-15. **Marcomm Lead:** Memimpin komunikasi rilis, materi pemasaran produk ritel, dan *release kit*.
+8. **Data Analyst Lead:** Memimpin perumusan formula analitik bisnis, metrik MRR SaaS, dan peramalan inventaris.
+9. **Sumber Daya Manusia (SDM / HC & HRD) Lead (NEW):** Memimpin manajemen talenta, rekrutmen profesional, kultur kerja, evaluasi KPI, dan kesejahteraan karyawan PT AlphaGen.
+10. **QA Manual Testing Lead:** Memimpin skenario verifikasi fungsional, exploratory testing, dan *user acceptance*.
+11. **QA Automation Testing Lead:** Memimpin suite pengujian otomatis (E2E Playwright/test runner) dan CI testing pipeline.
+12. **Performance Testing Lead:** Memimpin benchmark kecepatan aplikasi, efisiensi render DOM, dan uji beban database.
+13. **Regression Testing Lead:** Memimpin pencegahan *breaking changes*, verifikasi *backward compatibility*, dan integritas rilis.
+14. **DevOps Lead:** Memimpin otomatisasi CI/CD, deployment branch (`develop` & `main`), dan kestabilan Vercel/Supabase.
+15. **Technical Writing (TW) Lead:** Memimpin dokumentasi teknis, penyusunan PDF resmi A4, user guide, dan dokumen rilis.
+16. **UI/UX Design Lead:** Memimpin konsistensi design tokens, hierarki visual, kontras WCAG AA, dan identitas merek Konsep 2.
+17. **Marcomm Lead:** Memimpin komunikasi rilis, materi pemasaran produk ritel, dan *release kit*.
 
 ---
 
@@ -62,6 +64,25 @@ Seluruh divisi teknis dan bisnis dipimpin oleh para **Leader Divisi di PT AlphaG
   - **Technical Writer (TW):** 1 Staff (Technical Documentation Specialist)
   - **UI/UX:** 2 Staff (1 Product UI Designer + 1 UX Researcher)
   - **Marcomm:** 1 Staff (Product Marketing & Content Creator)
+
+---
+
+### 📋 Master Scope Sprint 5 (ALPHOS v2.0.0 by PT AlphaGen)
+1. **👑 Role & Dashboard Superadmin (PT AlphaGen POV):**
+   - Autentikasi dan isolasi data platform master (`platform_merchants`, `platform_subscriptions`, `platform_revenue_logs`).
+   - Monitoring daftar customer/owner toko pembeli software ALPHOS dan metrik transaksi global.
+2. **📈 Interactive Visual Analytics Dashboard (Owner POV):**
+   - Grafik Line Chart (tren omzet & jam sibuk), Bar Chart (top produk terlaris), Pie/Donut Chart (kategori & metode bayar).
+   - Timeframe filter fleksibel (Hari Ini, 7 Hari, 30 Hari, Bulan Ini).
+3. **🔔 Smart Notification Center with Audio Chime & PWA:**
+   - Notifikasi Request Barang masuk dari kasir (Owner) dengan approval action.
+   - Notifikasi Stok Menipis & Habis (Owner & Kasir) dengan toggle On/Off (Mute/Unmute).
+   - **Audio Ringtone Chime:** Suara denting notifikasi kasir yang halus dan bisa di-mute.
+   - **Progressive Web App (PWA):** Installable di smartphone Android & iOS (Add to Home Screen) dengan tampilan full-screen app.
+4. **🔒 Exclusive Role-Based Discount Control (Anti-Fraud Protection):**
+   - Pembuatan dan edit promo diskon 100% eksklusif akun Owner (menutup celah manipulasi kasir).
+5. **👥 Tim Organisasi PT AlphaGen:**
+   - 17 Divisi Resmi (termasuk Divisi SDM / HRD & HC, Cyber Security, dan Data Analyst) dengan 22 staf berpengalaman (min. 2 tahun pengalaman).
 
 ---
 
