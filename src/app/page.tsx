@@ -13,6 +13,7 @@ import {
   Settings,
   ShoppingBag,
   Tag,
+  TrendingUp,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -39,6 +40,9 @@ const OwnerShifts = dynamic(() => import('../components/OwnerShifts'), { ssr: fa
 const StaffManager = dynamic(() => import('../components/StaffManager'), { ssr: false });
 const StoreSettingsForm = dynamic(() => import('../components/StoreSettingsForm'), { ssr: false });
 const ReceiptModal = dynamic(() => import('../components/ReceiptModal'), { ssr: false });
+const SuperadminHub = dynamic(() => import('../components/SuperadminHub').then(m => m.SuperadminHub), { ssr: false });
+const VisualAnalytics = dynamic(() => import('../components/VisualAnalytics').then(m => m.VisualAnalytics), { ssr: false });
+const SmartNotificationCenter = dynamic(() => import('../components/SmartNotificationCenter').then(m => m.SmartNotificationCenter), { ssr: false });
 
 interface TabItem {
   id: string;
@@ -70,6 +74,7 @@ function AuthenticatedApp() {
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [error, setError] = useState('');
   const [receiptData, setReceiptData] = useState<ReceiptModalData | null>(null);
+  const [forcePosView, setForcePosView] = useState(false);
 
   const isOwner = isAdminRole(profile?.role);
 
@@ -83,6 +88,7 @@ function AuthenticatedApp() {
 
   const ownerTabs: TabItem[] = [
     { id: 'live', label: dict.tabs.live, icon: Radio, isLive: true },
+    { id: 'analytics', label: 'Grafik Analitik', icon: TrendingUp },
     { id: 'reports', label: dict.tabs.ownerReports, icon: BarChart3 },
     { id: 'inventory', label: dict.tabs.inventory, icon: Boxes },
     { id: 'owner_shifts', label: dict.tabs.ownerShifts, icon: ClipboardList },
@@ -136,6 +142,16 @@ function AuthenticatedApp() {
     return <LoginPage />;
   }
 
+  if (profile.role === 'superadmin' && !forcePosView) {
+    return (
+      <SuperadminHub
+        profile={profile}
+        onSignOut={signOut}
+        onSwitchToMerchantView={() => setForcePosView(true)}
+      />
+    );
+  }
+
   const lowStockCount = products.filter((p) => p.stock <= p.min_stock).length;
   const isDevEnv = process.env.NEXT_PUBLIC_APP_ENV !== 'production';
   const roleLabelMap: Record<string, string> = dict.roles;
@@ -159,6 +175,7 @@ function AuthenticatedApp() {
           </div>
 
           <div className="user-bar">
+            <SmartNotificationCenter products={products} isOwner={isOwner} />
             <ThemeLangToggles compact />
             <div className="user-meta">
               <span className="user-name">{profile.full_name}</span>
@@ -169,6 +186,16 @@ function AuthenticatedApp() {
                 {dict.shiftLabel}: {activeShift ? dict.openStatus : dict.closedStatus}
               </span>
             </div>
+            {profile.role === 'superadmin' && forcePosView && (
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => setForcePosView(false)}
+                title="Kembali ke Superadmin Hub"
+              >
+                <span>🛡️ Superadmin Hub</span>
+              </button>
+            )}
             <button
               type="button"
               className="btn btn-outline btn-sm"
@@ -214,6 +241,9 @@ function AuthenticatedApp() {
           <>
             {currentTab === 'live' && isOwner && (
               <OwnerLiveMonitor onProductsChanged={refreshProducts} />
+            )}
+            {currentTab === 'analytics' && isOwner && (
+              <VisualAnalytics products={products} />
             )}
             {currentTab === 'pos' && (
               <PosCashier

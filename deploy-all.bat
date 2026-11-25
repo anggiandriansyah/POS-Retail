@@ -1,6 +1,6 @@
 @echo off
 echo ========================================================
-echo    ALPHOS by AlphaGen (v1.4.0) - Automated Deployment
+echo    ALPHOS by AlphaGen (v2.0.0) - Automated Deployment
 echo ========================================================
 echo.
 
@@ -23,7 +23,7 @@ if not exist ".git" (
 )
 
 git add .
-git commit -m "feat(release): ALPHOS by AlphaGen v1.4.0 (Web Revamp, Mobile RN, 5 PDFs, Anti-UI-Slop)"
+git commit -m "feat(release): ALPHOS by AlphaGen v2.0.0 (Superadmin Hub, Visual Analytics, Anti-Fraud Discount, Smart Notif Audio Chime, PWA)"
 
 echo.
 echo [3/4] Mendorong ke Environment DEV (Branch develop)...

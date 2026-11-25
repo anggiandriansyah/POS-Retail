@@ -1,6 +1,6 @@
 @echo off
 echo ========================================================
-echo    ALPHOS v1.4.0 - Deploy ke PRODUCTION (main)
+echo    ALPHOS v2.0.0 - Deploy ke PRODUCTION (main)
 echo ========================================================
 cd /d "%~dp0"
 where git >nul 2>nul || (echo Git belum terpasang. & pause & exit /b 1)

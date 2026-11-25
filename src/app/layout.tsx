@@ -18,9 +18,12 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'ALPHOS — Retail & Inventaris',
-  description: 'ALPHOS by AlphaGen — Retail & Inventaris Barcode',
+  description: 'ALPHOS by AlphaGen — Retail & Inventaris Barcode Multi-Tenant Platform',
+  manifest: '/manifest.json',
+  themeColor: '#10B981',
   icons: {
     icon: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 };
 

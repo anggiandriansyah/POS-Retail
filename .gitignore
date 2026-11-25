@@ -1,4 +1,6 @@
-# Logs
+# Build info & scratch
+*.tsbuildinfo
+scratch/
 logs
 *.log
 npm-debug.log*

@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
+  Lock,
   Minus,
   Plus,
   Search,
@@ -15,15 +16,16 @@ import { useAuth } from '../contexts/useAuth';
 import { useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
-import type {
-  CartItem,
-  DiscountType,
-  FeedbackMessage,
-  PaymentMethod,
-  Product,
-  ReceiptModalData,
-  Transaction,
-  TransactionItem,
+import {
+  isAdminRole,
+  type CartItem,
+  type DiscountType,
+  type FeedbackMessage,
+  type PaymentMethod,
+  type Product,
+  type ReceiptModalData,
+  type Transaction,
+  type TransactionItem,
 } from '../types/pos';
 import { formatRupiah, generateInvoiceNumber } from '../utils/format';
 import { calculateOrderPricing } from '../utils/pricing';
@@ -46,6 +48,7 @@ export default function PosCashier({
   const { settings } = useStoreSettings();
   const { dict } = useThemeLang();
   const pDict = dict.pos;
+  const isOwner = isAdminRole(profile?.role);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
@@ -409,36 +412,59 @@ export default function PosCashier({
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <span className="muted-text" style={{ fontSize: '0.78rem', minWidth: 80 }}>
+                      <span className="muted-text" style={{ fontSize: '0.78rem', minWidth: 80, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        {!isOwner && (
+                          <span title="Anti-Fraud: Diskon manual dikunci untuk kasir" style={{ display: 'inline-flex' }}>
+                            <Lock size={11} className="text-amber-400" />
+                          </span>
+                        )}
                         {pDict.itemDiscount}:
                       </span>
-                      <select
-                        value={itemDiscType}
-                        onChange={(e) =>
-                          updateItemDiscount(
-                            item.id,
-                            e.target.value as DiscountType,
-                            String(itemDiscVal)
-                          )
-                        }
-                        className="input"
-                        style={{ width: 72, padding: '4px 6px', fontSize: '0.8rem' }}
-                      >
-                        <option value="nominal">Rp</option>
-                        <option value="percent">%</option>
-                      </select>
-                      <input
-                        type="number"
-                        min="0"
-                        max={itemDiscType === 'percent' ? 100 : undefined}
-                        value={itemDiscVal === 0 ? '' : itemDiscVal}
-                        onChange={(e) =>
-                          updateItemDiscount(item.id, itemDiscType, e.target.value)
-                        }
-                        placeholder="0"
-                        className="input"
-                        style={{ flex: 1, padding: '4px 8px', fontSize: '0.82rem' }}
-                      />
+                      {isOwner ? (
+                        <>
+                          <select
+                            value={itemDiscType}
+                            onChange={(e) =>
+                              updateItemDiscount(
+                                item.id,
+                                e.target.value as DiscountType,
+                                String(itemDiscVal)
+                              )
+                            }
+                            className="input"
+                            style={{ width: 72, padding: '4px 6px', fontSize: '0.8rem' }}
+                          >
+                            <option value="nominal">Rp</option>
+                            <option value="percent">%</option>
+                          </select>
+                          <input
+                            type="number"
+                            min="0"
+                            max={itemDiscType === 'percent' ? 100 : undefined}
+                            value={itemDiscVal === 0 ? '' : itemDiscVal}
+                            onChange={(e) =>
+                              updateItemDiscount(item.id, itemDiscType, e.target.value)
+                            }
+                            placeholder="0"
+                            className="input"
+                            style={{ flex: 1, padding: '4px 8px', fontSize: '0.82rem' }}
+                          />
+                        </>
+                      ) : (
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          {[0, 5, 10].map((disc) => (
+                            <button
+                              key={disc}
+                              type="button"
+                              className={`chip ${itemDiscVal === disc && itemDiscType === 'percent' ? 'active' : ''}`}
+                              style={{ padding: '2px 8px', fontSize: '0.75rem' }}
+                              onClick={() => updateItemDiscount(item.id, 'percent', String(disc))}
+                            >
+                              {disc === 0 ? '0%' : `${disc}%`}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -450,28 +476,54 @@ export default function PosCashier({
             {cart.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                  <span className="muted-text" style={{ fontSize: '0.82rem', minWidth: 96 }}>
+                  <span className="muted-text" style={{ fontSize: '0.82rem', minWidth: 96, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {!isOwner && (
+                      <span title="Anti-Fraud: Diskon nota manual dikunci untuk kasir" style={{ display: 'inline-flex' }}>
+                        <Lock size={12} className="text-amber-400" />
+                      </span>
+                    )}
                     {pDict.orderDiscount}:
                   </span>
-                  <select
-                    value={orderDiscountType}
-                    onChange={(e) => setOrderDiscountType(e.target.value as DiscountType)}
-                    className="input"
-                    style={{ width: 72, padding: '6px 8px', fontSize: '0.84rem' }}
-                  >
-                    <option value="nominal">Rp</option>
-                    <option value="percent">%</option>
-                  </select>
-                  <input
-                    type="number"
-                    min="0"
-                    max={orderDiscountType === 'percent' ? 100 : undefined}
-                    value={orderDiscountValue}
-                    onChange={(e) => setOrderDiscountValue(e.target.value)}
-                    placeholder="0"
-                    className="input"
-                    style={{ flex: 1, padding: '6px 8px', fontSize: '0.84rem' }}
-                  />
+                  {isOwner ? (
+                    <>
+                      <select
+                        value={orderDiscountType}
+                        onChange={(e) => setOrderDiscountType(e.target.value as DiscountType)}
+                        className="input"
+                        style={{ width: 72, padding: '6px 8px', fontSize: '0.84rem' }}
+                      >
+                        <option value="nominal">Rp</option>
+                        <option value="percent">%</option>
+                      </select>
+                      <input
+                        type="number"
+                        min="0"
+                        max={orderDiscountType === 'percent' ? 100 : undefined}
+                        value={orderDiscountValue}
+                        onChange={(e) => setOrderDiscountValue(e.target.value)}
+                        placeholder="0"
+                        className="input"
+                        style={{ flex: 1, padding: '6px 8px', fontSize: '0.84rem' }}
+                      />
+                    </>
+                  ) : (
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      {[0, 5, 10, 15].map((disc) => (
+                        <button
+                          key={disc}
+                          type="button"
+                          className={`chip ${orderDiscountValue === String(disc) && orderDiscountType === 'percent' ? 'active' : ''}`}
+                          style={{ padding: '3px 9px', fontSize: '0.78rem' }}
+                          onClick={() => {
+                            setOrderDiscountType('percent');
+                            setOrderDiscountValue(disc === 0 ? '' : String(disc));
+                          }}
+                        >
+                          {disc === 0 ? '0%' : `${disc}%`}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {settings.tax_enabled && (

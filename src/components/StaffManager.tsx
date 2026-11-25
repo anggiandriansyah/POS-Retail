@@ -159,6 +159,7 @@ export default function StaffManager() {
       kasir: 'owner',
       admin: 'user',
       user: 'admin',
+      superadmin: 'superadmin',
     };
     const nextRole = nextRoleMap[staff.role] ?? (isAdminRole(staff.role) ? 'user' : 'admin');
     const { error } = await supabase

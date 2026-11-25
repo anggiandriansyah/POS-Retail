@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
-import { RefreshCw, RotateCcw, Save, Settings } from 'lucide-react';
+import { RefreshCw, RotateCcw, Save, Settings, Volume2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 import { DEFAULT_STORE_SETTINGS, useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
@@ -80,8 +80,19 @@ export default function StoreSettingsForm() {
   const [footerNote, setFooterNote] = useState(settings.footer_note);
   const [taxEnabled, setTaxEnabled] = useState(settings.tax_enabled);
   const [taxRate, setTaxRate] = useState(String(settings.tax_rate ?? 0));
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [antiFraudDiscountLocked, setAntiFraudDiscountLocked] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const s = localStorage.getItem('alphos_notification_sound');
+      if (s !== null) setSoundEnabled(s === 'true');
+      const d = localStorage.getItem('alphos_anti_fraud_discount');
+      if (d !== null) setAntiFraudDiscountLocked(d === 'true');
+    }
+  }, []);
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -313,6 +324,67 @@ export default function StoreSettingsForm() {
                   {t.taxRateDisabledHint}
                 </span>
               )}
+            </label>
+          </div>
+
+          {/* SPRINT 5: Smart Notification & Audio Sonic Branding Settings */}
+          <div className="settings-tax-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem' }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Volume2 size={16} /> Smart Notification & Sonic Branding
+            </h3>
+
+            <label className="settings-toggle-row">
+              <div>
+                <strong>Audio Notifikasi Resmi ALPHOS</strong>
+                <span className="muted-text" style={{ display: 'block', fontSize: '0.8rem' }}>
+                  Putar jingle resmi otomatis saat ada stok menipis atau pengajuan restock kasir.
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={soundEnabled}
+                onChange={(e) => {
+                  setSoundEnabled(e.target.checked);
+                  localStorage.setItem('alphos_notification_sound', String(e.target.checked));
+                }}
+              />
+            </label>
+
+            <div style={{ marginTop: '0.5rem' }}>
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => {
+                  const audio = new Audio('/alphos-official-notification.mp3');
+                  audio.play().catch(console.error);
+                }}
+              >
+                🔔 Uji Coba Suara Jingle Resmi
+              </button>
+            </div>
+          </div>
+
+          {/* SPRINT 5: Anti-Fraud Role-Based Discount Control */}
+          <div className="settings-tax-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem' }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={16} /> Anti-Fraud: Kontrol Diskon Kasir
+            </h3>
+
+            <label className="settings-toggle-row">
+              <div>
+                <strong>Kunci Input Diskon Bebas Kasir (Owner Only)</strong>
+                <span className="muted-text" style={{ display: 'block', fontSize: '0.8rem' }}>
+                  Hanya akun Owner / Superadmin yang dapat mengetikkan nominal diskon manual. Kasir hanya dapat memilih diskon resmi yang ditentukan toko.
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={antiFraudDiscountLocked}
+                onChange={(e) => {
+                  setAntiFraudDiscountLocked(e.target.checked);
+                  localStorage.setItem('alphos_anti_fraud_discount', String(e.target.checked));
+                }}
+              />
             </label>
           </div>
 
