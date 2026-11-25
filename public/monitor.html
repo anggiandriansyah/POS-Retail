@@ -450,7 +450,7 @@
         </li>
         <li class="nav-item" onclick="switchTab('tabDivisions', this)">
           <span>👥</span>
-          <span>17 Divisi & 42 Karyawan</span>
+          <span>17 Divisi & 46 Personel (42 Inti + 4 Magang)</span>
         </li>
           <li class="nav-item" onclick="switchTab('tabRetro', this)" id="navItemRetro">
             <span>🎯</span>
@@ -627,7 +627,7 @@
                   <span>💬</span>
                   <span>#pt-alphagen-command-room</span>
                 </h3>
-                <span class="chat-stats-pill">● 42 Karyawan Online • Suasana: Serius tapi Santai Ngopi ☕</span>
+                <span class="chat-stats-pill">● 46 Personel (42 Inti + 4 Magang) Online • Suasana: Serius tapi Santai Ngopi ☕</span>
               </div>
               <div class="chat-controls">
                 <button class="control-chip active" id="soundToggleBtn" onclick="toggleChatSound()">
@@ -1020,7 +1020,7 @@
                 <div style="text-align:right;">
                   <span style="font-size:11px; color:var(--muted); display:block;">Pemimpin Sidang Retro</span>
                   <span style="font-size:14px; font-weight:800; color:#38BDF8;">👑 Mas Gege (Team Leader)</span>
-                  <span style="font-size:11px; color:#34D399; display:block; font-weight:700; margin-top:2px;">42 Karyawan Lengkap Hadir (17 Divisi)</span>
+                  <span style="font-size:11px; color:#34D399; display:block; font-weight:700; margin-top:2px;">46 Personel (42 Inti + 4 Magang) Lengkap Hadir (17 Divisi)</span>
                 </div>
               </div>
             </div>
@@ -1237,12 +1237,12 @@
                     👥 Status Karyawan & Suasana Kantor ALPHOS
                   </h2>
                   <p style="font-size:13px; color:var(--muted); margin:4px 0 0; max-width:800px;">
-                    Pantau kondisi riil 42 karyawan PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
+                    Pantau kondisi riil 46 personel PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
                   </p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center;">
                   <button type="button" class="control-chip active" id="btnViewEmployees" onclick="toggleStaffView('staff')">
-                    👤 Status Karyawan (42)
+                    👤 Status Karyawan (46)
                   </button>
                   <button type="button" class="control-chip" id="btnViewDivisions" onclick="toggleStaffView('divisions')">
                     🏢 17 Divisi Perusahaan
@@ -1257,7 +1257,7 @@
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                   <button type="button" class="control-chip active" onclick="filterStaffStatus('all', this)">
-                    🌐 Semua (42)
+                    🌐 Semua (46)
                   </button>
                   <button type="button" class="control-chip" onclick="filterStaffStatus('working', this)" style="border-color:rgba(59,130,246,0.4);">
                     ⚡ Sedang Bekerja (<span id="cntWorking">14</span>)
@@ -1337,7 +1337,7 @@
         'tabChat': 'Live Interaksi Tim (Anti-Slop & Mindset Nyata)',
         'tabApproval': 'Portal Verifikasi Kelengkapan Dokumen & Sign-off Sprint 5',
         'tabBacklog': 'Daftar Backlog & Riwayat Sprint Evolution (1 - 5)',
-        'tabDivisions': 'Formasi Lengkap 17 Divisi & 42 Karyawan PT AlphaGen'
+        'tabDivisions': 'Formasi Lengkap 17 Divisi & 46 Personel (42 Inti + 4 Magang) PT AlphaGen'
       };
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Command Center';
 
@@ -1395,6 +1395,7 @@
     const ROSTER = {
       rina: { name: "Rina Kartika", role: "Head of SDM (HRD)", avatar: "👥", tag: "HRD", color: "#F472B6" },
       bimo: { name: "Bimo Wicaksono", role: "Lead Frontend", avatar: "💻", tag: "Lead FE", color: "#60A5FA" },
+      daniel: { name: "Daniel Christianto", role: "Senior iOS Dev", avatar: "🍏", tag: "FE iOS", color: "#A7F3D0" },
       reza: { name: "Reza Pratama", role: "Lead Backend", avatar: "⚙️", tag: "Lead BE", color: "#34D399" },
       dimas: { name: "Dimas Suryo", role: "Lead Cyber Security", avatar: "🛡️", tag: "Security", color: "#F87171" },
       siti: { name: "Siti Rahma", role: "Lead UI/UX", avatar: "🎨", tag: "UI/UX", color: "#C084FC" },
@@ -1890,7 +1891,7 @@
     // 🏢 17 DIVISIONS DATA
     // =========================================================================
     const divisionsList = [
-      { icon: "👥", name: "Sumber Daya Manusia (SDM)", staff: "1 Lead + 2 Staff", desc: "Mengelola 4 lusin donat J.CO, mesin kopi Venuella, absensi 42 orang, dan open hiring 22 posisi." },
+      { icon: "👥", name: "Sumber Daya Manusia (SDM)", staff: "1 Lead + 2 Staff", desc: "Mengelola 4 lusin donat J.CO, mesin kopi Venuella, absensi 46 personel, dan open hiring 22 posisi." },
       { icon: "💻", name: "Frontend (FE)", staff: "1 Lead + 3 Staff (Web, Android, iOS)", desc: "Bimo (Lead & Web), Andi (FE Web), Hendra (FE Android), Daniel (FE iOS 3 Thn Pengalaman)." },
       { icon: "⚙️", name: "Backend (BE)", staff: "1 Lead + 2 Staff", desc: "Menulis Stored Procedures (RPC) agregasi omzet dan indexing database multi-tenant." },
       { icon: "🎨", name: "UI/UX Design", staff: "1 Lead + 2 Staff", desc: "Design token Figma Superadmin, visual analytics Dark/Light mode, dan journey kasir." },
@@ -1961,49 +1962,64 @@
         breakSeconds: 0
       },
 
-      // 2. Frontend Engineering (3 Orang)
+      // 2. Frontend Engineering Squad (4 Orang: Web, Android, iOS)
       {
         id: "emp_4",
         name: "Bimo Wicaksono",
-        role: "Lead Frontend Engineer",
-        division: "Frontend",
+        role: "Lead Frontend Engineer (Web & Arch)",
+        division: "Frontend Web",
         avatar: "💻",
-        energy: 89,
-        moodEmoji: "🤩",
-        moodText: "Sangat Bersemangat",
-        moodReason: "Visual Analytics native SVG sukses render < 30ms tanpa library berat.",
+        energy: 95,
+        moodEmoji: "👑",
+        moodText: "Puas & Siap Lead",
+        moodReason: "Struktur pembagian skuad FE (Web, Android, iOS) selesai dirumuskan atas arahan Mas Gege.",
         status: "working",
-        task: "Mematangkan layout container fluid responsive untuk smartphone Android & iOS.",
+        task: "Mengorkestrasikan arsitektur Next.js Web dan mengoordinasikan skuad FE Web, Android, dan iOS.",
         breakReason: "",
         breakSeconds: 0
       },
       {
         id: "emp_5",
         name: "Andi Saputra",
-        role: "Senior Frontend Developer",
-        division: "Frontend",
+        role: "Senior Frontend Engineer (Web & Responsive)",
+        division: "Frontend Web",
         avatar: "👨‍💻",
         energy: 92,
         moodEmoji: "🔥",
         moodText: "On Fire",
-        moodReason: "CSS media query mobile kasir rapi total dan siap rilis di Hotfix.",
+        moodReason: "Fokus 100% memoles CSS fluid viewport web desktop dan tablet kasir.",
         status: "working",
-        task: "Slicing mockup clean bell icon tanpa shape kotak di header bar aplikasi.",
+        task: "Slicing clean bell icon murni dan memindahkan setting audio ke Pengaturan Toko.",
         breakReason: "",
         breakSeconds: 0
       },
       {
         id: "emp_6",
         name: "Hendra Gunawan",
-        role: "PWA & Mobile Web Specialist",
-        division: "Frontend",
+        role: "Frontend Engineer (Dedicated Android & PWA)",
+        division: "Frontend Android",
         avatar: "📱",
-        energy: 85,
+        energy: 88,
         moodEmoji: "⚡",
-        moodText: "Fokus Tinggi",
-        moodReason: "Service worker PWA berhasil cache aset offline kasir dengan 100/100 score.",
+        moodText: "Fokus Android",
+        moodReason: "Dedicated mengawal performa kasir Android dan barcode scanner kamera.",
         status: "working",
-        task: "Menyelidiki trigger audio lonceng agar langsung unlock audio context saat diklik.",
+        task: "Optimasi layout fluid di berbagai dimensi layar HP Android dan thermal printer Bluetooth.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "emp_42",
+        name: "Daniel Christianto",
+        role: "Senior iOS Developer (3 Tahun Pengalaman)",
+        division: "Frontend iOS",
+        avatar: "🍏",
+        energy: 98,
+        moodEmoji: "🚀",
+        moodText: "Semangat Hari Pertama",
+        moodReason: "Resmi bergabung di PT AlphaGen via HC! Siap optimasi safe-area notch & WebKit iOS.",
+        status: "working",
+        task: "Menangani bug safe-area notch iOS, gesture Safari WebKit, dan integrasi AirPrint/Thermal iOS.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2559,6 +2575,70 @@
         moodReason: "Seluruh keluhan kasir toko ritel tertangani dengan zero ticket backlog.",
         status: "working",
         task: "Menyiapkan template FAQ untuk fitur baru Anti-Fraud Diskon dan Notifikasi Chime.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+
+      // =========================================================================
+      // 🎓 ALPHAGEN TALENT - NEXT GENERATIONS (4 MAHASISWA MAGANG - 6 SPRINT)
+      // =========================================================================
+      {
+        id: "intern_1",
+        name: "Fauzan Akbar",
+        role: "Intern QA & Multi-Device Tester",
+        division: "Intern - QA",
+        avatar: "🧪",
+        energy: 100,
+        moodEmoji: "🌟",
+        moodText: "Semangat & Siap Belajar",
+        moodReason: "Lolos seleksi AlphaGen Talent! Siap uji kasir di 15 tipe smartphone fisik Android & iOS.",
+        status: "working",
+        task: "Mempersiapkan test-matrix pengujian tampilan mobile responsif Android & iOS di lab QA.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "intern_2",
+        name: "Alya Nadira",
+        role: "Intern UI/UX & Asset Designer",
+        division: "Intern - UI/UX",
+        avatar: "🎨",
+        energy: 100,
+        moodEmoji: "✨",
+        moodText: "Antusias Desain",
+        moodReason: "Mendapat bimbingan langsung dari Mbak Siti untuk slicing ikon clean bell ALPHOS.",
+        status: "working",
+        task: "Membuat variasi icon lonceng minimalis tanpa kotak dan asset pack kategori ritel ALPHOS.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "intern_3",
+        name: "Dimas Ramadhan",
+        role: "Intern Technical Documentation Assistant",
+        division: "Intern - TW",
+        avatar: "📖",
+        energy: 100,
+        moodEmoji: "📚",
+        moodText: "Fokus Terpukau",
+        moodReason: "Membaca 5 berkas PDF rilis resmi v1.5.0 sebagai referensi penulisan panduan merchant.",
+        status: "working",
+        task: "Menyusun draf screenshot panduan login Google OAuth dan FAQ kasir untuk merchant.",
+        breakReason: "",
+        breakSeconds: 0
+      },
+      {
+        id: "intern_4",
+        name: "Naufal Hidayat",
+        role: "Intern Data Sandbox & Merchant Seeder",
+        division: "Intern - Backend & DB",
+        avatar: "💾",
+        energy: 100,
+        moodEmoji: "🎯",
+        moodText: "Siap Seeding Data",
+        moodReason: "Belajar arsitektur multi-tenant Supabase langsung dari Mas Reza dan Mas Agus.",
+        status: "working",
+        task: "Membuat data seeder otomatis 5.000 transaksi dummy untuk uji ketahanan analitik Sprint 6.",
         breakReason: "",
         breakSeconds: 0
       }
