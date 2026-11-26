@@ -167,14 +167,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Environment & Domain isolation check (Hotfix v1.5.1)
       if (typeof window !== 'undefined') {
         const host = window.location.hostname.toLowerCase();
-        const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.includes('develop') || host.includes('alphos-develop') || host.includes('alphos-team-develop');
-        const isProdHost = host.includes('alphos.vercel.app') || host.includes('alphos-team.vercel.app') || host.includes('pos-retail-umber');
+        const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.includes('develop') || host.includes('-dev');
+        const isProdHost = !isDevHost;
 
-        if ((cleanId === 'admindev' || cleanId === 'admindev@alphagen.id') && isProdHost && !isDevHost) {
-          throw new Error('Akun admindev hanya dapat digunakan pada environment Development / Local (alphos-develop-anggiandriansyah.vercel.app).');
+        if ((cleanId === 'admindev' || cleanId === 'admindev@alphagen.id') && isProdHost) {
+          throw new Error('Akun admindev hanya dapat digunakan pada environment Development / Local.');
         }
-        if ((cleanId === 'adminprod' || cleanId === 'adminprod@alphagen.id') && isDevHost && !isProdHost) {
-          throw new Error('Akun adminprod hanya dapat digunakan pada environment Production (alphos.vercel.app / alphos-team.vercel.app).');
+        if ((cleanId === 'adminprod' || cleanId === 'adminprod@alphagen.id') && isDevHost) {
+          throw new Error('Akun adminprod hanya dapat digunakan pada environment Production.');
         }
       }
 
