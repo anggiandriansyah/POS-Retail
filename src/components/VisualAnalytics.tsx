@@ -157,8 +157,53 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
     });
   }, [data.payments]);
 
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', width: '100%' }}>
+      {/* Printable Report Header (Only visible in Print preview / PDF output) */}
+      <div
+        className="print-header"
+        style={{
+          display: 'none',
+          paddingBottom: '12px',
+          marginBottom: '16px',
+          borderBottom: '2px solid #0f172a',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0f172a' }}>
+              ALPHOS Store • Laporan Visual Analisis & Penjualan
+            </h1>
+            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#475569' }}>
+              Rentang Waktu: {timeframe === 'today' ? 'Hari Ini' : timeframe === '7d' ? '7 Hari Terakhir' : timeframe === '30d' ? '30 Hari Terakhir' : 'Bulan Ini'} • Status: Terverifikasi
+            </p>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#047857' }}>Smart Retail OS v1.5.1</span>
+            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
+              Dicetak: {new Date().toLocaleDateString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @media print {
+          .print-header {
+            display: block !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       {/* 1. Header Bar & Timeframe Pills */}
       <div
         style={{
@@ -194,7 +239,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           {/* Timeframe Chips */}
           <div
             style={{
@@ -235,26 +280,35 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           {/* Print PDF Button */}
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={handlePrint}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
               background: 'var(--surface)',
               border: '1px solid var(--border)',
               color: 'var(--text-secondary)',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
+              boxShadow: 'var(--shadow-xs)',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-hover)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = '#10B981';
+              e.currentTarget.style.color = '#ffffff';
+              e.currentTarget.style.borderColor = '#10B981';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'var(--surface)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+              e.currentTarget.style.borderColor = 'var(--border)';
+            }}
             title="Cetak Laporan / Simpan PDF"
-            aria-label="Cetak Laporan"
+            aria-label="Cetak Laporan PDF"
           >
-            <Printer size={16} />
+            <Printer size={18} />
           </button>
         </div>
       </div>
@@ -357,168 +411,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         </div>
       </div>
 
-      {/* 3. 3-COLUMN CHART SWITCHER (SESUAI CATATAN MAS GEGE: FITUR ON BERWARNA HIJAU, 3 KOLOM) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>
-            Pilih Tampilan Grafik (Klik salah satu kolom):
-          </span>
-          <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
-            Default: <strong style={{ color: '#10B981' }}>Line Chart</strong>
-          </span>
-        </div>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '12px',
-          }}
-        >
-          {/* Kolom 1: Line Chart */}
-          <button
-            type="button"
-            onClick={() => setChartType('line')}
-            style={{
-              padding: '14px 16px',
-              borderRadius: '14px',
-              border: chartType === 'line' ? '2px solid #10B981' : '1px solid var(--border)',
-              background: chartType === 'line' ? '#10B981' : 'var(--surface)',
-              color: chartType === 'line' ? '#ffffff' : 'var(--text)',
-              cursor: 'pointer',
-              textAlign: 'left',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-              boxShadow: chartType === 'line' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
-              transition: 'all 0.18s ease',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <LineIcon size={18} style={{ color: chartType === 'line' ? '#ffffff' : '#3B82F6' }} />
-                <strong style={{ fontSize: '0.92rem' }}>Line Chart</strong>
-              </div>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  background: chartType === 'line' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
-                  color: chartType === 'line' ? '#ffffff' : 'var(--muted)',
-                }}
-              >
-                {chartType === 'line' ? '● AKTIF' : 'PILIH'}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: chartType === 'line' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
-              }}
-            >
-              Kurva Pertumbuhan Omzet
-            </span>
-          </button>
-
-          {/* Kolom 2: Bar Chart */}
-          <button
-            type="button"
-            onClick={() => setChartType('bar')}
-            style={{
-              padding: '14px 16px',
-              borderRadius: '14px',
-              border: chartType === 'bar' ? '2px solid #10B981' : '1px solid var(--border)',
-              background: chartType === 'bar' ? '#10B981' : 'var(--surface)',
-              color: chartType === 'bar' ? '#ffffff' : 'var(--text)',
-              cursor: 'pointer',
-              textAlign: 'left',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-              boxShadow: chartType === 'bar' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
-              transition: 'all 0.18s ease',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <BarChart3 size={18} style={{ color: chartType === 'bar' ? '#ffffff' : '#10B981' }} />
-                <strong style={{ fontSize: '0.92rem' }}>Bar Chart</strong>
-              </div>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  background: chartType === 'bar' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
-                  color: chartType === 'bar' ? '#ffffff' : 'var(--muted)',
-                }}
-              >
-                {chartType === 'bar' ? '● AKTIF' : 'PILIH'}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: chartType === 'bar' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
-              }}
-            >
-              Distribusi Omzet per Periode
-            </span>
-          </button>
-
-          {/* Kolom 3: Pie Chart */}
-          <button
-            type="button"
-            onClick={() => setChartType('pie')}
-            style={{
-              padding: '14px 16px',
-              borderRadius: '14px',
-              border: chartType === 'pie' ? '2px solid #10B981' : '1px solid var(--border)',
-              background: chartType === 'pie' ? '#10B981' : 'var(--surface)',
-              color: chartType === 'pie' ? '#ffffff' : 'var(--text)',
-              cursor: 'pointer',
-              textAlign: 'left',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '6px',
-              boxShadow: chartType === 'pie' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
-              transition: 'all 0.18s ease',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <PieIcon size={18} style={{ color: chartType === 'pie' ? '#ffffff' : '#8B5CF6' }} />
-                <strong style={{ fontSize: '0.92rem' }}>Pie / Donut</strong>
-              </div>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  background: chartType === 'pie' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
-                  color: chartType === 'pie' ? '#ffffff' : 'var(--muted)',
-                }}
-              >
-                {chartType === 'pie' ? '● AKTIF' : 'PILIH'}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                color: chartType === 'pie' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
-              }}
-            >
-              Rasio Metode Pembayaran
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* 4. MAIN DISPLAY CARD: TAMPILAN GRAFIK YANG SEDANG AKTIF (YG BERWARNA HIJAU) */}
+      {/* 3. MAIN SECTION CHART: PILIHAN BENTUK CHART KOTAK ADA DI DALAM SECTION (HANYA ICON CHART) */}
       <div
         style={{
           background: 'var(--surface)',
@@ -528,7 +421,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           boxShadow: 'var(--shadow-sm)',
         }}
       >
-        {/* Header Grafik Aktif */}
+        {/* Header Section Chart: Judul di Kiri, Icon Switcher Kotak + Puncak Omzet di Kanan */}
         <div
           style={{
             display: 'flex',
@@ -537,13 +430,26 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             paddingBottom: '14px',
             marginBottom: '16px',
             borderBottom: '1px solid var(--border)',
+            flexWrap: 'wrap',
+            gap: '12px',
           }}
         >
+          {/* Judul & Keterangan Grafik Aktif */}
           <div>
-            <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {chartType === 'line' && <LineIcon size={18} style={{ color: '#3B82F6' }} />}
+            <h3
+              style={{
+                margin: 0,
+                fontSize: '0.96rem',
+                fontWeight: 800,
+                color: 'var(--text)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              {chartType === 'line' && <LineIcon size={18} style={{ color: '#10B981' }} />}
               {chartType === 'bar' && <BarChart3 size={18} style={{ color: '#10B981' }} />}
-              {chartType === 'pie' && <PieIcon size={18} style={{ color: '#8B5CF6' }} />}
+              {chartType === 'pie' && <PieIcon size={18} style={{ color: '#10B981' }} />}
               <span>
                 {chartType === 'line' && 'Kurva Pertumbuhan Omzet (Line Chart)'}
                 {chartType === 'bar' && 'Distribusi Omzet per Periode (Bar Chart)'}
@@ -551,15 +457,139 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
               </span>
             </h3>
             <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--muted)' }}>
-              {chartType === 'line' && `Visualisasi dinamik tren penjualan (${timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})`}
+              {chartType === 'line' && `Visualisasi tren penjualan (${timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})`}
               {chartType === 'bar' && `Perbandingan volume omzet riil (${timeframe === 'today' ? 'Per Jam' : 'Per Hari'})`}
               {chartType === 'pie' && 'Persentase transaksi berdasarkan kanal pembayaran (QRIS, Tunai, Transfer)'}
             </p>
           </div>
 
-          <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 600, display: 'block' }}>Puncak Omzet</span>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10B981' }}>{formatRupiah(maxRevenue)}</span>
+          {/* Sisi Kanan: Switcher Kotak Icon Chart di Dalam Section (Sesuai Permintaan Mas Gege) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div
+              className="no-print"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                background: 'var(--bg)',
+                padding: '4px',
+                borderRadius: '12px',
+                border: '1px solid var(--border)',
+              }}
+            >
+              {/* Kotak Icon 1: Line Chart */}
+              <button
+                type="button"
+                onClick={() => setChartType('line')}
+                title="Line Chart (Kurva Omzet)"
+                aria-label="Line Chart"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '9px',
+                  border: chartType === 'line' ? '1.5px solid #10B981' : '1px solid transparent',
+                  background: chartType === 'line' ? '#10B981' : 'transparent',
+                  color: chartType === 'line' ? '#ffffff' : 'var(--muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  boxShadow: chartType === 'line' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                }}
+                onMouseEnter={e => {
+                  if (chartType !== 'line') {
+                    e.currentTarget.style.background = 'var(--surface-hover)';
+                    e.currentTarget.style.color = 'var(--text)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (chartType !== 'line') {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--muted)';
+                  }
+                }}
+              >
+                <LineIcon size={18} />
+              </button>
+
+              {/* Kotak Icon 2: Bar Chart */}
+              <button
+                type="button"
+                onClick={() => setChartType('bar')}
+                title="Bar Chart (Distribusi Omzet)"
+                aria-label="Bar Chart"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '9px',
+                  border: chartType === 'bar' ? '1.5px solid #10B981' : '1px solid transparent',
+                  background: chartType === 'bar' ? '#10B981' : 'transparent',
+                  color: chartType === 'bar' ? '#ffffff' : 'var(--muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  boxShadow: chartType === 'bar' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                }}
+                onMouseEnter={e => {
+                  if (chartType !== 'bar') {
+                    e.currentTarget.style.background = 'var(--surface-hover)';
+                    e.currentTarget.style.color = 'var(--text)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (chartType !== 'bar') {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--muted)';
+                  }
+                }}
+              >
+                <BarChart3 size={18} />
+              </button>
+
+              {/* Kotak Icon 3: Pie Chart */}
+              <button
+                type="button"
+                onClick={() => setChartType('pie')}
+                title="Pie / Donut Chart (Rasio Pembayaran)"
+                aria-label="Pie Chart"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '9px',
+                  border: chartType === 'pie' ? '1.5px solid #10B981' : '1px solid transparent',
+                  background: chartType === 'pie' ? '#10B981' : 'transparent',
+                  color: chartType === 'pie' ? '#ffffff' : 'var(--muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  boxShadow: chartType === 'pie' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                }}
+                onMouseEnter={e => {
+                  if (chartType !== 'pie') {
+                    e.currentTarget.style.background = 'var(--surface-hover)';
+                    e.currentTarget.style.color = 'var(--text)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (chartType !== 'pie') {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--muted)';
+                  }
+                }}
+              >
+                <PieIcon size={18} />
+              </button>
+            </div>
+
+            <div style={{ textAlign: 'right', borderLeft: '1px solid var(--border)', paddingLeft: '12px' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--muted)', fontWeight: 600, display: 'block' }}>Puncak Omzet</span>
+              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#10B981' }}>{formatRupiah(maxRevenue)}</span>
+            </div>
           </div>
         </div>
 
@@ -811,7 +841,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         )}
       </div>
 
-      {/* 5. DUA KARTU DETAIL TAMBAHAN (PRODUK TERLARIS & RINCIAN PEMBAYARAN) */}
+      {/* 4. DUA KARTU DETAIL TAMBAHAN (PRODUK TERLARIS & RINCIAN PEMBAYARAN) */}
       <div
         style={{
           display: 'grid',

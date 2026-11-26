@@ -230,7 +230,7 @@ function AuthenticatedApp() {
         </nav>
       </header>
 
-      <main className="main-content no-print">
+      <main className={`main-content ${receiptData ? 'no-print' : ''}`}>
         {error && <div className="alert alert-error">{error}</div>}
 
         {loadingProducts && products.length === 0 ? (
