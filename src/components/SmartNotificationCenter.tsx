@@ -88,16 +88,25 @@ export function SmartNotificationCenter({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Bell Button */}
+      {/* Clean Bell Button (Hotfix v1.5.1) */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-slate-300 hover:text-white transition"
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (!isOpen && soundEnabled) {
+            try {
+              const a = new Audio('/alphos-official-notification.mp3');
+              a.volume = 0.01;
+              a.play().then(() => a.pause()).catch(() => {});
+            } catch {}
+          }
+        }}
+        className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 transition focus:outline-none"
         title="Pusat Notifikasi Pintar"
       >
-        <Bell size={18} />
+        <Bell size={19} className="transition-transform hover:scale-110 text-emerald-400" />
         {totalAlerts > 0 && (
-          <span className="absolute -top-1 -right-1 bg-rose-500 text-white font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center animate-pulse border-2 border-slate-900 shadow-md">
+          <span className="absolute -top-1 -right-1 bg-rose-500 text-white font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-pulse border-2 border-slate-900 shadow-md">
             {totalAlerts > 99 ? '99+' : totalAlerts}
           </span>
         )}
@@ -106,37 +115,25 @@ export function SmartNotificationCenter({
       {/* Dropdown Panel */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
-          {/* Header */}
+          {/* Header (Cleaned up in Hotfix v1.5.1) */}
           <div className="p-3.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles size={16} className="text-emerald-400" />
-              <span className="text-xs font-extrabold text-white">Smart Notification Center</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-emerald-400" />
+                <span className="text-xs font-extrabold text-white">Smart Notification Center</span>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-0.5">Pengaturan audio di Pengaturan Toko</p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={toggleSound}
-                className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition ${
-                  soundEnabled
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                    : 'bg-slate-800 border-slate-700 text-slate-400'
-                }`}
-                title={soundEnabled ? 'Matikan Suara Jingle' : 'Nyalakan Suara Jingle'}
-              >
-                {soundEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
-                <span className="text-[10px] font-bold">{soundEnabled ? 'Audio: ON' : 'Mute'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={playOfficialSound}
-                className="text-[10px] font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-lg border border-slate-700"
-                title="Tes Bunyi Jingle Resmi"
-              >
-                🔔 Tes Jingle
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={playOfficialSound}
+              className="text-[10.5px] font-bold text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1.5 rounded-lg border border-emerald-500/30 flex items-center gap-1.5 transition"
+              title="Tes Bunyi Jingle Resmi"
+            >
+              <Volume2 size={13} />
+              <span>Tes Audio</span>
+            </button>
           </div>
 
           {/* Feed Content */}

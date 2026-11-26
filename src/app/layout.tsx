@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { ThemeLangProvider } from '../contexts/ThemeLangContext';
@@ -16,11 +16,18 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#10B981',
+};
+
 export const metadata: Metadata = {
   title: 'ALPHOS — Retail & Inventaris',
   description: 'ALPHOS by AlphaGen — Retail & Inventaris Barcode Multi-Tenant Platform',
   manifest: '/manifest.json',
-  themeColor: '#10B981',
   icons: {
     icon: '/favicon.svg',
     apple: '/favicon.svg',
