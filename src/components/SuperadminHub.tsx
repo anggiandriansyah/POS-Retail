@@ -136,7 +136,10 @@ interface SuperadminHubProps {
 }
 
 export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: SuperadminHubProps) {
-  const { theme } = useThemeLang();
+  const { theme, dict, lang } = useThemeLang();
+  const s = dict.superadmin;
+  const isEn = lang === 'en';
+
   const [merchants, setMerchants] = useState<MerchantTenant[]>(INITIAL_MERCHANTS);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'trial' | 'expired'>('all');
@@ -195,7 +198,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
         return m;
       })
     );
-    setActionSuccessMessage('Status langganan merchant berhasil diperbarui.');
+    setActionSuccessMessage(s.actionSuccess);
     setTimeout(() => setActionSuccessMessage(''), 3500);
   };
 
@@ -212,11 +215,11 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           />
           <div className="superadmin-title-wrap">
             <h1>
-              <span>B2B Superadmin Hub</span>
-              <span className="superadmin-badge-root">Root Admin</span>
+              <span>{s.title}</span>
+              <span className="superadmin-badge-root">{s.badge}</span>
             </h1>
             <p className="muted-text" style={{ margin: '2px 0 0', fontSize: '0.78rem' }}>
-              PT AlphaGen Ecosystem • Multi-Tenant Merchant & Subscription Hub
+              {s.ecosystem}
             </p>
           </div>
         </div>
@@ -225,7 +228,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-user-pill">
             <span className="superadmin-dot-online" />
             <span>
-              Sesi: <strong>{profile.username || 'admindev'}</strong> ({profile.full_name})
+              {s.sessionPrefix}: <strong>{profile.username || 'admindev'}</strong> ({profile.full_name})
             </span>
           </div>
 
@@ -236,10 +239,10 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
               type="button"
               onClick={onSwitchToMerchantView}
               className="btn btn-outline btn-sm"
-              title="Buka mode Toko Retail / Kasir POS"
+              title={s.switchModePosTitle}
             >
               <Store size={14} />
-              <span>Mode Toko POS</span>
+              <span>{s.switchModePos}</span>
             </button>
           )}
 
@@ -251,7 +254,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
             title="Buka Live Command Center monitoring"
           >
             <ExternalLink size={14} />
-            <span>Live Command Center</span>
+            <span>{s.monitorBtn}</span>
           </a>
 
           <button
@@ -261,7 +264,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
             title="Keluar dari akun superadmin"
           >
             <LogOut size={14} />
-            <span>Keluar</span>
+            <span>{s.signOut}</span>
           </button>
         </div>
       </header>
@@ -275,10 +278,11 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
               <span style={{ fontSize: '1.2rem' }}>🎉</span>
               <div>
                 <strong style={{ display: 'block', fontSize: '0.88rem' }}>
-                  Sprint 5 Cloud DEV Sign-Off Telah Disahkan!
+                  {isEn ? 'Sprint 5 Cloud DEV Sign-Off Successfully Approved!' : 'Sprint 5 Cloud DEV Sign-Off Telah Disahkan!'}
                 </strong>
                 <span className="muted-text" style={{ fontSize: '0.78rem' }}>
-                  Dokumen rilis resmi disetujui oleh Team Leader <strong>Anggi Andriansyah (Gege)</strong> • Token: <code>SIG-GEGE-20261125-DEV-APPROVED</code>
+                  {isEn ? 'Official release document approved by Team Leader ' : 'Dokumen rilis resmi disetujui oleh Team Leader '}
+                  <strong>Anggi Andriansyah (Gege)</strong> • Token: <code>SIG-GEGE-20261125-DEV-APPROVED</code>
                 </span>
               </div>
             </span>
@@ -310,46 +314,46 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
         <section className="superadmin-metrics-grid">
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
-              <span className="superadmin-metric-label">Total Merchant Terdaftar</span>
+              <span className="superadmin-metric-label">{s.totalTenants}</span>
               <span className="superadmin-metric-icon" title="Merchants">🏢</span>
             </div>
-            <div className="superadmin-metric-val">{metrics.total} Toko</div>
+            <div className="superadmin-metric-val">{metrics.total} {isEn ? 'Stores' : 'Toko'}</div>
             <div className="superadmin-metric-sub">
-              <span className="badge badge-success">{metrics.active} Aktif</span>
-              <span className="badge badge-warning">{metrics.trial} Trial</span>
-              <span className="badge badge-danger">{metrics.expired} Expired</span>
+              <span className="badge badge-success">{metrics.active} {s.activeStatus}</span>
+              <span className="badge badge-warning">{metrics.trial} {s.trialStatus}</span>
+              <span className="badge badge-danger">{metrics.expired} {s.expiredStatus}</span>
             </div>
           </div>
 
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
-              <span className="superadmin-metric-label">Platform Monthly Revenue (MRR)</span>
+              <span className="superadmin-metric-label">{s.saasMrr}</span>
               <span className="superadmin-metric-icon" title="Revenue">💰</span>
             </div>
             <div className="superadmin-metric-val text-success">
               {formatRupiah(metrics.platformMrr)}
             </div>
             <div className="superadmin-metric-sub" style={{ color: 'var(--primary)' }}>
-              <strong>+18.4%</strong> dari bulan sebelumnya
+              <strong>+18.4%</strong> {isEn ? 'vs previous month' : 'dari bulan sebelumnya'}
             </div>
           </div>
 
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
-              <span className="superadmin-metric-label">Total Volume Transaksi (GMV)</span>
+              <span className="superadmin-metric-label">{s.totalGmv}</span>
               <span className="superadmin-metric-icon" title="GMV">📈</span>
             </div>
             <div className="superadmin-metric-val">
               {formatRupiah(metrics.totalGmv)}
             </div>
             <div className="superadmin-metric-sub">
-              Akumulasi 30 hari lintas outlet ritel
+              {isEn ? '30-day cross-outlet accumulation' : 'Akumulasi 30 hari lintas outlet ritel'}
             </div>
           </div>
 
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
-              <span className="superadmin-metric-label">Kesehatan & SLA Platform</span>
+              <span className="superadmin-metric-label">{isEn ? 'Platform Health & SLA' : 'Kesehatan & SLA Platform'}</span>
               <span className="superadmin-metric-icon" title="System SLA">⚡</span>
             </div>
             <div className="superadmin-metric-val" style={{ color: '#3b82f6' }}>
@@ -367,10 +371,10 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-table-controls">
             <div>
               <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem', fontWeight: 800 }}>
-                Daftar Merchant & Status Berlangganan
+                {s.overviewHeading}
               </h2>
               <p className="muted-text" style={{ margin: 0, fontSize: '0.82rem' }}>
-                Kelola hak akses langganan, paket fitur, dan isolasi tenant ALPHOS
+                {isEn ? 'Manage subscriptions, feature tiers, and ALPHOS multi-tenant isolation' : 'Kelola hak akses langganan, paket fitur, dan isolasi tenant ALPHOS'}
               </p>
             </div>
 
@@ -379,7 +383,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
               <div className="superadmin-search-wrap">
                 <input
                   type="text"
-                  placeholder="Cari toko, pemilik, kota..."
+                  placeholder={s.searchPlaceholder}
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="input"
@@ -398,7 +402,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                     onClick={() => setStatusFilter(st)}
                     className={`chip ${statusFilter === st ? 'active' : ''}`}
                   >
-                    {st === 'all' ? 'Semua' : st === 'active' ? 'Aktif' : st === 'trial' ? 'Trial' : 'Expired'}
+                    {st === 'all' ? s.allStatus : st === 'active' ? s.activeStatus : st === 'trial' ? s.trialStatus : s.expiredStatus}
                   </button>
                 ))}
               </div>
@@ -410,21 +414,21 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Nama Toko & Kota</th>
-                  <th>Pemilik (Owner)</th>
-                  <th>Paket SaaS</th>
-                  <th>Status</th>
-                  <th>Omzet Bulanan</th>
-                  <th>Outlet</th>
-                  <th>Masa Berlaku</th>
-                  <th style={{ textAlign: 'center' }}>Tindakan</th>
+                  <th>{s.tableMerchant}</th>
+                  <th>{s.tableOwner}</th>
+                  <th>{s.tablePlan}</th>
+                  <th>{s.tableStatus}</th>
+                  <th>{s.tableVolume}</th>
+                  <th>{s.outlets}</th>
+                  <th>{s.expiresOn}</th>
+                  <th style={{ textAlign: 'center' }}>{s.tableAction}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredMerchants.length === 0 ? (
                   <tr>
                     <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--muted)' }}>
-                      Tidak ada merchant yang sesuai dengan kriteria pencarian.
+                      {isEn ? 'No merchants found matching your search.' : 'Tidak ada merchant yang sesuai dengan kriteria pencarian.'}
                     </td>
                   </tr>
                 ) : (
@@ -465,15 +469,15 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                         >
                           {m.status === 'active' ? (
                             <>
-                              <CheckCircle size={11} /> Aktif
+                              <CheckCircle size={11} /> {s.activeStatus}
                             </>
                           ) : m.status === 'trial' ? (
                             <>
-                              <AlertTriangle size={11} /> Trial 14-Hari
+                              <AlertTriangle size={11} /> {isEn ? '14-Day Trial' : 'Trial 14-Hari'}
                             </>
                           ) : (
                             <>
-                              <XCircle size={11} /> Expired
+                              <XCircle size={11} /> {s.expiredStatus}
                             </>
                           )}
                         </span>
@@ -482,10 +486,10 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                         {formatRupiah(m.monthlyVolume)}
                       </td>
                       <td>
-                        <span className="badge">{m.outletCount} Cabang</span>
+                        <span className="badge">{m.outletCount} {s.outlets}</span>
                       </td>
                       <td className="muted-text" style={{ fontSize: '0.78rem' }}>
-                        s/d {m.expiresAt}
+                        {s.expiresOn} {m.expiresAt}
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         <div style={{ display: 'inline-flex', gap: '6px' }}>
@@ -493,18 +497,18 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                             type="button"
                             onClick={() => setSelectedMerchant(m)}
                             className="btn btn-outline btn-sm"
-                            title="Lihat detail spesifikasi merchant"
+                            title={isEn ? 'View merchant specification details' : 'Lihat detail spesifikasi merchant'}
                           >
                             <Info size={12} />
-                            <span>Detail</span>
+                            <span>{isEn ? 'Details' : 'Detail'}</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => handleToggleStatus(m.id)}
                             className={`btn btn-sm ${m.status === 'active' ? 'btn-danger' : 'btn-primary'}`}
-                            title={m.status === 'active' ? 'Bekukan sementara merchant ini' : 'Aktifkan kembali akses merchant'}
+                            title={m.status === 'active' ? (isEn ? 'Suspend this merchant' : 'Bekukan sementara merchant ini') : (isEn ? 'Reactivate merchant' : 'Aktifkan kembali akses merchant')}
                           >
-                            {m.status === 'active' ? 'Suspend' : 'Aktifkan'}
+                            {m.status === 'active' ? s.deactivate : s.activate}
                           </button>
                         </div>
                       </td>
@@ -544,31 +548,31 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
 
               <div className="merchant-modal-grid">
                 <div className="merchant-modal-item">
-                  <div className="merchant-modal-item-label">Pemilik (Owner)</div>
+                  <div className="merchant-modal-item-label">{s.tableOwner}</div>
                   <div className="merchant-modal-item-val">{selectedMerchant.ownerName}</div>
                   <div className="merchant-modal-item-sub">{selectedMerchant.ownerEmail}</div>
                 </div>
 
                 <div className="merchant-modal-item">
-                  <div className="merchant-modal-item-label">Wilayah & Cabang</div>
+                  <div className="merchant-modal-item-label">{s.city}</div>
                   <div className="merchant-modal-item-val">{selectedMerchant.city}</div>
-                  <div className="merchant-modal-item-sub">{selectedMerchant.outletCount} Outlet Terdaftar</div>
+                  <div className="merchant-modal-item-sub">{selectedMerchant.outletCount} {s.outlets} {isEn ? 'Registered' : 'Terdaftar'}</div>
                 </div>
 
                 <div className="merchant-modal-item">
-                  <div className="merchant-modal-item-label">Paket Berlangganan</div>
+                  <div className="merchant-modal-item-label">{s.tablePlan}</div>
                   <div className="merchant-modal-item-val" style={{ color: 'var(--primary)' }}>
                     {selectedMerchant.plan} Plan
                   </div>
-                  <div className="merchant-modal-item-sub">Masa aktif s/d {selectedMerchant.expiresAt}</div>
+                  <div className="merchant-modal-item-sub">{s.expiresOn} {selectedMerchant.expiresAt}</div>
                 </div>
 
                 <div className="merchant-modal-item">
-                  <div className="merchant-modal-item-label">Omzet Transaksi Bulanan</div>
+                  <div className="merchant-modal-item-label">{s.tableVolume}</div>
                   <div className="merchant-modal-item-val text-success">
                     {formatRupiah(selectedMerchant.monthlyVolume)}
                   </div>
-                  <div className="merchant-modal-item-sub">Status: {selectedMerchant.status.toUpperCase()}</div>
+                  <div className="merchant-modal-item-sub">{s.tableStatus}: {selectedMerchant.status.toUpperCase()}</div>
                 </div>
               </div>
 
@@ -577,7 +581,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                   <ShieldCheck size={16} style={{ color: 'var(--primary)' }} />
                   Tenant Data Isolation & Security:
                 </strong>
-                Data transaksi, kasir, inventaris gudang, dan riwayat shift merchant ini diisolasi secara ketat di Supabase PostgreSQL dengan Row-Level Security (RLS) multitenancy per tenant-id.
+                {isEn
+                  ? 'All transactional data, cashiers, warehouse inventory, and shift logs for this merchant are strictly isolated in Supabase PostgreSQL via Row-Level Security (RLS) multi-tenancy.'
+                  : 'Data transaksi, kasir, inventaris gudang, dan riwayat shift merchant ini diisolasi secara ketat di Supabase PostgreSQL dengan Row-Level Security (RLS) multitenancy per tenant-id.'}
               </div>
 
               <div className="modal-actions" style={{ justifyContent: 'flex-end', marginTop: '16px' }}>
@@ -586,14 +592,14 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                   onClick={() => handleToggleStatus(selectedMerchant.id)}
                   className={`btn btn-sm ${selectedMerchant.status === 'active' ? 'btn-danger' : 'btn-primary'}`}
                 >
-                  {selectedMerchant.status === 'active' ? 'Suspend Merchant' : 'Aktifkan Akses'}
+                  {selectedMerchant.status === 'active' ? s.deactivate : s.activate}
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedMerchant(null)}
                   className="btn btn-outline btn-sm"
                 >
-                  Tutup
+                  {s.closeModal}
                 </button>
               </div>
             </div>

@@ -1288,8 +1288,18 @@
                   <span>📋</span>
                   <span>Notulensi Poin Evaluasi Mas Gege:</span>
                 </div>
-                <ul id="leaderNotesList" style="margin:0; padding-left:22px; font-size:13px; color:#E2E8F0; line-height:1.6;">
-                  <li style="color:#94A3B8; font-style:italic;">(Sedang mendengarkan masukan Mas Gege... Tim siap mencatat poin evaluasi begitu Mas Gege menyampaikannya di forum)</li>
+                <ul id="leaderNotesList" style="margin:0; padding-left:20px; font-size:12.5px; color:#E2E8F0; line-height:1.7;">
+                  <li style="margin-bottom:6px;"><strong>🌐 Standarisasi Canonical URL Ekosistem:</strong><br>
+                    • ALPHOS App: DEV <code>https://alphos-develop-anggiandriansyah.vercel.app/</code> | PROD <code>https://alphos.vercel.app/</code><br>
+                    • Superadmin Hub: DEV <code>https://alphos-team-develop-anggiandriansyah.vercel.app/</code> | PROD <code>https://alphos-team.vercel.app/</code> (Internal Only). Branch <code>superadmin</code> dibuat khusus.
+                  </li>
+                  <li style="margin-bottom:6px;"><strong>🏷️ Re-Branding Bar & App Identity:</strong> Mengubah nama bar & document title menjadi <strong>ALPHOS • Smart Retail OS</strong> agar memiliki karakter kuat dan positioning jelas di pasar ritel.</li>
+                  <li style="margin-bottom:6px;"><strong>🌍 Superadmin Bilingual Support:</strong> Melengkapi Superadmin Hub dengan lokalisasi penuh bahasa Inggris (EN) dan Indonesia (ID), sinkron dengan switcher bahasa global.</li>
+                  <li style="margin-bottom:6px;"><strong>🔐 Partisi Hak Akses & URL Domain:</strong> Akun <code>admindev</code> dikunci hanya untuk Local/DEV; akun <code>adminprod</code> dikunci hanya untuk PROD. Pendaftaran akun terikat URL yang bersangkutan.</li>
+                  <li style="margin-bottom:6px;"><strong>🛡️ Single-Device Session Guard:</strong> Menolak login bersamaan di 2 device atau lebih dengan alert <em>"User Sedang Aktif Digunakan"</em>.</li>
+                  <li style="margin-bottom:6px;"><strong>🔔 Clean Bell Icon & Web Audio Chime:</strong> Icon lonceng dibuat transparan tanpa border box kaku, setting suara dipindah ke Pengaturan Toko, dan audio chime diperbaiki agar berbunyi nyaring & responsif via Web Audio API.</li>
+                  <li style="margin-bottom:6px;"><strong>📊 Revamp Visual Analytics:</strong> Menghadirkan switcher jenis chart (Line Chart, Bar Chart, Donut/Pie Chart) dengan default Line Chart, shape timeframe modern kapsul, dan tombol cetak PDF icon print saja.</li>
+                  <li style="margin-bottom:6px;"><strong>📱 Responsivitas Mobile (iOS & Android):</strong> Penguatan layout fluid, safe area notch iPhone (viewport-fit cover), dan adaptasi barcode scanner di perangkat mobile kasir.</li>
                 </ul>
               </div>
 
@@ -1919,7 +1929,7 @@
       // 4. Topic: DEV Vercel / Deploy / URL / Akses
       if (lower.includes('dev') || lower.includes('vercel') || lower.includes('deploy') || lower.includes('akses') || lower.includes('production') || lower.includes('link')) {
         setTimeout(() => {
-          pushTeamMessage(ROSTER.aris, "Lapor Mas Gege! Lingkungan DEV di Vercel (https://pos-retail-git-develop-anggiandriansyah.vercel.app) saat ini 100% stabil running Sprint 4 v1.4.0. Sementara untuk Sprint 5 v1.5.0, kita lagi compile dan verifikasi fitur lokalnya di port 3000.", 1200);
+          pushTeamMessage(ROSTER.aris, "Lapor Mas Gege! Lingkungan DEV di Vercel (https://alphos-develop-anggiandriansyah.vercel.app) saat ini 100% stabil running Sprint 4 v1.4.0. Sementara untuk Sprint 5 v1.5.0, kita lagi compile dan verifikasi fitur lokalnya di port 3000.", 1200);
 
           setTimeout(() => {
             pushTeamMessage(ROSTER.budi, "Betul Mas! Skenario uji coba lokal lagi jalan. Nanti begitu Mas Gege approval gerbang Level 1, DevOps langsung gas deploy ke develop Vercel!", 2000);

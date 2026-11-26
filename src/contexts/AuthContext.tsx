@@ -5,6 +5,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 import type { Profile, Shift } from '../types/pos';
 import { AuthContext, type AuthContextValue } from './useAuth';
+import { registerLocalSession, clearActiveSession, getActiveSession, getLocalDeviceId } from '../utils/session';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -129,6 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           } catch {
             localStorage.removeItem('alphos_superadmin_session');
+      clearActiveSession();
           }
         }
       }
@@ -161,6 +163,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthError('');
       const trimmed = identifier.trim();
       const cleanId = trimmed.toLowerCase();
+
+      // Environment & Domain isolation check (Hotfix v1.5.1)
+      if (typeof window !== 'undefined') {
+        const host = window.location.hostname.toLowerCase();
+        const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.includes('develop') || host.includes('alphos-develop') || host.includes('alphos-team-develop');
+        const isProdHost = host.includes('alphos.vercel.app') || host.includes('alphos-team.vercel.app') || host.includes('pos-retail-umber');
+
+        if ((cleanId === 'admindev' || cleanId === 'admindev@alphagen.id') && isProdHost && !isDevHost) {
+          throw new Error('Akun admindev hanya dapat digunakan pada environment Development / Local (alphos-develop-anggiandriansyah.vercel.app).');
+        }
+        if ((cleanId === 'adminprod' || cleanId === 'adminprod@alphagen.id') && isDevHost && !isProdHost) {
+          throw new Error('Akun adminprod hanya dapat digunakan pada environment Production (alphos.vercel.app / alphos-team.vercel.app).');
+        }
+      }
+
+      // Dual-Device Session Guard (Hotfix v1.5.1)
+      const existingSession = getActiveSession();
+      const currentDeviceId = getLocalDeviceId();
+      if (existingSession && existingSession.userId && existingSession.deviceId !== currentDeviceId && (existingSession.userId === cleanId || existingSession.userId === trimmed)) {
+        throw new Error('User Sedang Aktif Digunakan di perangkat lain.');
+      }
 
       // Superadmin Authentication check for admindev and adminprod
       const isSuperAdminDev = (cleanId === 'admindev' || cleanId === 'admindev@alphagen.id') && password === 'Jakarta123';
@@ -197,6 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (typeof window !== 'undefined') {
           localStorage.setItem('alphos_superadmin_session', JSON.stringify({ profile: superadminProfile, user: mockUser }));
+          registerLocalSession(superadminProfile.username || 'superadmin');
         }
 
         setSession(mockSession);
@@ -230,6 +254,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (error) throw error;
       await loadUserContext(data.session);
+      if (data.user?.id) registerLocalSession(data.user.id);
       return data;
     },
     [loadUserContext]

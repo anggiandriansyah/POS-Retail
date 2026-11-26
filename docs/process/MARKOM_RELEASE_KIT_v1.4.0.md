@@ -10,7 +10,7 @@ Dokumen ini berisi materi komunikasi resmi rilis **Sprint 4 (`v1.4.0`)** untuk *
 |---|---|
 | **Produk** | **ALPHOS by AlphaGen** (sebutan singkat: **ALPHOS**) |
 | **Versi Rilis** | `v1.4.0` (Sprint 4) |
-| **Lingkungan Target** | **DEV** — Supabase `tcbhaiyhtndnqgatysmh`, branch `develop`, Preview Web `https://pos-retail-git-develop-anggiandriansyah.vercel.app/` |
+| **Lingkungan Target** | **DEV** — Supabase `tcbhaiyhtndnqgatysmh`, branch `develop`, Preview Web `https://alphos-develop-anggiandriansyah.vercel.app/` |
 | **Status Lingkungan PROD** | Supabase `sbtzajhgchpcdscrwtha` & branch `main` — **NOT TOUCHED / BLOCKED** (tetap pada `v1.3.0` sampai Gate 4 & persetujuan tertulis User) |
 | **Target Audit** | `docs/process/ANTI_UI_AI_SLOP_RUBRIC.md` (`A-01`) |
 
@@ -99,7 +99,7 @@ Pembaruan utama yang siap diuji:
 2. Aplikasi Kasir Android: buka/tutup shift, catat petty cash, scan barcode kamera, hitung diskon & PPN, dan kirim struk ke WhatsApp.
 3. Cetak struk Bluetooth ESC/POS (58 mm & 80 mm) serta pantauan Live Monitor untuk Owner.
 
-Akses Web DEV: https://pos-retail-git-develop-anggiandriansyah.vercel.app/
+Akses Web DEV: https://alphos-develop-anggiandriansyah.vercel.app/
 Catatan: Lingkungan uji ini memakai database DEV terpisah dari data toko produksi.
 
 Silakan laporkan temuan layar atau kendala printer ke tim QA/PO. Terima kasih.
@@ -117,7 +117,7 @@ Key updates ready for verification:
 2. Android Cashier app: shift open/close, petty cash logs, camera barcode scanning, item/order discounts, VAT, and WhatsApp receipt sharing.
 3. Bluetooth ESC/POS thermal printing (58 mm and 80 mm) plus Owner Live Monitor and Stock Requests.
 
-DEV Web URL: https://pos-retail-git-develop-anggiandriansyah.vercel.app/
+DEV Web URL: https://alphos-develop-anggiandriansyah.vercel.app/
 Note: This preview runs on the isolated DEV database and does not affect production store data.
 
 Please share UI feedback or printer test notes with the QA/PO team. Thank you.

@@ -10,5 +10,5 @@ git commit -m "feat(release): ALPHOS by AlphaGen v2.0.0 to DEV"
 git push origin develop
 echo.
 echo Selesai! Pantau build DEV di:
-echo https://pos-retail-git-develop-anggiandriansyah.vercel.app/
+echo https://alphos-develop-anggiandriansyah.vercel.app/
 pause

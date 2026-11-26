@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Bell,
   Volume2,
-  VolumeX,
   AlertTriangle,
   PackagePlus,
   Check,
@@ -19,6 +18,44 @@ interface SmartNotificationCenterProps {
   isOwner: boolean;
   onApproveRequest?: (id: string) => void;
   onRejectRequest?: (id: string) => void;
+}
+
+// Synthesizes a clean crystal notification bell chime via Web Audio API
+function playSyntheticChime() {
+  try {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    // Harmonic 1: Primary bell tone (880Hz / A5)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(880, now);
+    osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.08);
+    gain1.gain.setValueAtTime(0.3, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+
+    // Harmonic 2: Sparkle overtone (1320Hz / E6)
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(1320, now + 0.05);
+    gain2.gain.setValueAtTime(0.15, now + 0.05);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now + 0.05);
+    osc1.stop(now + 0.65);
+    osc2.stop(now + 0.55);
+  } catch {
+    // Ignore audio context errors
+  }
 }
 
 export function SmartNotificationCenter({
@@ -41,20 +78,17 @@ export function SmartNotificationCenter({
     }
   }, []);
 
-  const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    localStorage.setItem('alphos_notification_sound', String(next));
-  };
-
   const playOfficialSound = useCallback(() => {
     if (!soundEnabled) return;
     try {
       const audio = new Audio('/alphos-official-notification.mp3');
       audio.volume = 0.8;
-      audio.play().catch(e => console.log('Audio playback prevented:', e));
+      audio.play().catch(() => {
+        // Fallback to Web Audio API synthesis if file play fails
+        playSyntheticChime();
+      });
     } catch {
-      // Audio not supported
+      playSyntheticChime();
     }
   }, [soundEnabled]);
 
@@ -88,17 +122,13 @@ export function SmartNotificationCenter({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Clean Bell Button (Hotfix v1.5.1) */}
+      {/* Clean Bell Button (Hotfix v1.5.1: Clean transparent icon with responsive sound trigger) */}
       <button
         type="button"
         onClick={() => {
           setIsOpen(!isOpen);
           if (!isOpen && soundEnabled) {
-            try {
-              const a = new Audio('/alphos-official-notification.mp3');
-              a.volume = 0.01;
-              a.play().then(() => a.pause()).catch(() => {});
-            } catch {}
+            playOfficialSound();
           }
         }}
         className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 transition focus:outline-none"
@@ -115,134 +145,116 @@ export function SmartNotificationCenter({
       {/* Dropdown Panel */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
-          {/* Header (Cleaned up in Hotfix v1.5.1) */}
+          {/* Header */}
           <div className="p-3.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-emerald-400" />
-                <span className="text-xs font-extrabold text-white">Smart Notification Center</span>
+              <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Sparkles size={14} className="text-emerald-400" />
+                <span>Pusat Notifikasi Pintar</span>
               </div>
-              <p className="text-[10px] text-slate-400 mt-0.5">Pengaturan audio di Pengaturan Toko</p>
+              <p className="text-[10px] text-slate-400">
+                Peringatan stok minimum & persetujuan stok
+              </p>
             </div>
-
             <button
               type="button"
               onClick={playOfficialSound}
-              className="text-[10.5px] font-bold text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1.5 rounded-lg border border-emerald-500/30 flex items-center gap-1.5 transition"
-              title="Tes Bunyi Jingle Resmi"
+              className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 px-2 py-1 rounded bg-emerald-950/60 border border-emerald-800/60 flex items-center gap-1"
+              title="Putar tes bunyi notifikasi"
             >
-              <Volume2 size={13} />
+              <Volume2 size={12} />
               <span>Tes Audio</span>
             </button>
           </div>
 
-          {/* Feed Content */}
-          <div className="max-h-96 overflow-y-auto divide-y divide-slate-800/60 p-2 text-xs space-y-2">
+          {/* Alert Content List */}
+          <div className="max-h-72 overflow-y-auto p-2 space-y-2">
             {totalAlerts === 0 ? (
-              <div className="py-8 text-center text-slate-400 space-y-1">
-                <div className="text-2xl">🎉</div>
-                <div className="font-bold text-white text-xs">Semua Stok & Request Aman!</div>
-                <div className="text-[11px] text-slate-500">Tidak ada peringatan kritis saat ini.</div>
+              <div className="py-8 text-center text-xs text-slate-400">
+                <Check size={24} className="mx-auto mb-2 text-emerald-400" />
+                <span>Semua stok aman dan tidak ada permintaan tertunda.</span>
               </div>
             ) : (
               <>
-                {/* Pending Stock Requests (Owner Only) */}
-                {isOwner && pendingRequests.length > 0 && (
-                  <div className="space-y-1.5 pb-2">
-                    <div className="text-[10.5px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5 px-2">
-                      <PackagePlus size={13} />
-                      <span>Permintaan Stok Kasir ({pendingRequests.length})</span>
-                    </div>
-
-                    {pendingRequests.map(r => (
-                      <div
-                        key={r.id}
-                        className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 space-y-2"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className="font-bold text-white text-xs">{r.product_name}</div>
-                            <div className="text-[11px] text-slate-300">
-                              Minta: <strong className="text-purple-300">+{r.requested_qty} pcs</strong>
-                              {r.note && ` • "${r.note}"`}
-                            </div>
-                          </div>
+                {/* Pending Requests for Owner */}
+                {isOwner && pendingRequests.map(req => (
+                  <div
+                    key={req.id}
+                    className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-800/50 flex items-start justify-between gap-2"
+                  >
+                    <div className="flex items-start gap-2">
+                      <PackagePlus size={16} className="text-purple-400 mt-0.5 shrink-0" />
+                      <div>
+                        <div className="text-xs font-bold text-purple-200">
+                          Request Stok: {req.product_name}
                         </div>
-
-                        {onApproveRequest && onRejectRequest && (
-                          <div className="flex items-center gap-2 justify-end">
-                            <button
-                              type="button"
-                              onClick={() => onRejectRequest(r.id)}
-                              className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10.5px] font-bold flex items-center gap-1 transition"
-                            >
-                              <X size={11} /> Tolak
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => onApproveRequest(r.id)}
-                              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-bold flex items-center gap-1 transition shadow-sm"
-                            >
-                              <Check size={11} /> Setujui Restock
-                            </button>
-                          </div>
-                        )}
+                        <div className="text-[11px] text-slate-300">
+                          Jumlah: <strong className="text-white">{req.requested_qty}</strong> unit
+                        </div>
                       </div>
-                    ))}
+                    </div>
+                    {onApproveRequest && onRejectRequest && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => onApproveRequest(req.id)}
+                          className="p-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white"
+                          title="Setujui permintaan"
+                        >
+                          <Check size={12} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onRejectRequest(req.id)}
+                          className="p-1 rounded bg-rose-600 hover:bg-rose-500 text-white"
+                          title="Tolak permintaan"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
 
                 {/* Out of Stock Items */}
-                {outOfStockItems.length > 0 && (
-                  <div className="space-y-1.5 pb-2">
-                    <div className="text-[10.5px] font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5 px-2">
-                      <AlertTriangle size={13} />
-                      <span>Stok Habis Total ({outOfStockItems.length})</span>
-                    </div>
-
-                    {outOfStockItems.map(p => (
-                      <div
-                        key={p.id}
-                        className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-center justify-between"
-                      >
-                        <div>
-                          <div className="font-bold text-white text-xs">{p.name}</div>
-                          <div className="text-[10.5px] text-rose-300">Stok: 0 pcs • Segera restock!</div>
-                        </div>
-                        <span className="text-[10px] font-extrabold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded">
-                          HABIS
-                        </span>
+                {outOfStockItems.map(item => (
+                  <div
+                    key={item.id}
+                    className="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800/50 flex items-center justify-between text-xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle size={15} className="text-rose-400 shrink-0" />
+                      <div>
+                        <span className="font-bold text-rose-200 block">{item.name}</span>
+                        <span className="text-[10px] text-rose-400">Stok Habis (0 pcs)</span>
                       </div>
-                    ))}
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 text-[10px] font-bold">
+                      HABIS
+                    </span>
                   </div>
-                )}
+                ))}
 
                 {/* Low Stock Items */}
-                {lowStockItems.length > 0 && (
-                  <div className="space-y-1.5 pb-2">
-                    <div className="text-[10.5px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 px-2">
-                      <AlertTriangle size={13} />
-                      <span>Stok Menipis Di Bawah Min ({lowStockItems.length})</span>
-                    </div>
-
-                    {lowStockItems.map(p => (
-                      <div
-                        key={p.id}
-                        className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between"
-                      >
-                        <div>
-                          <div className="font-bold text-white text-xs">{p.name}</div>
-                          <div className="text-[10.5px] text-amber-300">
-                            Sisa: {p.stock} pcs (Min: {p.min_stock})
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded">
-                          MENIPIS
+                {lowStockItems.map(item => (
+                  <div
+                    key={item.id}
+                    className="p-2.5 rounded-xl bg-amber-950/40 border border-amber-800/50 flex items-center justify-between text-xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle size={15} className="text-amber-400 shrink-0" />
+                      <div>
+                        <span className="font-bold text-amber-200 block">{item.name}</span>
+                        <span className="text-[10px] text-amber-400">
+                          Tersisa {item.stock} pcs (Min: {item.min_stock})
                         </span>
                       </div>
-                    ))}
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-amber-900/60 text-amber-300 text-[10px] font-bold">
+                      MENIPIS
+                    </span>
                   </div>
-                )}
+                ))}
               </>
             )}
           </div>

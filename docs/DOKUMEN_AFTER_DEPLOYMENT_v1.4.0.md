@@ -48,7 +48,7 @@ Berdasarkan persetujuan resmi User (*"approve, sekarang push ke dev dan lanjut s
 
 | Lingkungan | Supabase Project Ref | Target URL | Branch Git | Deskripsi & Tindakan |
 |---|---|---|---|---|
-| **DEV** | `tcbhaiyhtndnqgatysmh` | `https://pos-retail-git-develop-anggiandriansyah.vercel.app` | `develop` | **Kandidat Verifikasi.** Seluruh RPC, RLS, dan skema database telah aktif dan tervalidasi 100%. |
+| **DEV** | `tcbhaiyhtndnqgatysmh` | `https://alphos-develop-anggiandriansyah.vercel.app` | `develop` | **Kandidat Verifikasi.** Seluruh RPC, RLS, dan skema database telah aktif dan tervalidasi 100%. |
 | **PRODUCTION** | `sbtzajhgchpcdscrwtha` | `https://pos-retail.vercel.app` (atau domain utama toko) | `main` | **Target Deployment.** Diluncurkan melalui sinkronisasi branch `main` setelah verifikasi cloud DEV selesai. |
 
 ---
@@ -63,7 +63,7 @@ Proses deployment dieksekusi secara otomatis oleh tim DevOps menggunakan GitHub 
 - **Commit SHA:** [`4eca8d3fa1785e085be93cddfe98095d581b66e9`](https://github.com/anggiandriansyah/POS-Retail/commit/4eca8d3fa1785e085be93cddfe98095d581b66e9)
 - **Pesan Commit:** `feat(sprint-4): ALPHOS by AlphaGen v1.4.0 (Shared Core, Web Revamp, Mobile RN, 5 PDFs, Anti-UI-Slop)`
 - **Total Berkas Terunggah:** 111 file
-- **Vercel Preview URL:** [pos-retail-git-develop-anggiandriansyah.vercel.app](https://pos-retail-git-develop-anggiandriansyah.vercel.app/)
+- **Vercel Preview URL:** [alphos-develop-anggiandriansyah.vercel.app](https://alphos-develop-anggiandriansyah.vercel.app/)
 - **Build Status:** SUCCESS (Deploy ID: `EZqD92iNYoPbegmE73qTPJ2fTtRb`)
 
 ---

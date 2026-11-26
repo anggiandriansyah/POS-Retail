@@ -2,13 +2,13 @@
 
 import { useState, useMemo } from 'react';
 import {
-  Download,
+  Printer,
   TrendingUp,
   ShoppingBag,
   DollarSign,
   PieChart as PieIcon,
   BarChart3,
-  Layers,
+  LineChart as LineIcon,
   ArrowUpRight,
   CheckCircle,
 } from 'lucide-react';
@@ -16,6 +16,7 @@ import type { Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
 
 export type Timeframe = 'today' | '7d' | '30d' | 'month';
+export type ChartType = 'line' | 'bar' | 'pie';
 
 interface VisualAnalyticsProps {
   products: Product[];
@@ -23,6 +24,7 @@ interface VisualAnalyticsProps {
 
 export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
   const [timeframe, setTimeframe] = useState<Timeframe>('7d');
+  const [chartType, setChartType] = useState<ChartType>('line');
 
   // Realistic mock data generated based on timeframe
   const data = useMemo(() => {
@@ -117,7 +119,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
     };
   }, [timeframe]);
 
-  // SVG Line Chart Calculations
+  // Calculations for Line Chart
   const maxRevenue = Math.max(...data.revenueTimeline.map(d => d.value), 1);
   const chartHeight = 220;
   const chartWidth = 600;
@@ -136,8 +138,8 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
 
   const areaD = `${pathD} L ${points[points.length - 1].x} ${chartHeight - paddingY} L ${points[0].x} ${chartHeight - paddingY} Z`;
 
-  // Bar Chart calculations
-  const maxBarRevenue = Math.max(...data.topProducts.map(p => p.revenue), 1);
+  // Calculations for Bar Chart
+  const maxBarRevenue = Math.max(...data.revenueTimeline.map(d => d.value), 1);
 
   // Donut slices pre-calculated immutably
   const donutSlices = useMemo(() => {
@@ -154,7 +156,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
   return (
     <div className="space-y-6">
       {/* Top Filter & Timeframe Selector Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/70 p-4 rounded-2xl border border-slate-800 shadow-sm backdrop-blur-sm">
         <div>
           <h2 className="text-base font-extrabold text-white flex items-center gap-2">
             <TrendingUp size={20} className="text-emerald-400" />
@@ -165,17 +167,60 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Timeframe Chips */}
-          <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Chart Type Selector Bar (Hotfix v1.5.1: Line / Bar / Pie switcher requested by Mas Gege) */}
+          <div className="inline-flex items-center bg-slate-950/80 p-1 rounded-full border border-slate-800 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setChartType('line')}
+              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                chartType === 'line'
+                  ? 'bg-blue-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Tampilkan grafik garis (Line Chart)"
+            >
+              <LineIcon size={13} />
+              <span>Line</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setChartType('bar')}
+              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                chartType === 'bar'
+                  ? 'bg-blue-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Tampilkan grafik batang (Bar Chart)"
+            >
+              <BarChart3 size={13} />
+              <span>Bar</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setChartType('pie')}
+              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                chartType === 'pie'
+                  ? 'bg-blue-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Tampilkan diagram lingkaran (Pie/Donut Chart)"
+            >
+              <PieIcon size={13} />
+              <span>Pie</span>
+            </button>
+          </div>
+
+          {/* Timeframe Chips (Modern Sleek Pill Shape) */}
+          <div className="inline-flex items-center bg-slate-950/80 p-1 rounded-full border border-slate-800 text-xs font-semibold">
             {(['today', '7d', '30d', 'month'] as const).map(tf => (
               <button
                 key={tf}
                 type="button"
                 onClick={() => setTimeframe(tf)}
-                className={`px-3 py-1.5 rounded-lg transition ${
+                className={`px-3 py-1 rounded-full transition-all ${
                   timeframe === tf
-                    ? 'bg-emerald-600 text-white shadow-sm'
+                    ? 'bg-emerald-600 text-white shadow'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -184,15 +229,15 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             ))}
           </div>
 
-          {/* Export button */}
+          {/* Print PDF Button (Icon Only - Requested by Mas Gege) */}
           <button
             type="button"
             onClick={() => window.print()}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
+            className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition focus:outline-none"
             title="Cetak atau simpan PDF analitik"
+            aria-label="Cetak PDF"
           >
-            <Download size={14} />
-            <span>Cetak PDF</span>
+            <Printer size={16} />
           </button>
         </div>
       </div>
@@ -247,218 +292,233 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
 
       {/* Main Interactive Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* CHART 1: LINE CHART (Tren Omzet & Peak Hours) */}
+        {/* PRIMARY SELECTED CHART VIEW (Line, Bar, or Pie) */}
         <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
             <div>
               <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-                <BarChart3 size={16} className="text-blue-400" />
-                <span>Kurva Pertumbuhan Omzet Penjualan</span>
+                {chartType === 'line' && <LineIcon size={16} className="text-blue-400" />}
+                {chartType === 'bar' && <BarChart3 size={16} className="text-emerald-400" />}
+                {chartType === 'pie' && <PieIcon size={16} className="text-purple-400" />}
+                <span>
+                  {chartType === 'line' && 'Kurva Pertumbuhan Omzet (Line Chart)'}
+                  {chartType === 'bar' && 'Distribusi Omzet per Periode (Bar Chart)'}
+                  {chartType === 'pie' && 'Rasio Proporsi Pembayaran & Transaksi (Pie Chart)'}
+                </span>
               </h3>
               <p className="text-[11px] text-slate-400">
-                Visualisasi omzet terhadap waktu ({timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})
+                Visualisasi dinamik ({timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})
               </p>
             </div>
-            <span className="text-[11px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
-              Interactive SVG Curve
-            </span>
+            <div className="text-right">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-bold">Puncak Tertinggi</span>
+              <span className="text-xs font-black text-emerald-400">{formatRupiah(maxRevenue)}</span>
+            </div>
           </div>
 
-          {/* SVG Line Chart */}
-          <div className="w-full overflow-x-auto">
-            <svg
-              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-              className="w-full h-56 select-none"
-              style={{ overflow: 'visible' }}
-            >
-              <defs>
-                <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
+          {/* VIEW 1: LINE CHART */}
+          {chartType === 'line' && (
+            <div className="relative w-full overflow-x-auto">
+              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto min-w-[500px]">
+                <defs>
+                  <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
 
-              {/* Grid Horizontal Lines */}
-              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
-                return (
-                  <g key={i}>
-                    <line
-                      x1={paddingX}
-                      y1={y}
-                      x2={chartWidth - paddingX}
-                      y2={y}
-                      stroke="#1F293D"
-                      strokeDasharray="4 4"
-                    />
-                    <text
-                      x={paddingX - 8}
-                      y={y + 4}
-                      fill="#64748B"
-                      fontSize="9"
-                      textAnchor="end"
-                    >
-                      {Math.round((maxRevenue * ratio) / 1000000)}M
+                {/* Horizontal Guide Lines */}
+                {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                  const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
+                  return (
+                    <g key={i}>
+                      <line x1={paddingX} y1={y} x2={chartWidth - paddingX} y2={y} stroke="#1E293B" strokeDasharray="3 3" />
+                      <text x={paddingX - 6} y={y + 3} textAnchor="end" fill="#64748B" fontSize="9" fontFamily="monospace">
+                        {(maxRevenue * ratio / 1000000).toFixed(1)}M
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Area under curve */}
+                <path d={areaD} fill="url(#revenueGrad)" />
+
+                {/* Main line */}
+                <path d={pathD} fill="none" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                {/* Data Points */}
+                {points.map((p, i) => (
+                  <g key={i} className="group cursor-pointer">
+                    <circle cx={p.x} cy={p.y} r="4.5" fill="#1E293B" stroke="#60A5FA" strokeWidth="2" className="transition-all hover:r-6" />
+                    <text x={p.x} y={chartHeight - 10} textAnchor="middle" fill="#94A3B8" fontSize="10" fontWeight="500">
+                      {p.label}
                     </text>
                   </g>
-                );
-              })}
-
-              {/* Filled Area */}
-              <path d={areaD} fill="url(#revenueGrad)" />
-
-              {/* Curved Line */}
-              <path
-                d={pathD}
-                fill="none"
-                stroke="#3B82F6"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Data points & labels */}
-              {points.map((p, idx) => (
-                <g key={idx} className="group cursor-pointer">
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r="5"
-                    fill="#1E293B"
-                    stroke="#60A5FA"
-                    strokeWidth="2.5"
-                    className="transition transform group-hover:scale-150"
-                  />
-                  <text
-                    x={p.x}
-                    y={chartHeight - 10}
-                    fill="#94A3B8"
-                    fontSize="10"
-                    fontWeight="600"
-                    textAnchor="middle"
-                  >
-                    {p.label}
-                  </text>
-                  <text
-                    x={p.x}
-                    y={p.y - 12}
-                    fill="#FFFFFF"
-                    fontSize="9.5"
-                    fontWeight="bold"
-                    textAnchor="middle"
-                    className="opacity-90"
-                  >
-                    {formatRupiah(p.value).replace(',00', '')}
-                  </text>
-                </g>
-              ))}
-            </svg>
-          </div>
-        </div>
-
-        {/* CHART 2: DONUT CHART (Metode Pembayaran) */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm flex flex-col justify-between">
-          <div className="border-b border-slate-800/80 pb-3">
-            <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-              <PieIcon size={16} className="text-purple-400" />
-              <span>Komposisi Pembayaran</span>
-            </h3>
-            <p className="text-[11px] text-slate-400">Rasio metode transaksi kasir</p>
-          </div>
-
-          {/* Donut representation */}
-          <div className="flex flex-col items-center justify-center my-auto">
-            <div className="relative w-36 h-36 flex items-center justify-center">
-              <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                {donutSlices.map((p, idx) => (
-                  <circle
-                    key={idx}
-                    cx="18"
-                    cy="18"
-                    r="15.9155"
-                    fill="transparent"
-                    stroke={p.color}
-                    strokeWidth="3.8"
-                    strokeDasharray={p.strokeDasharray}
-                    strokeDashoffset={p.strokeDashoffset}
-                  />
                 ))}
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-xs text-slate-400 font-medium">Dominan</span>
-                <span className="text-base font-black text-blue-400">QRIS</span>
-                <span className="text-[10px] text-slate-400">58-60%</span>
+            </div>
+          )}
+
+          {/* VIEW 2: BAR CHART */}
+          {chartType === 'bar' && (
+            <div className="relative w-full overflow-x-auto">
+              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto min-w-[500px]">
+                <defs>
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#059669" stopOpacity="0.4" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal Guide Lines */}
+                {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                  const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
+                  return (
+                    <line key={i} x1={paddingX} y1={y} x2={chartWidth - paddingX} y2={y} stroke="#1E293B" strokeDasharray="3 3" />
+                  );
+                })}
+
+                {/* Vertical Bars */}
+                {data.revenueTimeline.map((item, idx) => {
+                  const count = data.revenueTimeline.length;
+                  const availableWidth = chartWidth - paddingX * 2;
+                  const barWidth = Math.min(36, availableWidth / count - 12);
+                  const stepX = availableWidth / count;
+                  const x = paddingX + idx * stepX + (stepX - barWidth) / 2;
+                  const barH = (item.value / maxBarRevenue) * (chartHeight - paddingY * 2);
+                  const y = chartHeight - paddingY - barH;
+
+                  return (
+                    <g key={idx}>
+                      <rect
+                        x={x}
+                        y={y}
+                        width={barWidth}
+                        height={barH}
+                        rx="5"
+                        fill="url(#barGrad)"
+                        className="transition-all hover:opacity-80"
+                      />
+                      <text x={x + barWidth / 2} y={chartHeight - 10} textAnchor="middle" fill="#94A3B8" fontSize="10" fontWeight="500">
+                        {item.label}
+                      </text>
+                      <text x={x + barWidth / 2} y={y - 6} textAnchor="middle" fill="#34D399" fontSize="9" fontWeight="700">
+                        {(item.value / 1000000).toFixed(1)}M
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          )}
+
+          {/* VIEW 3: PIE / DONUT CHART */}
+          {chartType === 'pie' && (
+            <div className="py-2 flex flex-col sm:flex-row items-center justify-around gap-6">
+              <div className="relative w-44 h-44 flex items-center justify-center">
+                <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
+                  <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#1E293B" strokeWidth="6" />
+                  {donutSlices.map((slice, i) => (
+                    <circle
+                      key={i}
+                      cx="21"
+                      cy="21"
+                      r="15.915"
+                      fill="transparent"
+                      stroke={slice.color}
+                      strokeWidth="6"
+                      strokeDasharray={slice.strokeDasharray}
+                      strokeDashoffset={slice.strokeDashoffset}
+                      className="transition-all hover:opacity-80"
+                    />
+                  ))}
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">QRIS Leader</span>
+                  <span className="text-base font-black text-white">{data.payments[0].percent}%</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 w-full sm:w-64">
+                {data.payments.map((p, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
+                      <span className="font-bold text-white">{p.method}</span>
+                      <span className="text-[11px] text-slate-400">({p.count}x)</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-extrabold text-white block">{formatRupiah(p.total)}</span>
+                      <span className="text-[10px] text-emerald-400 font-semibold">{p.percent}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* CHART 2: DONUT PAYMENT BREAKDOWN & TOP PRODUCTS */}
+        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+              <div>
+                <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <PieIcon size={16} className="text-purple-400" />
+                  <span>Metode Pembayaran</span>
+                </h3>
+                <p className="text-[11px] text-slate-400">Rasio QRIS vs Tunai vs Transfer</p>
               </div>
             </div>
 
-            {/* Legend */}
-            <div className="w-full space-y-2 mt-4 text-xs">
-              {data.payments.map((p, i) => (
-                <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-slate-800/60">
+            {/* Donut Chart SVG */}
+            <div className="my-4 flex items-center justify-center">
+              <div className="relative w-36 h-36 flex items-center justify-center">
+                <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
+                  <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#1E293B" strokeWidth="5.5" />
+                  {donutSlices.map((slice, i) => (
+                    <circle
+                      key={i}
+                      cx="21"
+                      cy="21"
+                      r="15.915"
+                      fill="transparent"
+                      stroke={slice.color}
+                      strokeWidth="5.5"
+                      strokeDasharray={slice.strokeDasharray}
+                      strokeDashoffset={slice.strokeDashoffset}
+                      className="transition-all hover:opacity-80"
+                    />
+                  ))}
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">QRIS Dominan</span>
+                  <span className="text-sm font-black text-white">{data.payments[0].percent}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Legend list */}
+            <div className="space-y-2">
+              {data.payments.map((p, idx) => (
+                <div key={idx} className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                    <span className="font-bold text-slate-200">{p.method}</span>
-                    <span className="text-[11px] text-slate-400">({p.count}x)</span>
+                    <span className="text-slate-300 font-medium">{p.method}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="font-bold text-white">{p.percent}%</span>
-                    <div className="text-[10px] text-slate-400">{formatRupiah(p.total)}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-white">{formatRupiah(p.total)}</span>
+                    <span className="text-[10px] text-slate-400 w-7 text-right">{p.percent}%</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* CHART 3: TOP 10 BEST SELLERS (Bar Chart) */}
-      <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-          <div>
-            <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-              <Layers size={16} className="text-emerald-400" />
-              <span>Peringkat Produk Terlaris (Top Performers)</span>
-            </h3>
-            <p className="text-[11px] text-slate-400">
-              Berdasarkan akumulasi kuantitas terjual dan kontribusi omzet kasir
-            </p>
+          <div className="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+            <span>Integrasi Dinamis QRIS:</span>
+            <span className="text-emerald-400 font-semibold">Aktif Real-Time</span>
           </div>
-          <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-            Katalog Unggulan
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          {data.topProducts.map((p, idx) => {
-            const barPercent = Math.round((p.revenue / maxBarRevenue) * 100);
-            return (
-              <div key={idx} className="p-3 bg-slate-950 rounded-xl border border-slate-800/80 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center">
-                      #{idx + 1}
-                    </span>
-                    <span className="font-bold text-white">{p.name}</span>
-                    <span className="text-[10px] text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded">
-                      {p.category}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <strong className="text-emerald-400">{formatRupiah(p.revenue)}</strong>
-                    <span className="text-slate-400 text-[11px] ml-2">({p.qty} terjual)</span>
-                  </div>
-                </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
-                    style={{ width: `${barPercent}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </div>

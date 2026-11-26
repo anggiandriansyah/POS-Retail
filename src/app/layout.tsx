@@ -25,8 +25,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'ALPHOS — Retail & Inventaris',
-  description: 'ALPHOS by AlphaGen — Retail & Inventaris Barcode Multi-Tenant Platform',
+  title: 'ALPHOS • Smart Retail OS',
+  description: 'ALPHOS • Smart Retail OS by AlphaGen — Barcode POS & Multi-Tenant Retail Platform',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.svg',
