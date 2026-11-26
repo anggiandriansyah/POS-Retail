@@ -28,6 +28,7 @@ import { APP_VERSION, STORE_INFO } from '../utils/format';
 import AlphosLogo from '../components/AlphosLogo';
 import LoginPage from '../components/LoginPage';
 import ThemeLangToggles from '../components/ThemeLangToggles';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const PosCashier = dynamic(() => import('../components/PosCashier'), { ssr: false });
 const PriceChecker = dynamic(() => import('../components/PriceChecker'), { ssr: false });
@@ -238,7 +239,7 @@ function AuthenticatedApp() {
             <p className="muted-text">{dict.loadingStore}</p>
           </div>
         ) : (
-          <>
+          <ErrorBoundary fallbackTitle="Kendala Memuat Menu">
             {currentTab === 'live' && isOwner && (
               <OwnerLiveMonitor onProductsChanged={refreshProducts} />
             )}
@@ -272,7 +273,7 @@ function AuthenticatedApp() {
                 onOpenReceipt={(data) => setReceiptData(data)}
               />
             )}
-          </>
+          </ErrorBoundary>
         )}
       </main>
 

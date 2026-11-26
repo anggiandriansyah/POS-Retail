@@ -15,7 +15,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import type { Product } from '../types/pos';
-import { formatRupiah } from '../utils/format';
+import { formatRupiah, formatDateTime } from '../utils/format';
 
 export type Timeframe = 'today' | '7d' | '30d' | 'month';
 export type ChartType = 'line' | 'bar' | 'pie';
@@ -187,7 +187,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           <div style={{ textAlign: 'right' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#047857' }}>Smart Retail OS v1.5.1</span>
             <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
-              Dicetak: {new Date().toLocaleDateString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
+              Dicetak: {formatDateTime(new Date().toISOString(), 'id')}
             </div>
           </div>
         </div>
