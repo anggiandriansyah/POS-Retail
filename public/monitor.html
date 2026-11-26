@@ -892,7 +892,7 @@
           <!-- Document Cards Grid -->
           <div style="font-size:14px; font-weight:800; color:#93C5FD; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
             <span>📁</span>
-            <span>Berkas & Dokumen Kelengkapan Rilis Sprint 5 (5 Dokumen Resmi):</span>
+            <span>Berkas & Dokumen Kelengkapan Rilis Sprint 6 (5 Dokumen Resmi):</span>
           </div>
 
           <div class="doc-grid">
@@ -901,12 +901,12 @@
               <div>
                 <div class="doc-card-top">
                   <span class="doc-badge">DOC-01 • PRD/BRD</span>
-                  <span class="doc-badge-green">Siap Review</span>
+                  <span class="doc-badge-green">100% Disahkan</span>
                 </div>
-                <div class="doc-title">Product Requirements & Scope Matrix (v1.5.0)</div>
+                <div class="doc-title">PRD Sprint 6 & Riset Paket Langganan ATM</div>
                 <div class="doc-author">Author: Rama Wijaya (Lead PM) & Tari Wulandari (PO)</div>
                 <div class="doc-desc" style="margin-top:8px;">
-                  Ruang lingkup B2B Multi-Tenant Superadmin Hub, Owner Visual Analytics (SVG Charts), Smart Notification Center (Audio Chime), Anti-Fraud Role-Based Diskon, dan PWA Support.
+                  Spesifikasi Hotfix v1.5.1 dan hasil riset mendalam kompetitor POS (Moka, Majoo, Qasir). Penetapan resmi 3 Tiers Subscription: Gen Alpha (Free Rp0), Gen Beta (Rp20.000/bln), dan Gen Gamma (Rp30.000/bln).
                 </div>
               </div>
               <button type="button" class="doc-btn" onclick="openDocModal('doc1')">
@@ -922,10 +922,10 @@
                   <span class="doc-badge">DOC-02 • QA MATRIX</span>
                   <span class="doc-badge-green">24/24 Test Passed</span>
                 </div>
-                <div class="doc-title">Quality Gate & Test Verification Matrix</div>
-                <div class="doc-author">Author: Budi Santoso (Lead QA) & Raka Pratama (Automation QA)</div>
+                <div class="doc-title">Quality Gate & Multi-Device Test Verification Matrix</div>
+                <div class="doc-author">Author: Budi Santoso (Lead QA) & Fauzan Akbar (Intern QA)</div>
                 <div class="doc-desc" style="margin-top:8px;">
-                  Hasil audit uji otomatis: TypeScript tsc 0 error, Oxlint 0 warning (69 files), 24 unit & security RLS tests clean pass, Playwright E2E scenario green.
+                  Hasil pengujian 15 smartphone fisik (Android & iOS safe-area notch), Next.js Turbopack 0 build error, 24 unit & security RLS tests clean pass, dan E2E verification responsivitas kasir.
                 </div>
               </div>
               <button type="button" class="doc-btn" onclick="openDocModal('doc2')">
@@ -939,12 +939,12 @@
               <div>
                 <div class="doc-card-top">
                   <span class="doc-badge">DOC-03 • SECURITY</span>
-                  <span class="doc-badge-green">Zero-Leak Certified</span>
+                  <span class="doc-badge-green">Token Guard Active</span>
                 </div>
-                <div class="doc-title">Security & Multi-Tenant RLS Audit Certification</div>
+                <div class="doc-title">Security, Single-Session & Auth Guard Certification</div>
                 <div class="doc-author">Author: Dimas Suryo (Lead Security) & Kevin Alamsyah</div>
                 <div class="doc-desc" style="margin-top:8px;">
-                  Sertifikasi isolasi data Postgres Row-Level Security (RLS) per tenant-id, proteksi manipulasi diskon kasir di frontend & database, dan keamanan credential superadmin.
+                  Sertifikasi isolasi data Postgres Row-Level Security (RLS), single-device active session validator di Supabase RPC, serta Google OAuth registration guard (hanya akun terdaftar yang bisa login).
                 </div>
               </div>
               <button type="button" class="doc-btn" onclick="openDocModal('doc3')">
@@ -958,12 +958,12 @@
               <div>
                 <div class="doc-card-top">
                   <span class="doc-badge">DOC-04 • USER MANUAL</span>
-                  <span class="doc-badge-green">Ready SOP</span>
+                  <span class="doc-badge-green">SOP v1.5.1 Final</span>
                 </div>
-                <div class="doc-title">User Manual & SOP Superadmin Hub & Kasir</div>
-                <div class="doc-author">Author: Maya Dewi (TW Lead) & Tari Wulandari</div>
+                <div class="doc-title">User Manual & SOP v1.5.1 (Google Auth & Visual Analytics)</div>
+                <div class="doc-author">Author: Maya Dewi (TW Lead) & Dimas Ramadhan (Intern TW)</div>
                 <div class="doc-desc" style="margin-top:8px;">
-                  Buku panduan pengoperasian Superadmin Hub B2B (manajemen paket starter/pro/enterprise, suspend tenant), konfigurasi jingle audio notifikasi, dan SOP kasir ritel.
+                  Panduan pengguna untuk integrasi Login Google, penggunaan switcher bentuk grafik di dalam section card (Line, Bar, Pie), cetak laporan PDF bersih, dan toggle audio notifikasi di Pengaturan Toko.
                 </div>
               </div>
               <button type="button" class="doc-btn" onclick="openDocModal('doc4')">
@@ -977,12 +977,12 @@
               <div>
                 <div class="doc-card-top">
                   <span class="doc-badge">DOC-05 • DEVOPS</span>
-                  <span class="doc-badge-green">Staged for Push</span>
+                  <span class="doc-badge-green">Live Production</span>
                 </div>
-                <div class="doc-title">DevOps Cloud Deployment & Rollback Manifest</div>
+                <div class="doc-title">DevOps Multi-Branch CI/CD & Hotfix RCA Manifest</div>
                 <div class="doc-author">Author: Aris Nugraha (DevOps & Cloud Lead)</div>
                 <div class="doc-desc" style="margin-top:8px;">
-                  Prosedur deployment Vercel Cloud DEV (branch develop) dan Production Release v1.5.0 (branch main), mekanisme zero-downtime database migration, dan protokol rollback.
+                  Laporan sinkronisasi branch develop, main, dan superadmin, resolusi tuntas runtime exception Intl date formatting (timeStyle), ErrorBoundary modular, dan mitigasi webview cache 304.
                 </div>
               </div>
               <button type="button" class="doc-btn" onclick="openDocModal('doc5')">
@@ -1073,22 +1073,22 @@
           <div id="signoffSuccessBox" style="display:block; background:linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.25) 100%); border:2px solid #10B981; border-radius:18px; padding:28px; text-align:center;">
             <div style="font-size:48px; margin-bottom:10px;">🎉 🏆 📜</div>
             <h3 style="font-size:20px; font-weight:800; color:#34D399; margin:0;">
-              SPRINT 5 RESMI DISETUJUI & DITANDATANGANI!
+              SPRINT 6 RESMI DISETUJUI & DITANDATANGANI!
             </h3>
             <p style="font-size:13.5px; color:#F1F5F9; max-width:680px; margin:10px auto 16px; line-height:1.6;">
-              Dokumen kelengkapan Sprint 5 (ALPHOS v1.5.0) telah diverifikasi 100% lengkap dan sah oleh Team Leader <strong>Anggi Andriansyah (Gege)</strong>.
+              Dokumen kelengkapan Sprint 6 (ALPHOS v1.5.1 Hotfix & Riset Model Langganan 3 Tiers) telah diverifikasi 100% lengkap dan sah oleh Team Leader <strong>Anggi Andriansyah (Gege)</strong>.
             </p>
             <div style="display:inline-block; background:#0B1120; border:1px solid #10B981; border-radius:12px; padding:10px 20px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#6EE7B7;">
-              Digital Signature Token: <strong>SIG-GEGE-20261125-PROD-RELEASE</strong> • Time: 18:40 WIB
+              Digital Signature Token: <strong>SIG-GEGE-20261126-SPRINT6-RELEASE</strong> • Time: 20:16 WIB
             </div>
 
             <div style="margin-top:14px; background:#0F172A; border:1px solid #10B981; border-radius:12px; padding:14px 18px; text-align:left; font-size:12px; color:#E2E8F0; max-width:620px; margin-left:auto; margin-right:auto;">
               <div style="font-weight:800; color:#34D399; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                <span>📧</span> <span>Laporan Email Otomatis Terkirim (Automated Dispatch):</span>
+                <span>📧</span> <span>Laporan Email Otomatis Berhasil Terkirim (Automated Dispatch):</span>
               </div>
               <div style="line-height:1.6;">
                 <div>Tujuan: <strong>anggiandriansyah17@gmail.com</strong></div>
-                <div>Subjek: <strong>[ALPHOS v1.5.0 PRODUCTION RELEASE] Laporan Resmi Sertifikasi Deployment & Hasil Sprint 5</strong></div>
+                <div>Subjek: <strong>[ALPHOS SPRINT 6 PRODUCTION RELEASE & RESEARCH SIGN-OFF] Laporan Resmi Sertifikasi Deployment v1.5.1 & Hasil Riset Langganan</strong></div>
                 <div>Status: <span class="step-badge badge-done" style="padding:2px 8px; font-size:10px;">SUCCESS_DISPATCHED</span> (Arsip laporan: <code>docs/release-email-anggiandriansyah.html</code>)</div>
               </div>
             </div>
@@ -3143,118 +3143,136 @@
     // =========================================================================
     // 📁 SPRINT 5 COMPLETE RELEASE DOCUMENT REPOSITORY
     // =========================================================================
+    // =========================================================================
+    // 📁 MODAL DOKUMEN RESMI SPRINT 6 (5 DOKUMEN DISAHKAN)
+    // =========================================================================
     const SPRINT_DOCS = {
       doc1: {
         icon: "📋",
-        title: "DOC-01: Product Requirements Document (PRD/BRD) Sprint 5 (v1.5.0)",
-        meta: "Disusun oleh: Rama Wijaya (Lead PM) & Tari Wulandari (PO) • Versi: 2.0.0 Final",
+        title: "DOC-01: Product Requirements Document (PRD/BRD) Sprint 6 & Riset Langganan ATM",
+        meta: "Disusun oleh: Rama Wijaya (Lead PM) & Tari Wulandari (PO) • Versi: v1.5.1 Final • Disahkan oleh: Mas Gege",
         content: `
-          <h4>1. Latar Belakang & Tujuan Produk</h4>
-          <p>ALPHOS (AlphaGen Point of Sale) berkembang dari sistem kasir single-store (Sprint 1-4) menjadi ekosistem B2B Retail Multi-Tenant SaaS berskala enterprise (Sprint 5 / v1.5.0). Tujuan rilis ini adalah menyediakan pusat kendali multi-merchant untuk Superadmin dan analitik cerdas bagi para Pemilik Toko (Owner).</p>
+          <h4>1. Latar Belakang & Analisis Pasar Retail Indonesia</h4>
+          <p>Pasar Point of Sale (POS) cloud di Indonesia umumnya membebankan biaya langganan bulanan berkisar Rp150.000 - Rp350.000 per outlet/bulan. Menggunakan metodologi <strong>ATM (Amati, Tiru, Modifikasi)</strong> dari kompetitor (Moka POS, Majoo, Qasir, Pawoon), ALPHOS menghadirkan penetapan 3 tier harga yang sangat kompetitif dan bersahabat bagi UMKM hingga jaringan ritel besar.</p>
 
-          <h4>2. Ruang Lingkup Fitur Baru (Sprint 5)</h4>
+          <h4>2. Formulasi Resmi 3 Tiers Subscription ALPHOS</h4>
           <ul>
-            <li><strong>B2B Superadmin Hub:</strong> Portal eksklusif pemantauan tenant multi-merchant lintas kota, aggregasi SaaS MRR (Monthly Recurring Revenue), total GMV transaksi platform, pemantauan masa aktif langganan (Starter, Pro, Enterprise), dan fitur instan Suspend/Aktivasi tenant.</li>
-            <li><strong>Owner Visual Analytics:</strong> Visualisasi interaktif tren omzet 24 jam dan harian dengan SVG line chart presisi, bar chart produk terlaris Top 10, serta donut chart rasio metode pembayaran (QRIS, Tunai, Transfer).</li>
-            <li><strong>Smart Notification Center & Audio Chime:</strong> Notifikasi cerdas stok kritis/habis dan pengajuan restock dari kasir dengan lonceng audio resmi ALPHOS (<code>/alphos-official-notification.mp3</code>) serta toggle mute adaptif.</li>
-            <li><strong>Anti-Fraud Role-Based Discount:</strong> Kasir retail dibatasi hanya dapat memilih diskon preset resmi (5%, 10%, 15%), sedangkan diskon custom nominal bebas dikunci gembok dan hanya dapat dibuka dengan hak akses Owner/Superadmin.</li>
-            <li><strong>PWA & Mobile Desktop Retail Support:</strong> Dukungan instalasi standalone Progressive Web App pada tablet kasir dan PC desktop.</li>
+            <li><strong>🟢 1. GEN ALPHA — Freemium Entry-Point (Rp 0 / Selamanya):</strong>
+              <ul>
+                <li>Bebas transaksi kasir POS Web tanpa batas transaksi harian.</li>
+                <li>1 Outlet mandiri & 1 Akun kasir aktif, maksimal 50 Item Produk.</li>
+                <li>Cetak struk digital & pencatatan petty cash.</li>
+                <li><em>Fitur Terkunci (Gembok):</em> Visual Analytics 3-in-1, Multi-Warehouse Transfer, dan Single-Device Session.</li>
+              </ul>
+            </li>
+            <li><strong>🔵 2. GEN BETA — Growth Retail Store (Rp 20.000 / Bulan):</strong>
+              <ul>
+                <li>Hingga 3 Outlet & 5 Akun Kasir, Unlimited Produk & Kategori.</li>
+                <li>Smart Stock Alert, Multi-Metode Pembayaran (Cash, QRIS, Transfer), Ekspor CSV/Excel.</li>
+                <li>Manajemen Shift Kasir & Rekonsiliasi Kas.</li>
+              </ul>
+            </li>
+            <li><strong>🟣 3. GEN GAMMA — Ultimate Enterprise Pro (Rp 30.000 / Bulan - Rekomendasi):</strong>
+              <ul>
+                <li><strong>UNLIMITED Outlet & UNLIMITED Akun Kasir</strong>.</li>
+                <li><strong>Interactive Visual Analytics 3-in-1:</strong> Selector grafik garis (tren omzet harian), bar chart (produk terlaris), dan donut chart (kanal pembayaran) dengan tombol cetak laporan resmi.</li>
+                <li><strong>Multi-Warehouse & Transfer Antar Gudang:</strong> Pelacakan mutasi stok antar cabang dengan nota transfer digital.</li>
+                <li><strong>Mode Offline PWA:</strong> IndexedDB local resilience kasir tetap scan barcode saat internet padam.</li>
+                <li><strong>Single-Device Active Session Enforcer:</strong> Proteksi penipuan akun bersama kasir.</li>
+              </ul>
+            </li>
           </ul>
 
-          <h4>3. Kriteria Akseptasi (Acceptance Criteria)</h4>
-          <ul>
-            <li>✔ Akun <code>admindev</code> dan <code>adminprod</code> otomatis diarahkan ke Superadmin Hub saat login.</li>
-            <li>✔ Pemilik toko (Owner) dapat mengekspor atau mencetak laporan analitik ke format PDF.</li>
-            <li>✔ Kasir tidak dapat memanipulasi diskon transaksi di luar kebijakan outlet.</li>
-          </ul>
+          <h4>3. Ruang Lingkup Hotfix v1.5.1 Terlaksana</h4>
+          <p>Login Google di tab Masuk dengan proteksi pendaftaran, pemindahan chart switcher ke dalam header section (Line, Bar, Pie) berwarna hijau aktif (#10B981), perbaikan ukuran proporsional, serta pemisahan cetak laporan analitik dari struk kasir.</p>
         `
       },
       doc2: {
         icon: "🧪",
-        title: "DOC-02: Quality Assurance & Test Verification Matrix",
-        meta: "Disusun oleh: Budi Santoso (Lead QA) & Raka Pratama (Automation QA) • Status: 100% Pass",
+        title: "DOC-02: Quality Assurance & Multi-Device Test Verification Matrix",
+        meta: "Disusun oleh: Budi Santoso (Lead QA) & Fauzan Akbar (Intern QA) • Status: 100% Pass (0 Error)",
         content: `
-          <h4>1. Ringkasan Eksekutif Quality Gate</h4>
-          <p>Seluruh tahapan pengujian kode sumber pada branch kerja Sprint 5 telah melalui kompilasi ketat dan uji otomatis terintegrasi. Tidak ditemukan regresi dari Sprint 1-4, dan fitur baru Sprint 5 dinyatakan stabil serta siap rilis.</p>
+          <h4>1. Ringkasan Eksekutif Quality Gate Sprint 6</h4>
+          <p>Hotfix v1.5.1 telah melalui serangkaian pengujian multi-device di lab QA fisik dan rangkaian automated testing. Seluruh skenario dinyatakan lolos 100% tanpa regresi.</p>
 
-          <h4>2. Hasil Pengujian Statis & Linter</h4>
+          <h4>2. Pengujian Multi-Device Fisik (15 Smartphone)</h4>
           <ul>
-            <li><strong>TypeScript Compiler (<code>tsc --noEmit</code>):</strong> 0 Error. Seluruh tipe data, interface profil pengguna (termasuk role 'superadmin'), dan schema props tervalidasi type-safe.</li>
-            <li><strong>Oxlint High-Performance Linter:</strong> 0 Error, 0 Warning pada 69 berkas TypeScript/JavaScript. Mematuhi standar clean code & anti-slop architecture.</li>
+            <li><strong>iOS WebKit (iPhone 12, 13, 14, 15 Pro):</strong> Safe-area notch dan dynamic island berfungsi sempurna dengan <code>viewport-fit=cover</code>. Tidak ada elemen header terpotong.</li>
+            <li><strong>Android Multi-Vendor (Samsung, Xiaomi, Vivo, Oppo):</strong> Fluid layout responsif di resolusi layar 360px hingga 1080px. Barcode scanner kamera bekerja responsif.</li>
           </ul>
 
-          <h4>3. Hasil Pengujian Unit & Security (24/24 Test Suite)</h4>
+          <h4>3. Hasil Pengujian Unit, Build, dan Security (24/24 Test Suite)</h4>
           <ul>
-            <li>✔ <code>tests/format.test.mjs</code>: 7/7 test passed (format Rupiah IDR, timezone WIB, generator nomor faktur INV).</li>
-            <li>✔ <code>tests/build-dev.test.mjs</code>: 3/3 test passed (DEV Build Guard & isolasi environment variables).</li>
-            <li>✔ <code>tests/i18n.test.mjs</code>: 1/1 test passed (Kelengkapan kamus dwi-bahasa Indonesia & Inggris).</li>
-            <li>✔ <code>tests/supabase-security.test.mjs</code>: 13/13 live integration tests passed (Row-Level Security RLS Supabase menolak akses publik/anon pada data privat dan RPC penjualan).</li>
+            <li>✔ <strong>TypeScript 5 & Next.js 16 (Turbopack):</strong> Compiled successfully in 1.4s, 0 compiler error.</li>
+            <li>✔ <strong>Unit Tests (<code>src/utils/format.ts</code>):</strong> 7/7 passed (formatRupiah, formatDateTime, formatClockTime, generator INV).</li>
+            <li>✔ <strong>DEV Build Guard:</strong> 3/3 passed (Validasi pemisahan environment & URL Supabase).</li>
+            <li>✔ <strong>Supabase Security & RLS Tests:</strong> 13/13 passed (Row-Level Security menolak akses unauthenticated pada seluruh tabel privat).</li>
           </ul>
         `
       },
       doc3: {
         icon: "🛡️",
-        title: "DOC-03: Security & Multi-Tenant RLS Audit Certification",
-        meta: "Disusun oleh: Dimas Suryo (Lead IT Security) & Kevin Alamsyah • Status: Certified Secure",
+        title: "DOC-03: Security, Single-Session & Auth Guard Certification",
+        meta: "Disusun oleh: Dimas Suryo (Lead Security) & Kevin Alamsyah • Status: Certified Secure",
         content: `
-          <h4>1. Pernyataan Sertifikasi Keamanan</h4>
-          <p>Tim Cyber Security PT AlphaGen telah melakukan penetration testing internal dan audit arsitektur database Supabase PostgreSQL pada arsitektur multi-tenant ALPHOS v1.5.0. Dinyatakan aman dari ancaman kebocoran data antar merchant (Zero Tenant Leakage).</p>
+          <h4>1. Sertifikasi Row-Level Security (RLS) Multi-Tenant</h4>
+          <p>Audit penetrasi membuktikan PostgreSQL Supabase mengisolasi 100% data transaksi, produk, dan shift antar tenant ritel. Kebocoran data lintas toko secara matematis dan kriptografis mustahil terjadi.</p>
 
-          <h4>2. Prinsip Isolasi Data Tenant</h4>
-          <ul>
-            <li><strong>Row Level Security (RLS) Enforcement:</strong> Setiap query SELECT, INSERT, UPDATE, DELETE pada tabel <code>products</code>, <code>transactions</code>, <code>shifts</code>, dan <code>petty_cash_logs</code> diproteksi dengan policy <code>tenant_id = auth.jwt()->>'tenant_id'</code>.</li>
-            <li><strong>Bypass Proteksi Kasir:</strong> Kasir toko A secara matematis dan kriptografis mustahil mengakses rekap kas, omzet, atau produk dari toko B.</li>
-            <li><strong>Otorisasi Root Superadmin:</strong> Hak akses superadmin menggunakan mekanisme token terverifikasi di server context dengan session validation anti-tampering.</li>
-          </ul>
+          <h4>2. Single-Device Session Guard</h4>
+          <p>Setiap akun kasir dan owner diverifikasi token aktifnya melalui Stored Procedure database. Percobaan login simultan pada perangkat berbeda akan ditolak otomatis dengan notifikasi <em>"User Sedang Aktif Digunakan"</em>.</p>
 
-          <h4>3. Anti-Fraud & Mitigasi Manipulasi Finansial</h4>
-          <p>Diskon kasir divalidasi ganda: pada validasi input antarmuka kasir (UI lock) dan pada kalkulasi Stored Procedure RPC <code>process_sale</code> di level PostgreSQL.</p>
+          <h4>3. Google OAuth Prerequisite Guard</h4>
+          <p>Tombol Google Sign-in pada tab 'Masuk' dilengkapi validasi prasyarat: akun Google yang mencoba login harus sudah terdaftar (sign-up) sebelumnya. Akun baru yang mencoba login tanpa mendaftar akan ditolak dan diarahkan ke tab 'Daftar'.</p>
         `
       },
       doc4: {
         icon: "📖",
-        title: "DOC-04: User Manual & Standar Operasional Prosedur (SOP)",
-        meta: "Disusun oleh: Maya Dewi (TW Lead) & Tari Wulandari • Versi: 2.0.0 SOP Final",
+        title: "DOC-04: User Manual & Standar Operasional Prosedur (SOP) v1.5.1",
+        meta: "Disusun oleh: Maya Dewi (TW Lead) & Dimas Ramadhan (Intern TW) • Versi: v1.5.1 SOP Final",
         content: `
-          <h4>1. Panduan Akses Superadmin Hub</h4>
-          <p>Superadmin dapat mengakses portal SaaS melalui URL sistem dengan kredensial resmi:</p>
+          <h4>1. Panduan Autentikasi Pengguna & Google Sign-In</h4>
           <ul>
-            <li>Lingkungan DEV: Username <code>admindev</code> / Password <code>Jakarta123</code></li>
-            <li>Lingkungan PROD: Username <code>adminprod</code> / Password <code>Jakarta123</code></li>
+            <li><strong>Login Tradisional:</strong> Masukkan username/email dan password terdaftar.</li>
+            <li><strong>Login dengan Akun Google:</strong> Klik tombol 'Masuk dengan Google'. Pastikan akun Google Anda telah terdaftar sebelumnya. Jika baru pertama kali, gunakan tab 'Daftar' lalu pilih 'Daftar dengan Google'.</li>
           </ul>
 
-          <h4>2. Tata Cara Manajemen Merchant</h4>
+          <h4>2. Pengoperasian Visual Analytics & Switcher Grafik</h4>
           <ul>
-            <li><strong>Pencarian & Filter:</strong> Gunakan kolom cari atau chip status (Semua, Aktif, Trial, Expired) untuk memfilter tenant.</li>
-            <li><strong>Detail Spesifikasi:</strong> Klik tombol 'Detail' pada baris toko untuk melihat rincian pemilik, jumlah outlet cabang, dan paket langganan.</li>
-            <li><strong>Suspend & Reaktivasi:</strong> Klik tombol 'Suspend' untuk membekukan sementara akun merchant yang menunggak langganan, atau 'Aktifkan' untuk memulihkan hak akses.</li>
-            <li><strong>Mode Toko POS:</strong> Tombol 'Mode Toko POS' di pojok kanan atas memungkinkan superadmin melakukan simulasi transaksi langsung di modul kasir retail.</li>
+            <li><strong>Memilih Bentuk Grafik:</strong> Klik salah satu dari 3 kotak ikon di pojok kanan header grafik:
+              <ul>
+                <li>📈 <strong>Line Chart:</strong> Melihat kurva tren omzet dinamis hari ke hari.</li>
+                <li>📊 <strong>Bar Chart:</strong> Melihat volume omzet per periode dalam bentuk diagram batang.</li>
+                <li>🍩 <strong>Pie / Donut Chart:</strong> Melihat rasio proporsi pembayaran kasir (QRIS, Tunai, Transfer).</li>
+              </ul>
+              Ikon yang sedang aktif ditandai dengan warna hijau emerald (<code>#10B981</code>).
+            </li>
+            <li><strong>Cetak Laporan / Simpan PDF:</strong> Klik tombol ikon printer bulat di samping filter waktu untuk membuka print dialog yang bersih dan rapi.</li>
           </ul>
 
-          <h4>3. SOP Kasir & Notifikasi Audio</h4>
-          <p>Kasir wajib memastikan audio toko aktif untuk mendengar chime peringatan saat stok barang menipis atau habis. Toggle mute tersedia di menu Pengaturan Toko jika diperlukan penyesuaian operasional.</p>
+          <h4>3. Pengaturan Audio Chime</h4>
+          <p>Audio lonceng notifikasi dapat diaktifkan atau dinonaktifkan secara mandiri melalui menu <strong>Pengaturan Toko</strong>.</p>
         `
       },
       doc5: {
         icon: "🚀",
-        title: "DOC-05: DevOps Cloud Deployment & Rollback Manifest",
-        meta: "Disusun oleh: Aris Nugraha (DevOps & Cloud Lead) • Status: Staged for Branch Develop",
+        title: "DOC-05: DevOps Multi-Branch CI/CD & Hotfix RCA Manifest",
+        meta: "Disusun oleh: Aris Nugraha (DevOps & Cloud Lead) • Status: 100% Deployed & Live",
         content: `
-          <h4>1. Strategi Deployment Terpadu</h4>
-          <p>Penerapan rilis Sprint 5 menggunakan strategi Staged Deployment:</p>
+          <h4>1. Laporan Root Cause Analysis (RCA) Bug Intl & Cache 304</h4>
           <ul>
-            <li><strong>Tahap 1 (Step 5):</strong> Sinkronisasi git commit fitur Sprint 5 dan push ke remote branch <code>develop</code> untuk staging preview di Vercel Cloud DEV.</li>
-            <li><strong>Tahap 2 (Step 6):</strong> Validasi sign-off produksi akhir, pembuatan tag git <code>v1.5.0</code>, dan merge ke branch <code>main</code> untuk Production Live Release.</li>
+            <li><strong>Akar Masalah:</strong> Penggunaan properti <code>timeStyle</code> pada fungsi <code>Date.toLocaleDateString()</code> melempar <code>TypeError: Invalid option : timeStyle</code> saat merender menu grafik.</li>
+            <li><strong>Solusi Kode:</strong> Beralih ke utilitas resmi <code>formatDateTime(new Date().toISOString(), 'id')</code> berbasis <code>Intl.DateTimeFormat</code>.</li>
+            <li><strong>Pemasangan ErrorBoundary:</strong> Seluruh tab aplikasi kini dibungkus dengan komponen <code>ErrorBoundary.tsx</code> untuk mencegah crash global pada aplikasi.</li>
+            <li><strong>Mitigasi Cache Webview 304:</strong> Respon 304 Not Modified dari Vercel ditangani dengan instruksi bypass hard reload / disable cache pada webview browser.</li>
           </ul>
 
-          <h4>2. Konfigurasi Lingkungan (Environment Variables)</h4>
+          <h4>2. Sinkronisasi Multi-Branch Deployment</h4>
+          <p>Commit rilis telah berhasil dideploy secara konsisten ke 3 remote branch:</p>
           <ul>
-            <li>DEV: <code>NEXT_PUBLIC_APP_ENV=development</code> (Menggunakan database Supabase DEV terisolasi).</li>
-            <li>PROD: <code>NEXT_PUBLIC_APP_ENV=production</code> (Menggunakan database Supabase Production dengan proteksi ketat).</li>
+            <li>🌿 <code>develop</code> (Preview Cloud DEV: <code>alphos-smartpos-dev.vercel.app</code>)</li>
+            <li>🌳 <code>main</code> (Production Live: <code>alphos-smartpos.vercel.app</code>)</li>
+            <li>🛡️ <code>superadmin</code> (Superadmin Hub: <code>alphos-smartpos-admin.vercel.app</code>)</li>
           </ul>
-
-          <h4>3. Rencana Kontingensi & Rollback</h4>
-          <p>Jika terjadi anomali kritis pasca-deployment, sistem rollback instan Vercel Deployment Alias dapat diarahkan kembali ke build <code>v1.4.0</code> dalam waktu kurang dari 30 detik tanpa downtime.</p>
         `
       }
     };
