@@ -1749,6 +1749,10 @@ textarea.input {
     display: none !important;
   }
 
+  .print-header {
+    display: block !important;
+  }
+
   body,
   .receipt-public-page {
     background: #ffffff !important;

@@ -193,17 +193,6 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         </div>
       </div>
 
-      <style jsx>{`
-        @media print {
-          .print-header {
-            display: block !important;
-          }
-          .no-print {
-            display: none !important;
-          }
-        }
-      `}</style>
-
       {/* 1. Header Bar & Timeframe Pills */}
       <div
         style={{
