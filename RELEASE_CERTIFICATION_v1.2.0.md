@@ -12,7 +12,7 @@ Dokumen ini menyatakan bahwa rilis **POS Toko Retail `v1.2.0`** (Next.js 16 App 
 | **Versi** | `v1.2.0` |
 | **Tanggal Sertifikasi** | 2026-11-24 |
 | **Stack Utama** | Next.js `16.4.6` (App Router + Turbopack), React `19.3.1`, TypeScript `5.9.3`, Supabase (`@supabase/supabase-js` `2.119.2`) |
-| **Lingkungan Uji (DEV)** | `https://alphos-develop-anggiandriansyah.vercel.app/` |
+| **Lingkungan Uji (DEV)** | `https://alphos-smartpos-dev.vercel.app/` |
 | **Status Akhir** | **CERTIFIED / PASS** |
 
 ---
@@ -27,7 +27,7 @@ Dokumen ini menyatakan bahwa rilis **POS Toko Retail `v1.2.0`** (Next.js 16 App 
 | 4 | **Production Build** (`next build`) | Build sukses tanpa error | `16.4.6` Turbopack sukses (`/` Static, `/receipt/[invoice]` Dynamic) | **PASS** |
 | 5 | **Performance Test** | Latensi RPC dalam batas wajar | Warm RPC latency `~41–62 ms` | **PASS** |
 | 6 | **Regression Test** | Tidak ada regresi pada fitur v1.0.0–v1.1.0 | Seluruh alur utama berjalan normal | **PASS** |
-| 7 | **UAT & Browser Verification (DEV)** | Verifikasi UI, scanner, auth, & flow E2E di browser | Terverifikasi di `https://alphos-develop-anggiandriansyah.vercel.app/` | **PASS** |
+| 7 | **UAT & Browser Verification (DEV)** | Verifikasi UI, scanner, auth, & flow E2E di browser | Terverifikasi di `https://alphos-smartpos-dev.vercel.app/` | **PASS** |
 
 ---
 

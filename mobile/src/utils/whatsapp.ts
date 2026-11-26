@@ -1,6 +1,6 @@
 export const DEV_RECEIPT_BASE_URL =
   process.env.EXPO_PUBLIC_RECEIPT_BASE_URL ||
-  'https://alphos-develop-anggiandriansyah.vercel.app';
+  'https://alphos-smartpos-dev.vercel.app';
 
 export interface WhatsAppReceiptInput {
   storeName: string;

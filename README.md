@@ -2,7 +2,7 @@
 
 Platform Kasir & Inventaris Retail Modern berbasis **Next.js 16 (Web)**, **React Native / Expo (Mobile Android)**, **TypeScript**, dan **Supabase DEV (`tcbhaiyhtndnqgatysmh`)**.
 
-- **DEV Preview Web:** [https://alphos-develop-anggiandriansyah.vercel.app/](https://alphos-develop-anggiandriansyah.vercel.app/)
+- **DEV Preview Web:** [https://alphos-smartpos-dev.vercel.app/](https://alphos-smartpos-dev.vercel.app/)
 - **Mobile App (`US-4.1`–`US-4.6`):** Subfolder [`mobile/`](./mobile/package.json) menggunakan Shared Core bebas DOM (`src/types/pos.ts`, `src/utils/pricing.ts`, `src/utils/format.ts`, `src/utils/csv.ts`, `src/i18n/translations.ts`).
 
 ---
