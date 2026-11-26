@@ -90,11 +90,11 @@ export default function LoginPage() {
     setConfirmPassword('');
   }
 
-  async function handleGoogleSignIn() {
+  async function handleGoogleSignIn(intent: 'login' | 'signup' = 'login') {
     setFeedback(null);
     setSubmitting(true);
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(intent);
     } catch (err) {
       const message = err instanceof Error ? err.message : t.googleFailed;
       setFeedback({
@@ -313,16 +313,34 @@ export default function LoginPage() {
             </div>
           )}
 
+          {activeMode === 'login' && (
+            <>
+              <button
+                type="button"
+                className="btn btn-google btn-lg"
+                onClick={() => handleGoogleSignIn('login')}
+                disabled={submitting}
+              >
+                <GoogleLogo />
+                <span>{t.signInWithGoogle}</span>
+              </button>
+
+              <div className="login-divider">
+                <span>{t.orDividerSignIn}</span>
+              </div>
+            </>
+          )}
+
           {activeMode === 'signup' && (
             <>
               <button
                 type="button"
                 className="btn btn-google btn-lg"
-                onClick={handleGoogleSignIn}
+                onClick={() => handleGoogleSignIn('signup')}
                 disabled={submitting}
               >
                 <GoogleLogo />
-                <span>{t.continueWithGoogle}</span>
+                <span>{t.signUpWithGoogle}</span>
               </button>
 
               <div className="login-divider">

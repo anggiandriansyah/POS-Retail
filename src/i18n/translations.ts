@@ -105,7 +105,11 @@ export const translations = {
       claimOwnerBtn: 'Daftar & Klaim Owner Pertama',
       claimingOwnerBtn: 'Mendaftarkan...',
       continueWithGoogle: 'Lanjutkan dengan Google',
+      signInWithGoogle: 'Masuk dengan Google',
+      signUpWithGoogle: 'Daftar dengan Google',
       orDivider: 'atau daftar dengan email',
+      orDividerSignIn: 'atau masuk dengan username / email',
+      googleNotRegistered: 'Akun Google ini belum terdaftar di ALPHOS. Silakan lakukan pendaftaran akun terlebih dahulu melalui tab Daftar.',
       cashierNote:
         'Catatan: Akun Kasir dibuat & dikelola langsung oleh Owner melalui menu Kelola Kasir.',
       ownerSetupHint: 'Setup awal: akun pertama akan otomatis menjadi Owner toko.',
@@ -826,7 +830,11 @@ export const translations = {
       claimOwnerBtn: 'Register & Claim First Owner',
       claimingOwnerBtn: 'Registering...',
       continueWithGoogle: 'Continue with Google',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
       orDivider: 'or sign up with email',
+      orDividerSignIn: 'or sign in with username / email',
+      googleNotRegistered: 'This Google account is not registered yet on ALPHOS. Please sign up first via the Sign Up tab.',
       cashierNote:
         'Note: Cashier accounts are created & managed directly by the Owner in Manage Staff.',
       ownerSetupHint: 'Initial setup: the first account automatically becomes Store Owner.',

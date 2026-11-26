@@ -19,7 +19,7 @@ export interface AuthContextValue {
     fullName: string,
     username?: string
   ) => Promise<{ user: User | null; session: Session | null }>;
-  signInWithGoogle: () => Promise<{ provider: string; url: string | null }>;
+  signInWithGoogle: (intent?: 'login' | 'signup') => Promise<{ provider: string; url: string | null }>;
   claimFirstOwner: (
     email: string,
     password: string,

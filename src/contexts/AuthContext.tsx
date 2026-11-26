@@ -90,6 +90,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      // Guard: Google OAuth Login requires existing registration (Sign Up first)
+      if (typeof window !== 'undefined') {
+        const oauthIntent = sessionStorage.getItem('alphos_oauth_intent');
+        if (oauthIntent) {
+          sessionStorage.removeItem('alphos_oauth_intent');
+          if (oauthIntent === 'login') {
+            const createdAt = new Date(currentUser.created_at).getTime();
+            const lastSignIn = currentUser.last_sign_in_at
+              ? new Date(currentUser.last_sign_in_at).getTime()
+              : createdAt;
+            const now = Date.now();
+            const isBrandNewAccount =
+              Math.abs(createdAt - lastSignIn) < 3000 && now - createdAt < 45000;
+
+            if (isBrandNewAccount) {
+              await supabase.auth.signOut();
+              setSession(null);
+              setUser(null);
+              setProfile(null);
+              setActiveShift(null);
+              setAuthError(
+                'Akun Google ini belum terdaftar di ALPHOS. Silakan lakukan pendaftaran akun terlebih dahulu melalui tab Daftar.'
+              );
+              return;
+            }
+          }
+        }
+      }
+
       setAuthError('');
       setSession(currentSession);
       setUser(currentUser);
@@ -282,9 +311,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (intent: 'login' | 'signup' = 'login') => {
     if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
     setAuthError('');
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('alphos_oauth_intent', intent);
+    }
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
