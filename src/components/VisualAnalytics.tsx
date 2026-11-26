@@ -11,6 +11,8 @@ import {
   LineChart as LineIcon,
   ArrowUpRight,
   CheckCircle,
+  PackageCheck,
+  CreditCard,
 } from 'lucide-react';
 import type { Product } from '../types/pos';
 import { formatRupiah } from '../utils/format';
@@ -26,65 +28,63 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
   const [timeframe, setTimeframe] = useState<Timeframe>('7d');
   const [chartType, setChartType] = useState<ChartType>('line');
 
-  // Realistic mock data generated based on timeframe
+  // Realistic mock analytics data generated per timeframe
   const data = useMemo(() => {
     if (timeframe === 'today') {
       return {
         revenueTimeline: [
-          { label: '08:00', value: 340000, orders: 4 },
-          { label: '10:00', value: 890000, orders: 11 },
-          { label: '12:00', value: 1650000, orders: 22 },
-          { label: '14:00', value: 920000, orders: 12 },
-          { label: '16:00', value: 1380000, orders: 18 },
-          { label: '18:00', value: 2450000, orders: 31 },
-          { label: '20:00', value: 1820000, orders: 24 },
-          { label: '21:30', value: 650000, orders: 8 },
+          { label: '08:00', value: 450000, orders: 5 },
+          { label: '10:00', value: 980000, orders: 12 },
+          { label: '12:00', value: 1850000, orders: 24 },
+          { label: '14:00', value: 1120000, orders: 14 },
+          { label: '16:00', value: 1480000, orders: 19 },
+          { label: '18:00', value: 2650000, orders: 34 },
+          { label: '20:00', value: 1950000, orders: 25 },
+          { label: '21:30', value: 720000, orders: 9 },
         ],
         topProducts: [
-          { name: 'Kopi Susu Gula Aren 250ml', qty: 38, revenue: 950000, category: 'Minuman' },
-          { name: 'Roti Bakar Cokelat Keju', qty: 29, revenue: 580000, category: 'Makanan' },
-          { name: 'Air Mineral 600ml', qty: 45, revenue: 225000, category: 'Minuman' },
-          { name: 'Matcha Latte Ice', qty: 19, revenue: 475000, category: 'Minuman' },
-          { name: 'Croissant Butter', qty: 14, revenue: 420000, category: 'Bakery' },
+          { name: 'Kopi Susu Gula Aren 250ml', qty: 42, revenue: 1050000, category: 'Minuman' },
+          { name: 'Roti Bakar Cokelat Keju', qty: 31, revenue: 620000, category: 'Makanan' },
+          { name: 'Air Mineral 600ml', qty: 50, revenue: 250000, category: 'Minuman' },
+          { name: 'Matcha Latte Ice', qty: 22, revenue: 550000, category: 'Minuman' },
+          { name: 'Croissant Butter', qty: 16, revenue: 480000, category: 'Bakery' },
         ],
         payments: [
-          { method: 'QRIS', count: 72, total: 5850000, color: '#3B82F6', percent: 58 },
-          { method: 'CASH', count: 41, total: 3250000, color: '#10B981', percent: 32 },
-          { method: 'TRANSFER', count: 17, total: 1000000, color: '#8B5CF6', percent: 10 },
+          { method: 'QRIS', count: 78, total: 6680000, color: '#3B82F6', percent: 60 },
+          { method: 'CASH', count: 44, total: 3450000, color: '#10B981', percent: 31 },
+          { method: 'TRANSFER', count: 16, total: 1070000, color: '#8B5CF6', percent: 9 },
         ],
-        grossRevenue: 10100000,
-        totalOrders: 130,
-        avgOrderValue: 77692,
-        netProfit: 4242000,
+        grossRevenue: 11200000,
+        totalOrders: 138,
+        avgOrderValue: 81159,
+        netProfit: 4704000,
       };
     }
 
     if (timeframe === '30d' || timeframe === 'month') {
       return {
         revenueTimeline: [
-          { label: 'Mgg 1', value: 42500000, orders: 540 },
-          { label: 'Mgg 2', value: 48900000, orders: 610 },
-          { label: 'Mgg 3', value: 54200000, orders: 690 },
-          { label: 'Mgg 4', value: 61800000, orders: 780 },
+          { label: 'Minggu 1', value: 43500000, orders: 540 },
+          { label: 'Minggu 2', value: 49800000, orders: 620 },
+          { label: 'Minggu 3', value: 55200000, orders: 700 },
+          { label: 'Minggu 4', value: 63500000, orders: 810 },
         ],
         topProducts: [
-          { name: 'Kopi Susu Gula Aren 250ml', qty: 980, revenue: 24500000, category: 'Minuman' },
-          { name: 'Roti Bakar Cokelat Keju', qty: 650, revenue: 13000000, category: 'Makanan' },
-          { name: 'Croissant Butter', qty: 420, revenue: 12600000, category: 'Bakery' },
-          { name: 'Matcha Latte Ice', qty: 380, revenue: 9500000, category: 'Minuman' },
-          { name: 'Espresso Double Shot', qty: 410, revenue: 8200000, category: 'Minuman' },
-          { name: 'French Fries Crispy', qty: 350, revenue: 7000000, category: 'Snack' },
-          { name: 'Air Mineral 600ml', qty: 1100, revenue: 5500000, category: 'Minuman' },
+          { name: 'Kopi Susu Gula Aren 250ml', qty: 1020, revenue: 25500000, category: 'Minuman' },
+          { name: 'Roti Bakar Cokelat Keju', qty: 680, revenue: 13600000, category: 'Makanan' },
+          { name: 'Croissant Butter', qty: 440, revenue: 13200000, category: 'Bakery' },
+          { name: 'Matcha Latte Ice', qty: 395, revenue: 9875000, category: 'Minuman' },
+          { name: 'Espresso Double Shot', qty: 420, revenue: 8400000, category: 'Minuman' },
         ],
         payments: [
-          { method: 'QRIS', count: 1580, total: 124440000, color: '#3B82F6', percent: 60 },
-          { method: 'CASH', count: 790, total: 62220000, color: '#10B981', percent: 30 },
-          { method: 'TRANSFER', count: 250, total: 20740000, color: '#8B5CF6', percent: 10 },
+          { method: 'QRIS', count: 1620, total: 127200000, color: '#3B82F6', percent: 60 },
+          { method: 'CASH', count: 810, total: 63600000, color: '#10B981', percent: 30 },
+          { method: 'TRANSFER', count: 240, total: 21200000, color: '#8B5CF6', percent: 10 },
         ],
-        grossRevenue: 207400000,
-        totalOrders: 2620,
-        avgOrderValue: 79160,
-        netProfit: 87108000,
+        grossRevenue: 212000000,
+        totalOrders: 2670,
+        avgOrderValue: 79400,
+        netProfit: 89040000,
       };
     }
 
@@ -105,7 +105,6 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         { name: 'Croissant Butter', qty: 115, revenue: 3450000, category: 'Bakery' },
         { name: 'Matcha Latte Ice', qty: 95, revenue: 2375000, category: 'Minuman' },
         { name: 'French Fries Crispy', qty: 88, revenue: 1760000, category: 'Snack' },
-        { name: 'Air Mineral 600ml', qty: 280, revenue: 1400000, category: 'Minuman' },
       ],
       payments: [
         { method: 'QRIS', count: 462, total: 39520000, color: '#3B82F6', percent: 59 },
@@ -119,29 +118,34 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
     };
   }, [timeframe]);
 
-  // Calculations for Line Chart
+  // Scaled dimensions for Line and Bar Charts (compact & well-proportioned)
+  const chartHeight = 180;
+  const chartWidth = 560;
+  const paddingX = 36;
+  const paddingY = 24;
+
   const maxRevenue = Math.max(...data.revenueTimeline.map(d => d.value), 1);
-  const chartHeight = 220;
-  const chartWidth = 600;
-  const paddingX = 40;
-  const paddingY = 30;
 
-  const points = data.revenueTimeline.map((item, idx) => {
-    const x = paddingX + (idx / (data.revenueTimeline.length - 1)) * (chartWidth - paddingX * 2);
-    const y = chartHeight - paddingY - (item.value / maxRevenue) * (chartHeight - paddingY * 2);
-    return { x, y, ...item };
-  });
+  const points = useMemo(() => {
+    return data.revenueTimeline.map((item, idx) => {
+      const x = paddingX + (idx / Math.max(data.revenueTimeline.length - 1, 1)) * (chartWidth - paddingX * 2);
+      const y = chartHeight - paddingY - (item.value / maxRevenue) * (chartHeight - paddingY * 2);
+      return { x, y, ...item };
+    });
+  }, [data.revenueTimeline, maxRevenue, chartWidth, chartHeight, paddingX, paddingY]);
 
-  const pathD = points.reduce((acc, p, idx) => {
-    return idx === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`;
-  }, '');
+  const pathD = useMemo(() => {
+    return points.reduce((acc, p, idx) => {
+      return idx === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`;
+    }, '');
+  }, [points]);
 
-  const areaD = `${pathD} L ${points[points.length - 1].x} ${chartHeight - paddingY} L ${points[0].x} ${chartHeight - paddingY} Z`;
+  const areaD = useMemo(() => {
+    if (points.length === 0) return '';
+    return `${pathD} L ${points[points.length - 1].x} ${chartHeight - paddingY} L ${points[0].x} ${chartHeight - paddingY} Z`;
+  }, [pathD, points, chartHeight, paddingY]);
 
-  // Calculations for Bar Chart
-  const maxBarRevenue = Math.max(...data.revenueTimeline.map(d => d.value), 1);
-
-  // Donut slices pre-calculated immutably
+  // Donut slices for Pie Chart
   const donutSlices = useMemo(() => {
     return data.payments.map((p, idx, arr) => {
       const offset = arr.slice(0, idx).reduce((sum, item) => sum + item.percent, 0);
@@ -154,370 +158,800 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
   }, [data.payments]);
 
   return (
-    <div className="space-y-6">
-      {/* Top Filter & Timeframe Selector Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/70 p-4 rounded-2xl border border-slate-800 shadow-sm backdrop-blur-sm">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+      {/* 1. Header Bar & Timeframe Pills */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '14px',
+          background: 'var(--surface)',
+          padding: '16px 20px',
+          borderRadius: '16px',
+          border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
         <div>
-          <h2 className="text-base font-extrabold text-white flex items-center gap-2">
-            <TrendingUp size={20} className="text-emerald-400" />
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '1.15rem',
+              fontWeight: 800,
+              color: 'var(--text)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+          >
+            <TrendingUp size={22} style={{ color: '#10B981' }} />
             <span>Visual Analytics & Insight Penjualan</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Analisis tren pendapatan, produk terlaris, dan rasio pembayaran kasir
+          <p style={{ margin: '3px 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
+            Analisis tren omzet, produk terlaris, dan rasio pembayaran kasir
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          {/* Chart Type Selector Bar (Hotfix v1.5.1: Line / Bar / Pie switcher requested by Mas Gege) */}
-          <div className="inline-flex items-center bg-slate-950/80 p-1 rounded-full border border-slate-800 text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => setChartType('line')}
-              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
-                chartType === 'line'
-                  ? 'bg-blue-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Tampilkan grafik garis (Line Chart)"
-            >
-              <LineIcon size={13} />
-              <span>Line</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setChartType('bar')}
-              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
-                chartType === 'bar'
-                  ? 'bg-blue-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Tampilkan grafik batang (Bar Chart)"
-            >
-              <BarChart3 size={13} />
-              <span>Bar</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setChartType('pie')}
-              className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
-                chartType === 'pie'
-                  ? 'bg-blue-600 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-              title="Tampilkan diagram lingkaran (Pie/Donut Chart)"
-            >
-              <PieIcon size={13} />
-              <span>Pie</span>
-            </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Timeframe Chips */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'var(--bg)',
+              padding: '3px',
+              borderRadius: '999px',
+              border: '1px solid var(--border)',
+            }}
+          >
+            {(['today', '7d', '30d', 'month'] as const).map(tf => {
+              const isActive = timeframe === tf;
+              return (
+                <button
+                  key={tf}
+                  type="button"
+                  onClick={() => setTimeframe(tf)}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontWeight: isActive ? 700 : 500,
+                    border: 'none',
+                    background: isActive ? '#10B981' : 'transparent',
+                    color: isActive ? '#ffffff' : 'var(--muted)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    boxShadow: isActive ? '0 2px 6px rgba(16, 185, 129, 0.3)' : 'none',
+                  }}
+                >
+                  {tf === 'today' ? 'Hari Ini' : tf === '7d' ? '7 Hari' : tf === '30d' ? '30 Hari' : 'Bulan Ini'}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Timeframe Chips (Modern Sleek Pill Shape) */}
-          <div className="inline-flex items-center bg-slate-950/80 p-1 rounded-full border border-slate-800 text-xs font-semibold">
-            {(['today', '7d', '30d', 'month'] as const).map(tf => (
-              <button
-                key={tf}
-                type="button"
-                onClick={() => setTimeframe(tf)}
-                className={`px-3 py-1 rounded-full transition-all ${
-                  timeframe === tf
-                    ? 'bg-emerald-600 text-white shadow'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {tf === 'today' ? 'Hari Ini' : tf === '7d' ? '7 Hari' : tf === '30d' ? '30 Hari' : 'Bulan Ini'}
-              </button>
-            ))}
-          </div>
-
-          {/* Print PDF Button (Icon Only - Requested by Mas Gege) */}
+          {/* Print PDF Button */}
           <button
             type="button"
             onClick={() => window.print()}
-            className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition focus:outline-none"
-            title="Cetak atau simpan PDF analitik"
-            aria-label="Cetak PDF"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface)')}
+            title="Cetak Laporan / Simpan PDF"
+            aria-label="Cetak Laporan"
           >
             <Printer size={16} />
           </button>
         </div>
       </div>
 
-      {/* KPI Highlight Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-            <span>Total Pendapatan Kotor</span>
-            <DollarSign size={16} className="text-emerald-400" />
+      {/* 2. KPI Summary Cards (4 Columns) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+          gap: '14px',
+        }}
+      >
+        {/* Card 1: Omzet Kotor */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '14px',
+            padding: '16px',
+            boxShadow: 'var(--shadow-xs)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Total Pendapatan Kotor</span>
+            <DollarSign size={16} style={{ color: '#10B981' }} />
           </div>
-          <div className="text-2xl font-black text-emerald-400">{formatRupiah(data.grossRevenue)}</div>
-          <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-            <ArrowUpRight size={13} className="text-emerald-400" />
-            <span className="text-emerald-400 font-semibold">+14.2%</span> dibanding periode sebelumnya
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
+            {formatRupiah(data.grossRevenue)}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px', fontSize: '0.74rem', color: '#10B981', fontWeight: 600 }}>
+            <ArrowUpRight size={14} />
+            <span>+14.2% dibanding periode lalu</span>
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-            <span>Jumlah Transaksi</span>
-            <ShoppingBag size={16} className="text-blue-400" />
+        {/* Card 2: Jumlah Transaksi */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '14px',
+            padding: '16px',
+            boxShadow: 'var(--shadow-xs)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Jumlah Transaksi</span>
+            <ShoppingBag size={16} style={{ color: '#3B82F6' }} />
           </div>
-          <div className="text-2xl font-black text-white">{data.totalOrders} Transaksi</div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
+            {data.totalOrders} <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--muted)' }}>Struk</span>
+          </div>
+          <div style={{ marginTop: '6px', fontSize: '0.74rem', color: 'var(--muted)' }}>
             Rata-rata {Math.round(data.totalOrders / (timeframe === 'today' ? 1 : timeframe === '7d' ? 7 : 30))} order / hari
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-            <span>Average Order Value (AOV)</span>
-            <TrendingUp size={16} className="text-purple-400" />
+        {/* Card 3: AOV */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '14px',
+            padding: '16px',
+            boxShadow: 'var(--shadow-xs)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Average Order Value</span>
+            <TrendingUp size={16} style={{ color: '#8B5CF6' }} />
           </div>
-          <div className="text-2xl font-black text-purple-300">{formatRupiah(data.avgOrderValue)}</div>
-          <div className="text-[11px] text-slate-400 mt-1">
-            Nilai rata-rata per struk belanja kasir
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
+            {formatRupiah(data.avgOrderValue)}
+          </div>
+          <div style={{ marginTop: '6px', fontSize: '0.74rem', color: 'var(--muted)' }}>
+            Rata-rata nominal per transaksi
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-            <span>Estimasi Laba Bersih</span>
-            <CheckCircle size={16} className="text-indigo-400" />
+        {/* Card 4: Estimasi Laba Bersih */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '14px',
+            padding: '16px',
+            boxShadow: 'var(--shadow-xs)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Estimasi Laba Bersih</span>
+            <CheckCircle size={16} style={{ color: '#10B981' }} />
           </div>
-          <div className="text-2xl font-black text-indigo-300">{formatRupiah(data.netProfit)}</div>
-          <div className="text-[11px] text-slate-400 mt-1">
-            Margin bersih toko ~42%
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
+            {formatRupiah(data.netProfit)}
+          </div>
+          <div style={{ marginTop: '6px', fontSize: '0.74rem', color: 'var(--muted)' }}>
+            Margin bersih estimasi ~42%
           </div>
         </div>
       </div>
 
-      {/* Main Interactive Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* PRIMARY SELECTED CHART VIEW (Line, Bar, or Pie) */}
-        <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-            <div>
-              <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-                {chartType === 'line' && <LineIcon size={16} className="text-blue-400" />}
-                {chartType === 'bar' && <BarChart3 size={16} className="text-emerald-400" />}
-                {chartType === 'pie' && <PieIcon size={16} className="text-purple-400" />}
-                <span>
-                  {chartType === 'line' && 'Kurva Pertumbuhan Omzet (Line Chart)'}
-                  {chartType === 'bar' && 'Distribusi Omzet per Periode (Bar Chart)'}
-                  {chartType === 'pie' && 'Rasio Proporsi Pembayaran & Transaksi (Pie Chart)'}
-                </span>
-              </h3>
-              <p className="text-[11px] text-slate-400">
-                Visualisasi dinamik ({timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-bold">Puncak Tertinggi</span>
-              <span className="text-xs font-black text-emerald-400">{formatRupiah(maxRevenue)}</span>
-            </div>
-          </div>
-
-          {/* VIEW 1: LINE CHART */}
-          {chartType === 'line' && (
-            <div className="relative w-full overflow-x-auto">
-              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto min-w-[500px]">
-                <defs>
-                  <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-
-                {/* Horizontal Guide Lines */}
-                {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                  const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
-                  return (
-                    <g key={i}>
-                      <line x1={paddingX} y1={y} x2={chartWidth - paddingX} y2={y} stroke="#1E293B" strokeDasharray="3 3" />
-                      <text x={paddingX - 6} y={y + 3} textAnchor="end" fill="#64748B" fontSize="9" fontFamily="monospace">
-                        {(maxRevenue * ratio / 1000000).toFixed(1)}M
-                      </text>
-                    </g>
-                  );
-                })}
-
-                {/* Area under curve */}
-                <path d={areaD} fill="url(#revenueGrad)" />
-
-                {/* Main line */}
-                <path d={pathD} fill="none" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-
-                {/* Data Points */}
-                {points.map((p, i) => (
-                  <g key={i} className="group cursor-pointer">
-                    <circle cx={p.x} cy={p.y} r="4.5" fill="#1E293B" stroke="#60A5FA" strokeWidth="2" className="transition-all hover:r-6" />
-                    <text x={p.x} y={chartHeight - 10} textAnchor="middle" fill="#94A3B8" fontSize="10" fontWeight="500">
-                      {p.label}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-            </div>
-          )}
-
-          {/* VIEW 2: BAR CHART */}
-          {chartType === 'bar' && (
-            <div className="relative w-full overflow-x-auto">
-              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto min-w-[500px]">
-                <defs>
-                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
-                    <stop offset="100%" stopColor="#059669" stopOpacity="0.4" />
-                  </linearGradient>
-                </defs>
-
-                {/* Horizontal Guide Lines */}
-                {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                  const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
-                  return (
-                    <line key={i} x1={paddingX} y1={y} x2={chartWidth - paddingX} y2={y} stroke="#1E293B" strokeDasharray="3 3" />
-                  );
-                })}
-
-                {/* Vertical Bars */}
-                {data.revenueTimeline.map((item, idx) => {
-                  const count = data.revenueTimeline.length;
-                  const availableWidth = chartWidth - paddingX * 2;
-                  const barWidth = Math.min(36, availableWidth / count - 12);
-                  const stepX = availableWidth / count;
-                  const x = paddingX + idx * stepX + (stepX - barWidth) / 2;
-                  const barH = (item.value / maxBarRevenue) * (chartHeight - paddingY * 2);
-                  const y = chartHeight - paddingY - barH;
-
-                  return (
-                    <g key={idx}>
-                      <rect
-                        x={x}
-                        y={y}
-                        width={barWidth}
-                        height={barH}
-                        rx="5"
-                        fill="url(#barGrad)"
-                        className="transition-all hover:opacity-80"
-                      />
-                      <text x={x + barWidth / 2} y={chartHeight - 10} textAnchor="middle" fill="#94A3B8" fontSize="10" fontWeight="500">
-                        {item.label}
-                      </text>
-                      <text x={x + barWidth / 2} y={y - 6} textAnchor="middle" fill="#34D399" fontSize="9" fontWeight="700">
-                        {(item.value / 1000000).toFixed(1)}M
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-          )}
-
-          {/* VIEW 3: PIE / DONUT CHART */}
-          {chartType === 'pie' && (
-            <div className="py-2 flex flex-col sm:flex-row items-center justify-around gap-6">
-              <div className="relative w-44 h-44 flex items-center justify-center">
-                <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
-                  <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#1E293B" strokeWidth="6" />
-                  {donutSlices.map((slice, i) => (
-                    <circle
-                      key={i}
-                      cx="21"
-                      cy="21"
-                      r="15.915"
-                      fill="transparent"
-                      stroke={slice.color}
-                      strokeWidth="6"
-                      strokeDasharray={slice.strokeDasharray}
-                      strokeDashoffset={slice.strokeDashoffset}
-                      className="transition-all hover:opacity-80"
-                    />
-                  ))}
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase">QRIS Leader</span>
-                  <span className="text-base font-black text-white">{data.payments[0].percent}%</span>
-                </div>
-              </div>
-
-              <div className="space-y-3 w-full sm:w-64">
-                {data.payments.map((p, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
-                      <span className="font-bold text-white">{p.method}</span>
-                      <span className="text-[11px] text-slate-400">({p.count}x)</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-extrabold text-white block">{formatRupiah(p.total)}</span>
-                      <span className="text-[10px] text-emerald-400 font-semibold">{p.percent}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+      {/* 3. 3-COLUMN CHART SWITCHER (SESUAI CATATAN MAS GEGE: FITUR ON BERWARNA HIJAU, 3 KOLOM) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>
+            Pilih Tampilan Grafik (Klik salah satu kolom):
+          </span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+            Default: <strong style={{ color: '#10B981' }}>Line Chart</strong>
+          </span>
         </div>
 
-        {/* CHART 2: DONUT PAYMENT BREAKDOWN & TOP PRODUCTS */}
-        <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-sm flex flex-col justify-between">
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px',
+          }}
+        >
+          {/* Kolom 1: Line Chart */}
+          <button
+            type="button"
+            onClick={() => setChartType('line')}
+            style={{
+              padding: '14px 16px',
+              borderRadius: '14px',
+              border: chartType === 'line' ? '2px solid #10B981' : '1px solid var(--border)',
+              background: chartType === 'line' ? '#10B981' : 'var(--surface)',
+              color: chartType === 'line' ? '#ffffff' : 'var(--text)',
+              cursor: 'pointer',
+              textAlign: 'left',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: chartType === 'line' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
+              transition: 'all 0.18s ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <LineIcon size={18} style={{ color: chartType === 'line' ? '#ffffff' : '#3B82F6' }} />
+                <strong style={{ fontSize: '0.92rem' }}>Line Chart</strong>
+              </div>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: chartType === 'line' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
+                  color: chartType === 'line' ? '#ffffff' : 'var(--muted)',
+                }}
+              >
+                {chartType === 'line' ? '● AKTIF' : 'PILIH'}
+              </span>
+            </div>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                color: chartType === 'line' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
+              }}
+            >
+              Kurva Pertumbuhan Omzet
+            </span>
+          </button>
+
+          {/* Kolom 2: Bar Chart */}
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            style={{
+              padding: '14px 16px',
+              borderRadius: '14px',
+              border: chartType === 'bar' ? '2px solid #10B981' : '1px solid var(--border)',
+              background: chartType === 'bar' ? '#10B981' : 'var(--surface)',
+              color: chartType === 'bar' ? '#ffffff' : 'var(--text)',
+              cursor: 'pointer',
+              textAlign: 'left',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: chartType === 'bar' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
+              transition: 'all 0.18s ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <BarChart3 size={18} style={{ color: chartType === 'bar' ? '#ffffff' : '#10B981' }} />
+                <strong style={{ fontSize: '0.92rem' }}>Bar Chart</strong>
+              </div>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: chartType === 'bar' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
+                  color: chartType === 'bar' ? '#ffffff' : 'var(--muted)',
+                }}
+              >
+                {chartType === 'bar' ? '● AKTIF' : 'PILIH'}
+              </span>
+            </div>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                color: chartType === 'bar' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
+              }}
+            >
+              Distribusi Omzet per Periode
+            </span>
+          </button>
+
+          {/* Kolom 3: Pie Chart */}
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            style={{
+              padding: '14px 16px',
+              borderRadius: '14px',
+              border: chartType === 'pie' ? '2px solid #10B981' : '1px solid var(--border)',
+              background: chartType === 'pie' ? '#10B981' : 'var(--surface)',
+              color: chartType === 'pie' ? '#ffffff' : 'var(--text)',
+              cursor: 'pointer',
+              textAlign: 'left',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: chartType === 'pie' ? '0 6px 18px rgba(16, 185, 129, 0.28)' : 'var(--shadow-xs)',
+              transition: 'all 0.18s ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <PieIcon size={18} style={{ color: chartType === 'pie' ? '#ffffff' : '#8B5CF6' }} />
+                <strong style={{ fontSize: '0.92rem' }}>Pie / Donut</strong>
+              </div>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: chartType === 'pie' ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg)',
+                  color: chartType === 'pie' ? '#ffffff' : 'var(--muted)',
+                }}
+              >
+                {chartType === 'pie' ? '● AKTIF' : 'PILIH'}
+              </span>
+            </div>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                color: chartType === 'pie' ? 'rgba(255, 255, 255, 0.88)' : 'var(--muted)',
+              }}
+            >
+              Rasio Metode Pembayaran
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. MAIN DISPLAY CARD: TAMPILAN GRAFIK YANG SEDANG AKTIF (YG BERWARNA HIJAU) */}
+      <div
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '16px',
+          padding: '20px 24px',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+      >
+        {/* Header Grafik Aktif */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingBottom: '14px',
+            marginBottom: '16px',
+            borderBottom: '1px solid var(--border)',
+          }}
+        >
           <div>
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
-              <div>
-                <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
-                  <PieIcon size={16} className="text-purple-400" />
-                  <span>Metode Pembayaran</span>
-                </h3>
-                <p className="text-[11px] text-slate-400">Rasio QRIS vs Tunai vs Transfer</p>
+            <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {chartType === 'line' && <LineIcon size={18} style={{ color: '#3B82F6' }} />}
+              {chartType === 'bar' && <BarChart3 size={18} style={{ color: '#10B981' }} />}
+              {chartType === 'pie' && <PieIcon size={18} style={{ color: '#8B5CF6' }} />}
+              <span>
+                {chartType === 'line' && 'Kurva Pertumbuhan Omzet (Line Chart)'}
+                {chartType === 'bar' && 'Distribusi Omzet per Periode (Bar Chart)'}
+                {chartType === 'pie' && 'Rasio Proporsi Pembayaran Kasir (Pie / Donut)'}
+              </span>
+            </h3>
+            <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--muted)' }}>
+              {chartType === 'line' && `Visualisasi dinamik tren penjualan (${timeframe === 'today' ? 'Jam Sibuk' : 'Hari ke Hari'})`}
+              {chartType === 'bar' && `Perbandingan volume omzet riil (${timeframe === 'today' ? 'Per Jam' : 'Per Hari'})`}
+              {chartType === 'pie' && 'Persentase transaksi berdasarkan kanal pembayaran (QRIS, Tunai, Transfer)'}
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 600, display: 'block' }}>Puncak Omzet</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10B981' }}>{formatRupiah(maxRevenue)}</span>
+          </div>
+        </div>
+
+        {/* VIEW 1: LINE CHART (Compact & Proportioned) */}
+        {chartType === 'line' && (
+          <div style={{ width: '100%', maxWidth: '780px', margin: '0 auto', overflowX: 'auto' }}>
+            <svg
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              style={{ width: '100%', height: 'auto', maxHeight: '220px', display: 'block' }}
+            >
+              <defs>
+                <linearGradient id="alphosLineGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.32" />
+                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* Horizontal gridlines */}
+              {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
+                return (
+                  <g key={i}>
+                    <line
+                      x1={paddingX}
+                      y1={y}
+                      x2={chartWidth - paddingX}
+                      y2={y}
+                      stroke="var(--border)"
+                      strokeDasharray="3 3"
+                    />
+                    <text
+                      x={paddingX - 6}
+                      y={y + 3}
+                      textAnchor="end"
+                      fill="var(--muted)"
+                      fontSize="9"
+                      fontFamily="monospace"
+                      fontWeight="600"
+                    >
+                      {((maxRevenue * ratio) / 1000000).toFixed(1)}M
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Gradient Area under curve */}
+              <path d={areaD} fill="url(#alphosLineGrad)" />
+
+              {/* Curve Line */}
+              <path
+                d={pathD}
+                fill="none"
+                stroke="#10B981"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Data points */}
+              {points.map((p, i) => (
+                <g key={i}>
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="4"
+                    fill="var(--surface)"
+                    stroke="#10B981"
+                    strokeWidth="2.5"
+                  />
+                  <text
+                    x={p.x}
+                    y={chartHeight - 6}
+                    textAnchor="middle"
+                    fill="var(--muted)"
+                    fontSize="9.5"
+                    fontWeight="600"
+                  >
+                    {p.label}
+                  </text>
+                </g>
+              ))}
+            </svg>
+          </div>
+        )}
+
+        {/* VIEW 2: BAR CHART (Compact & Proportioned) */}
+        {chartType === 'bar' && (
+          <div style={{ width: '100%', maxWidth: '780px', margin: '0 auto', overflowX: 'auto' }}>
+            <svg
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              style={{ width: '100%', height: 'auto', maxHeight: '220px', display: 'block' }}
+            >
+              <defs>
+                <linearGradient id="alphosBarGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#059669" stopOpacity="0.45" />
+                </linearGradient>
+              </defs>
+
+              {/* Gridlines */}
+              {[0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - paddingY - ratio * (chartHeight - paddingY * 2);
+                return (
+                  <line
+                    key={i}
+                    x1={paddingX}
+                    y1={y}
+                    x2={chartWidth - paddingX}
+                    y2={y}
+                    stroke="var(--border)"
+                    strokeDasharray="3 3"
+                  />
+                );
+              })}
+
+              {/* Bars */}
+              {data.revenueTimeline.map((item, idx) => {
+                const count = data.revenueTimeline.length;
+                const availableWidth = chartWidth - paddingX * 2;
+                const barWidth = Math.min(32, availableWidth / count - 10);
+                const stepX = availableWidth / count;
+                const x = paddingX + idx * stepX + (stepX - barWidth) / 2;
+                const barH = (item.value / maxRevenue) * (chartHeight - paddingY * 2);
+                const y = chartHeight - paddingY - barH;
+
+                return (
+                  <g key={idx}>
+                    <rect
+                      x={x}
+                      y={y}
+                      width={barWidth}
+                      height={barH}
+                      rx="4"
+                      fill="url(#alphosBarGrad)"
+                    />
+                    <text
+                      x={x + barWidth / 2}
+                      y={y - 5}
+                      textAnchor="middle"
+                      fill="#059669"
+                      fontSize="9"
+                      fontWeight="700"
+                    >
+                      {(item.value / 1000000).toFixed(1)}M
+                    </text>
+                    <text
+                      x={x + barWidth / 2}
+                      y={chartHeight - 6}
+                      textAnchor="middle"
+                      fill="var(--muted)"
+                      fontSize="9.5"
+                      fontWeight="600"
+                    >
+                      {item.label}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        )}
+
+        {/* VIEW 3: PIE / DONUT CHART */}
+        {chartType === 'pie' && (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              gap: '24px',
+              padding: '12px 0',
+            }}
+          >
+            {/* Donut SVG */}
+            <div style={{ position: 'relative', width: '150px', height: '150px' }}>
+              <svg viewBox="0 0 42 42" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--border)" strokeWidth="5.5" />
+                {donutSlices.map((slice, i) => (
+                  <circle
+                    key={i}
+                    cx="21"
+                    cy="21"
+                    r="15.915"
+                    fill="transparent"
+                    stroke={slice.color}
+                    strokeWidth="5.5"
+                    strokeDasharray={slice.strokeDasharray}
+                    strokeDashoffset={slice.strokeDashoffset}
+                  />
+                ))}
+              </svg>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pointerEvents: 'none',
+                }}
+              >
+                <span style={{ fontSize: '0.68rem', color: 'var(--muted)', fontWeight: 700 }}>QRIS Dominan</span>
+                <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text)' }}>
+                  {data.payments[0].percent}%
+                </span>
               </div>
             </div>
 
-            {/* Donut Chart SVG */}
-            <div className="my-4 flex items-center justify-center">
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
-                  <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#1E293B" strokeWidth="5.5" />
-                  {donutSlices.map((slice, i) => (
-                    <circle
-                      key={i}
-                      cx="21"
-                      cy="21"
-                      r="15.915"
-                      fill="transparent"
-                      stroke={slice.color}
-                      strokeWidth="5.5"
-                      strokeDasharray={slice.strokeDasharray}
-                      strokeDashoffset={slice.strokeDashoffset}
-                      className="transition-all hover:opacity-80"
+            {/* Breakdown List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '240px' }}>
+              {data.payments.map((p, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '8px 12px',
+                    borderRadius: '10px',
+                    background: 'var(--bg)',
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span
+                      style={{
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        backgroundColor: p.color,
+                        display: 'inline-block',
+                      }}
                     />
-                  ))}
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase">QRIS Dominan</span>
-                  <span className="text-sm font-black text-white">{data.payments[0].percent}%</span>
+                    <strong style={{ fontSize: '0.82rem', color: 'var(--text)' }}>{p.method}</strong>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--muted)' }}>({p.count}x)</span>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text)', display: 'block' }}>
+                      {formatRupiah(p.total)}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>{p.percent}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 5. DUA KARTU DETAIL TAMBAHAN (PRODUK TERLARIS & RINCIAN PEMBAYARAN) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '16px',
+        }}
+      >
+        {/* Top 5 Products */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '16px',
+            padding: '18px 20px',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '1px solid var(--border)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <PackageCheck size={18} style={{ color: '#10B981' }} />
+              <strong style={{ fontSize: '0.9rem', color: 'var(--text)' }}>Top 5 Produk Terlaris</strong>
+            </div>
+            <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>Periode {timeframe === 'today' ? 'Hari Ini' : timeframe === '7d' ? '7 Hari' : '30 Hari'}</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {data.topProducts.map((p, idx) => (
+              <div
+                key={idx}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '6px 0',
+                  borderBottom: idx < data.topProducts.length - 1 ? '1px dashed var(--border)' : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: idx === 0 ? '#10B981' : 'var(--bg)',
+                      color: idx === 0 ? '#ffffff' : 'var(--muted)',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>{p.name}</div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>{p.category} • Terjual {p.qty} pcs</div>
+                  </div>
+                </div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text)' }}>
+                  {formatRupiah(p.revenue)}
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Payment Summary */}
+        <div
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '16px',
+            padding: '18px 20px',
+            boxShadow: 'var(--shadow-sm)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '12px',
+                paddingBottom: '10px',
+                borderBottom: '1px solid var(--border)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CreditCard size={18} style={{ color: '#3B82F6' }} />
+                <strong style={{ fontSize: '0.9rem', color: 'var(--text)' }}>Kesehatan Arus Kasir</strong>
+              </div>
+              <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>Real-Time Data</span>
             </div>
 
-            {/* Legend list */}
-            <div className="space-y-2">
+            <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 14px' }}>
+              Mayoritas konsumen toko menyukai pembayaran digital non-tunai (QRIS & Transfer mencapai 70%).
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {data.payments.map((p, idx) => (
-                <div key={idx} className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                    <span className="text-slate-300 font-medium">{p.method}</span>
+                <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                    <span style={{ color: 'var(--text)', fontWeight: 600 }}>{p.method}</span>
+                    <span style={{ color: 'var(--muted)' }}>{formatRupiah(p.total)} ({p.percent}%)</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-white">{formatRupiah(p.total)}</span>
-                    <span className="text-[10px] text-slate-400 w-7 text-right">{p.percent}%</span>
+                  <div style={{ width: '100%', height: '6px', background: 'var(--bg)', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ width: `${p.percent}%`, height: '100%', background: p.color, borderRadius: '999px' }} />
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>Integrasi Dinamis QRIS:</span>
-            <span className="text-emerald-400 font-semibold">Aktif Real-Time</span>
+          <div
+            style={{
+              marginTop: '16px',
+              paddingTop: '12px',
+              borderTop: '1px solid var(--border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.74rem',
+              color: 'var(--muted)',
+            }}
+          >
+            <span>Audit Finansial:</span>
+            <span style={{ color: '#10B981', fontWeight: 700 }}>100% Cocok Tanpa Selisih</span>
           </div>
         </div>
       </div>
