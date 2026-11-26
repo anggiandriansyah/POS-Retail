@@ -473,8 +473,8 @@
         <div style="display:flex; align-items:center; gap:14px;">
           <button class="mobile-burger" onclick="toggleSidebar()">☰</button>
           <div>
-            <h2 style="font-size:17px; font-weight:800;" id="pageTitle">Live Interaksi Tim (AI-Anti-Slop)</h2>
-            <p style="font-size:12px; color:var(--muted);">Sistem Komunikasi 2-Arah Karyawan PT AlphaGen • Mindset & Emosional Organik</p>
+            <h2 style="font-size:17px; font-weight:800;" id="pageTitle">Sprint 6 Live Flow (Hotfix v1.5.1 & Riset Paket Langganan)</h2>
+            <p style="font-size:12px; color:var(--muted);">Siklus Eksekusi Sprint 6: Rilis Hotfix v1.5.1 & Riset ATM Model Langganan (Gen Alpha, Beta, Gamma)</p>
           </div>
         </div>
 
@@ -592,20 +592,20 @@
                 </div>
               </div>
 
-              <!-- Step 5 (PENDING) -->
+                            <!-- Step 5 (PENDING SPRINT 6) -->
               <div class="pipe-step" id="step5Card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                   <span class="step-badge badge-pending">Menunggu Step 4</span>
                   <span style="font-size:10px; color:var(--muted); font-weight:700;">12:00 - 13:00 WIB</span>
                 </div>
                 <div class="step-name">5. Cloud DEV Review & Proposal Sign-off</div>
-                <div class="step-desc">Review hasil Hotfix di Cloud DEV oleh Team Leader Mas Gege + Presentasi draf model langganan 3 tier & desain lock-badge untuk disetujui masuk Sprint 7.</div>
+                <div class="step-desc">Review hasil Hotfix di Cloud DEV oleh Team Leader Mas Gege + Presentasi proposal pricing 3 tier (Gen Alpha, Beta, Gamma) & UI lock-badge untuk Sprint 7.</div>
                 <div class="step-timer-badge timer-pending">
                   <span>⏱️</span> <span>Pending Approval Mas Gege</span>
                 </div>
               </div>
 
-              <!-- Step 6 (TARGET FINAL) -->
+              <!-- Step 6 (TARGET FINAL SPRINT 6) -->
               <div class="pipe-step" id="step6Card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                   <span class="step-badge badge-pending">Target Final Siang Ini</span>
@@ -1523,10 +1523,10 @@
       if (el) el.classList.add('active');
 
       const titles = {
-        'tabFlow': 'Sprint 5 Animated Pipeline Flow',
+        'tabFlow': 'Sprint 6 Live Flow (Hotfix v1.5.1 & Riset Paket Langganan)',
         'tabChat': 'Live Interaksi Tim (Anti-Slop & Mindset Nyata)',
         'tabApproval': 'Portal Verifikasi Kelengkapan Dokumen & Sign-off Sprint 5',
-        'tabBacklog': 'Daftar Backlog & Riwayat Sprint Evolution (1 - 5)',
+        'tabBacklog': 'Daftar Backlog Sprint 6 & Riwayat Sprint Evolution (1 - 6)',
         'tabDivisions': 'Formasi Lengkap 17 Divisi & 46 Personel (42 Inti + 4 Magang) PT AlphaGen'
       };
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Command Center';
@@ -3204,41 +3204,6 @@
       document.getElementById('signoffFormBox').style.display = 'none';
       document.getElementById('signoffSuccessBox').style.display = 'block';
 
-      // Update Step 5 in tabFlow
-      const step5Card = document.getElementById('step5Card');
-      if (step5Card) {
-        step5Card.className = 'pipe-step done';
-        step5Card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="step-badge badge-done">Lulus (Disetujui)</span>
-            <span style="font-size:10px; color:#34D399; font-weight:700;">18:16 - Selesai</span>
-          </div>
-          <div class="step-name">5. Cloud DEV Sign-off</div>
-          <div class="step-desc">Disetujui resmi oleh Team Leader Anggi Andriansyah (Gege) via Digital Sign-off Token: SIG-GEGE-20261125-DEV-APPROVED.</div>
-          <div class="step-timer-badge timer-done">
-            <span>⏱️</span> <span>Approved & Signed-Off</span>
-          </div>
-        `;
-      }
-
-      // Update Step 6 in tabFlow
-      const step6Card = document.getElementById('step6Card');
-      if (step6Card) {
-        step6Card.className = 'pipe-step done';
-        step6Card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="step-badge badge-done">Lulus 100% (Production Live)</span>
-            <span style="font-size:10px; color:#34D399; font-weight:700;">18:24 - 18:40 WIB</span>
-          </div>
-          <div class="step-name">6. Production Release (v1.5.0)</div>
-          <div class="step-desc">Deploy Production tuntas 100%! Laporan resmi otomatis dikirimkan ke anggiandriansyah17@gmail.com.</div>
-          <div class="step-timer-badge timer-done">
-            <span>⏱️</span> <span>Selesai: 16m 00s (Production Deployed)</span>
-          </div>
-          <div class="mascot-worker">🏆</div>
-        `;
-      }
-
       // Send official leader broadcast in chat
       const nowStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const leaderMsg = {
@@ -3315,39 +3280,7 @@
         const scBox = document.getElementById('signoffSuccessBox');
         if (scBox) scBox.style.display = 'block';
 
-        const step5Card = document.getElementById('step5Card');
-        if (step5Card) {
-          step5Card.className = 'pipe-step done';
-          step5Card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="step-badge badge-done">Lulus (Disetujui)</span>
-              <span style="font-size:10px; color:#34D399; font-weight:700;">18:16 - Selesai</span>
-            </div>
-            <div class="step-name">5. Cloud DEV Sign-off</div>
-            <div class="step-desc">Disetujui resmi oleh Team Leader Anggi Andriansyah (Gege) via Digital Sign-off Token: SIG-GEGE-20261125-DEV-APPROVED.</div>
-            <div class="step-timer-badge timer-done">
-              <span>⏱️</span> <span>Approved & Signed-Off</span>
-            </div>
-          `;
-        }
-
-        const step6Card = document.getElementById('step6Card');
-        if (step6Card) {
-          step6Card.className = 'pipe-step done';
-          step6Card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span class="step-badge badge-done">Lulus 100% (Production Live)</span>
-              <span style="font-size:10px; color:#34D399; font-weight:700;">18:24 - 18:40 WIB</span>
-            </div>
-            <div class="step-name">6. Production Release (v1.5.0)</div>
-            <div class="step-desc">Deploy Production tuntas 100%! Laporan resmi otomatis dikirimkan ke anggiandriansyah17@gmail.com.</div>
-            <div class="step-timer-badge timer-done">
-              <span>⏱️</span> <span>Selesai: 16m 00s (Production Deployed)</span>
-            </div>
-            <div class="mascot-worker">🏆</div>
-          `;
-        }
-      }
+         }
     } catch (e) {
       console.warn('Storage init failed', e);
     }
