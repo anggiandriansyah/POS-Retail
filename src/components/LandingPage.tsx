@@ -723,6 +723,16 @@ export default function LandingPage() {
                 <h4>{l.faqQ4}</h4>
                 <p>{l.faqA4}</p>
               </div>
+
+              <div className="landing-faq-card">
+                <h4>{l.faqQ5}</h4>
+                <p>{l.faqA5}</p>
+              </div>
+
+              <div className="landing-faq-card">
+                <h4>{l.faqQ6}</h4>
+                <p>{l.faqA6}</p>
+              </div>
             </div>
           </div>
         </section>
