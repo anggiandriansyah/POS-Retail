@@ -108,3 +108,25 @@ Wajib disahkan dan disetujui (*Production Sign-Off*) oleh:
 * 🛡️ **IT Security Lead:** Cyber Security Lead (Red & Blue Team)
 * *(Prasyarat Mutlak: TW Lead wajib memastikan 5 Dokumen Rilis resmi PDF & Dokumen After-Deployment telah terarsip lengkap sebelum merge branch main dieksekusi).*
 
+---
+
+### 🏷️ Kebijakan Disiplin Semantic Versioning (SemVer) PT AlphaGen (Mandat Team Leader)
+Mulai Sprint 6 ke depan, seluruh tim pengembang (Frontend, Backend, DevOps, AI Agent) wajib mematuhi disiplin **Semantic Versioning (MAJOR.MINOR.PATCH)** secara konsisten dan proaktif:
+
+1. **MAJOR (`X.0.0`):**
+   * Digunakan **hanya** apabila terjadi perubahan arsitektur besar yang bersifat *breaking changes*, perombakan total UI/UX (*revamp total*), atau migrasi skema database yang tidak *backwards-compatible*.
+2. **MINOR (`1.X.0`):**
+   * Digunakan setiap kali ada penambahan fitur fungsional baru yang *backwards-compatible* (contoh: paket harga 3-tier, terminal simulasi interaktif kasir, modul persetujuan superadmin).
+3. **PATCH / HOTFIX (`1.6.X`):**
+   * Digunakan setiap kali ada perbaikan bug, hotfix antarmuka, penyesuaian teks/aset, atau patch keamanan darurat (contoh: `1.6.1`, `1.6.2`, dst).
+
+#### 🔄 Standar Operasional Eksekusi Versioning Serentak
+Setiap kali melakukan perubahan kode (fitur maupun hotfix), tim **wajib memperbarui versi secara serentak di dalam commit yang sama** pada 5 titik verifikasi:
+1. `package.json` (`"version": "x.y.z"`)
+2. `src/utils/format.ts` (`export const APP_VERSION = 'x.y.z';`)
+3. `src/i18n/translations.ts` (`footerVersion` pada bahasa `id` dan `en`)
+4. `public/monitor.html` (Header metadata dan badge sistem)
+5. `tests/sprint2.test.mjs` (Pengujian unit verifikasi SemVer)
+
+> **Prosedur Cepat:** Jalankan `node scripts/release.mjs <new_version>` sebelum melakukan pengujian unit (*testing*) dan *commit-push*.
+
