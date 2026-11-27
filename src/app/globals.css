@@ -2959,3 +2959,84 @@ body {
   }
 }
 
+/* Floating WhatsApp Support Pill (POSe Style) */
+.landing-wa-float {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #52d244 0%, #41bc33 100%);
+  color: #ffffff;
+  padding: 10px 24px 10px 14px;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(65, 188, 51, 0.42);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+  -webkit-font-smoothing: antialiased;
+}
+
+.landing-wa-float:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(65, 188, 51, 0.55);
+  color: #ffffff;
+}
+
+.landing-wa-float:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.landing-wa-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.landing-wa-text-box {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.landing-wa-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.landing-wa-subtitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 640px) {
+  .landing-wa-float {
+    bottom: 18px;
+    right: 18px;
+    padding: 8px 18px 8px 12px;
+    gap: 10px;
+  }
+  .landing-wa-icon-wrap {
+    width: 36px;
+    height: 36px;
+  }
+  .landing-wa-title {
+    font-size: 0.92rem;
+  }
+  .landing-wa-subtitle {
+    font-size: 0.74rem;
+  }
+}
+
+

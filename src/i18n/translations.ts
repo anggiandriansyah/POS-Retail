@@ -828,6 +828,8 @@ export const translations = {
       typewriter3: 'Rekonsiliasi Kas Laci Tanpa Selisih',
       typewriter4: 'Pencegahan Kebocoran Kas & Stok Cabang',
       typewriter5: 'Analitik Visual Margin Profit Otomatis',
+      waTitle: 'Hubungi Kami',
+      waSubtitle: 'Dukungan 24 Jam',
     },
   },
 
@@ -1656,6 +1658,8 @@ export const translations = {
       typewriter3: 'Zero-Discrepancy Drawer Reconciliation',
       typewriter4: 'Cross-Branch Cash & Stock Leakage Prevention',
       typewriter5: 'Automated Net Profit Margin Analytics',
+      waTitle: 'Contact Us',
+      waSubtitle: '24/7 Support',
     },
   },
 } as const;
