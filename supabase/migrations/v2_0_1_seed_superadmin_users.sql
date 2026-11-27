@@ -93,11 +93,15 @@ begin
   if not exists (select 1 from auth.users where email = v_dev_email or id = v_dev_id) then
     insert into auth.users (
       instance_id, id, aud, role, email, encrypted_password,
-      email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+      email_confirmed_at, confirmation_token, recovery_token,
+      email_change_token_new, email_change, phone_change,
+      email_change_token_current, reauthentication_token,
+      raw_app_meta_data, raw_user_meta_data,
       created_at, updated_at
     ) values (
       '00000000-0000-0000-0000-000000000000', v_dev_id, 'authenticated', 'authenticated', v_dev_email,
       extensions.crypt(v_dev_pass, extensions.gen_salt('bf')), now(),
+      '', '', '', '', '', '', '',
       '{"provider":"email","providers":["email"]}'::jsonb,
       jsonb_build_object('full_name', 'Superadmin DEV', 'username', v_dev_user), now(), now()
     );
@@ -128,11 +132,15 @@ begin
   if not exists (select 1 from auth.users where email = v_prod_email or id = v_prod_id) then
     insert into auth.users (
       instance_id, id, aud, role, email, encrypted_password,
-      email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+      email_confirmed_at, confirmation_token, recovery_token,
+      email_change_token_new, email_change, phone_change,
+      email_change_token_current, reauthentication_token,
+      raw_app_meta_data, raw_user_meta_data,
       created_at, updated_at
     ) values (
       '00000000-0000-0000-0000-000000000000', v_prod_id, 'authenticated', 'authenticated', v_prod_email,
       extensions.crypt(v_prod_pass, extensions.gen_salt('bf')), now(),
+      '', '', '', '', '', '', '',
       '{"provider":"email","providers":["email"]}'::jsonb,
       jsonb_build_object('full_name', 'Superadmin PROD', 'username', v_prod_user), now(), now()
     );
