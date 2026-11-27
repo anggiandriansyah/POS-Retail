@@ -1,21 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import {
   X,
   Upload,
   CheckCircle2,
   AlertCircle,
   QrCode,
-  ShieldCheck,
-  Building,
-  User,
   Mail,
-  Phone,
-  Lock,
   ArrowRight,
-  ExternalLink,
 } from 'lucide-react';
 import type { PackageTier, SubscriptionRegistration } from '../utils/subscriptionStorage';
 import { saveLocalRegistration } from '../utils/subscriptionStorage';
@@ -37,7 +30,7 @@ const TIER_DETAILS: Record<
     priceText: 'Rp 0 / Selamanya',
     amount: 0,
     badge: 'Gratis Selamanya',
-    color: '#10B981',
+    color: '#059669',
   },
   gen_beta: {
     name: 'GEN BETA — Growth Retail Store',
@@ -45,7 +38,7 @@ const TIER_DETAILS: Record<
     amount: 20000,
     qrisSrc: '/qris-gen-beta-20k.jpg',
     badge: 'Paket Populer',
-    color: '#3B82F6',
+    color: '#2563EB',
   },
   gen_gamma: {
     name: 'GEN GAMMA — Ultimate Enterprise Pro',
@@ -53,14 +46,15 @@ const TIER_DETAILS: Record<
     amount: 30000,
     qrisSrc: '/qris-gen-gamma-30k.jpg',
     badge: 'Rekomendasi Terbaik',
-    color: '#8B5CF6',
+    color: '#7C3AED',
   },
 };
 
 export default function RegistrationModal({ initialTier, onClose, onSuccess }: RegistrationModalProps) {
   const { lang } = useThemeLang();
   const isEn = lang === 'en';
-  const [tier, setTier] = useState<PackageTier>(initialTier);
+  const tier = initialTier;
+
   const [fullName, setFullName] = useState('');
   const [storeName, setStoreName] = useState('');
   const [email, setEmail] = useState('');
@@ -80,12 +74,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setErrorMsg('Format berkas harus berupa gambar (JPG, PNG, atau WebP).');
+      setErrorMsg(isEn ? 'File format must be an image (JPG, PNG, or WebP).' : 'Format berkas harus berupa gambar (JPG, PNG, atau WebP).');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg('Ukuran gambar maksimal 5 MB.');
+      setErrorMsg(isEn ? 'Maximum image size is 5 MB.' : 'Ukuran gambar maksimal 5 MB.');
       return;
     }
 
@@ -102,12 +96,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
     setErrorMsg('');
 
     if (!fullName.trim() || !storeName.trim() || !email.trim() || !phone.trim() || !username.trim() || !password) {
-      setErrorMsg('Mohon lengkapi seluruh kolom formulir pendaftaran.');
+      setErrorMsg(isEn ? 'Please fill out all registration fields.' : 'Mohon lengkapi seluruh kolom formulir pendaftaran.');
       return;
     }
 
     if (!isFree && !proofPreview) {
-      setErrorMsg('Mohon lampirkan foto struk/screenshot bukti transfer pembayaran QRIS Anda.');
+      setErrorMsg(isEn ? 'Please attach a screenshot or receipt photo of your QRIS payment.' : 'Mohon lampirkan foto struk/screenshot bukti transfer pembayaran QRIS Anda.');
       return;
     }
 
@@ -136,10 +130,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
         created_at: new Date().toISOString(),
       };
 
-      // 1. Save local persistence
       saveLocalRegistration(newRegistration);
 
-      // 2. Try Supabase RPC if online
       if (isSupabaseConfigured && supabase) {
         try {
           await supabase.rpc('submit_subscription_registration', {
@@ -162,7 +154,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      setErrorMsg(`Gagal memproses pendaftaran: ${msg}`);
+      setErrorMsg(isEn ? `Failed to submit registration: ${msg}` : `Gagal memproses pendaftaran: ${msg}`);
     } finally {
       setSubmitting(false);
     }
@@ -174,8 +166,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
         position: 'fixed',
         inset: 0,
         zIndex: 100,
-        backgroundColor: 'rgba(10, 14, 23, 0.85)',
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(15, 23, 42, 0.65)',
+        backdropFilter: 'blur(6px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -187,13 +179,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
         style={{
           width: '100%',
           maxWidth: '680px',
-          background: 'var(--surface, #111827)',
-          border: '1px solid var(--border, #1F293D)',
-          borderRadius: '20px',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '16px',
           padding: '28px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          boxShadow: 'var(--shadow-lg)',
           position: 'relative',
-          color: 'var(--text, #F9FAFB)',
+          color: 'var(--text)',
           maxHeight: '90vh',
           overflowY: 'auto',
         }}
@@ -208,7 +200,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             right: '20px',
             background: 'none',
             border: 'none',
-            color: 'var(--muted, #94A3B8)',
+            color: 'var(--muted)',
             cursor: 'pointer',
             padding: '6px',
             borderRadius: '8px',
@@ -216,7 +208,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          aria-label="Tutup modal"
+          aria-label={isEn ? 'Close dialog' : 'Tutup dialog'}
         >
           <X size={20} />
         </button>
@@ -229,8 +221,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                background: 'rgba(16, 185, 129, 0.15)',
-                color: '#10B981',
+                background: 'var(--primary-soft)',
+                color: 'var(--primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -240,13 +232,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               <CheckCircle2 size={36} />
             </div>
 
-            <h3 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 8px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
               {successReg.status === 'APPROVED'
                 ? (isEn ? 'Store Registration Successfully Activated!' : 'Pendaftaran Toko Berhasil Aktif!')
                 : (isEn ? 'Payment Proof & Registration Successfully Submitted!' : 'Bukti Pembayaran & Pendaftaran Berhasil Dikirim!')}
             </h3>
 
-            <p style={{ color: 'var(--muted, #94A3B8)', fontSize: '14px', lineHeight: 1.6, margin: '0 0 20px' }}>
+            <p style={{ color: 'var(--muted)', fontSize: '14px', lineHeight: 1.6, margin: '0 0 20px' }}>
               {successReg.status === 'APPROVED' ? (
                 isEn ? (
                   <>
@@ -280,8 +272,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
             <div
               style={{
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid var(--border, #1F293D)',
+                background: 'var(--bg)',
+                border: '1px solid var(--border)',
                 borderRadius: '12px',
                 padding: '14px 18px',
                 textAlign: 'left',
@@ -289,23 +281,25 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 fontSize: '13px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#60A5FA', fontWeight: 700 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: 700 }}>
                 <Mail size={16} />
-                <span>Pengirim Resmi Notifikasi Email:</span>
+                <span>{isEn ? 'Official Notification Sender:' : 'Pengirim Resmi Notifikasi Email:'}</span>
               </div>
               <div
                 style={{
                   fontFamily: 'var(--font-mono, monospace)',
-                  background: 'rgba(0,0,0,0.3)',
-                  padding: '6px 10px',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  padding: '8px 12px',
                   borderRadius: '6px',
-                  marginTop: '6px',
-                  color: '#F8FAFC',
+                  marginTop: '8px',
+                  color: 'var(--text)',
+                  fontWeight: 600,
                 }}
               >
                 PT AlphaGen Info &lt;no-reply@alphagen.co.id&gt;
               </div>
-              <div style={{ marginTop: '8px', color: 'var(--muted, #94A3B8)', fontSize: '12px' }}>
+              <div style={{ marginTop: '8px', color: 'var(--muted)', fontSize: '12px' }}>
                 {successReg.status === 'APPROVED'
                   ? (isEn ? 'Please click the button below to complete your store account verification.' : 'Silakan klik tombol di bawah untuk menyelesaikan verifikasi akun toko Anda.')
                   : (isEn ? 'Once payment is approved by Superadmin, an email with verification button will be dispatched automatically.' : 'Setelah pembayaran disetujui Superadmin, email berisi tombol verifikasi akan otomatis meluncur ke email Anda.')}
@@ -315,15 +309,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <a
                 href={`/verify-account?token=${successReg.verification_token}`}
+                className="btn btn-primary"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  color: '#FFFFFF',
                   textDecoration: 'none',
                   padding: '12px 24px',
-                  borderRadius: '10px',
                   fontWeight: 700,
                   fontSize: '14px',
                 }}
@@ -333,16 +325,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </a>
               <a
                 href="/login"
+                className="btn btn-outline"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: 'transparent',
-                  color: 'var(--text, #F9FAFB)',
-                  border: '1px solid var(--border, #1F293D)',
                   textDecoration: 'none',
                   padding: '12px 20px',
-                  borderRadius: '10px',
                   fontWeight: 600,
                   fontSize: '14px',
                 }}
@@ -358,10 +347,11 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               <div
                 style={{
                   display: 'inline-block',
-                  padding: '4px 10px',
+                  padding: '4px 12px',
                   borderRadius: '999px',
-                  background: `${currentTierInfo.color}20`,
+                  background: `${currentTierInfo.color}15`,
                   color: currentTierInfo.color,
+                  border: `1px solid ${currentTierInfo.color}35`,
                   fontSize: '12px',
                   fontWeight: 800,
                   marginBottom: '8px',
@@ -369,40 +359,15 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               >
                 {isEn ? (tier === 'gen_alpha' ? 'Free Forever' : tier === 'gen_beta' ? 'Popular Tier' : 'Best Recommendation') : currentTierInfo.badge}
               </div>
-              <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px' }}>
-                {isEn ? `Store Registration Form — ${currentTierInfo.name}` : `Formulir Pendaftaran Toko — ${currentTierInfo.name}`}
+              <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px', color: 'var(--text)' }}>
+                {isEn ? `Store Registration — ${currentTierInfo.name}` : `Formulir Pendaftaran Toko — ${currentTierInfo.name}`}
               </h2>
-              <p style={{ color: 'var(--muted, #94A3B8)', fontSize: '13px', margin: 0 }}>
-                {isEn ? 'Plan Fee: ' : 'Biaya: '}
+              <p style={{ color: 'var(--muted)', fontSize: '13px', margin: 0 }}>
+                {isEn ? 'Plan Fee: ' : 'Biaya Paket: '}
                 <strong style={{ color: currentTierInfo.color }}>
                   {isEn ? (tier === 'gen_alpha' ? 'IDR 0 / Forever' : tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
                 </strong>
               </p>
-            </div>
-
-            {/* Tier Selector Chips */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
-              {(['gen_alpha', 'gen_beta', 'gen_gamma'] as PackageTier[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTier(t)}
-                  style={{
-                    flex: 1,
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    border: tier === t ? `2px solid ${TIER_DETAILS[t].color}` : '1px solid var(--border, #1F293D)',
-                    background: tier === t ? `${TIER_DETAILS[t].color}15` : 'transparent',
-                    color: tier === t ? '#F8FAFC' : 'var(--muted, #94A3B8)',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'border-color 150ms ease, background-color 150ms ease, color 150ms ease',
-                  }}
-                >
-                  {t === 'gen_alpha' ? 'Gen Alpha (Free)' : t === 'gen_beta' ? 'Gen Beta (20k)' : 'Gen Gamma (30k)'}
-                </button>
-              ))}
             </div>
 
             {errorMsg && (
@@ -413,9 +378,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   gap: '8px',
                   padding: '10px 14px',
                   borderRadius: '8px',
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid #EF4444',
-                  color: '#FCA5A5',
+                  background: 'var(--danger-soft)',
+                  border: '1px solid var(--danger-border)',
+                  color: 'var(--danger-text)',
                   fontSize: '12.5px',
                   marginBottom: '16px',
                 }}
@@ -435,22 +400,22 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               }}
             >
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'Full Owner Name' : 'Nama Lengkap Pemilik'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder={isEn ? 'e.g. John Doe' : 'Contoh: Anggi Andriansyah'}
+                  placeholder={isEn ? 'e.g. Anggi Andriansyah' : 'Contoh: Anggi Andriansyah'}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   style={{
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -458,22 +423,22 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'Store / Retail Name' : 'Nama Toko / Usaha Ritel'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder={isEn ? 'e.g. Makmur Mart' : 'Contoh: Toko Berkah Makmur'}
+                  placeholder={isEn ? 'e.g. Toko Berkah Makmur' : 'Contoh: Toko Berkah Makmur'}
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                   style={{
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -481,7 +446,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'Email Address (For Notifications)' : 'Alamat Email (Untuk Notifikasi)'}
                 </label>
                 <input
@@ -494,9 +459,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -504,7 +469,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'WhatsApp / Phone Number' : 'Nomor WhatsApp / HP'}
                 </label>
                 <input
@@ -517,9 +482,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -527,7 +492,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'POS Login Username' : 'Username Login Kasir'}
                 </label>
                 <input
@@ -540,9 +505,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -550,7 +515,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
                   {isEn ? 'Account Password' : 'Password Akun'}
                 </label>
                 <input
@@ -563,9 +528,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                     width: '100%',
                     padding: '10px 12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--border, #1F293D)',
-                    background: 'var(--bg, #0A0E17)',
-                    color: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg)',
+                    color: 'var(--text)',
                     fontSize: '13px',
                     boxSizing: 'border-box',
                   }}
@@ -577,16 +542,16 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             {!isFree && currentTierInfo.qrisSrc && (
               <div
                 style={{
-                  background: 'rgba(15, 23, 42, 0.7)',
-                  border: '1px solid var(--border, #1F293D)',
+                  background: 'var(--bg)',
+                  border: '1px solid var(--border)',
                   borderRadius: '14px',
-                  padding: '18px',
+                  padding: '20px',
                   marginBottom: '20px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
                   <QrCode size={18} style={{ color: currentTierInfo.color }} />
-                  <span style={{ fontSize: '14px', fontWeight: 800 }}>
+                  <span style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text)' }}>
                     {isEn ? 'Official QRIS Payment: ' : 'Pembayaran QRIS Resmi: '}
                     {isEn ? (tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
                   </span>
@@ -604,13 +569,15 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   <div
                     style={{
                       background: '#FFFFFF',
-                      padding: '10px',
+                      padding: '12px',
                       borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                      border: '1px solid var(--border)',
+                      boxShadow: 'var(--shadow-sm)',
                       maxWidth: '200px',
                       textAlign: 'center',
                     }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={currentTierInfo.qrisSrc}
                       alt={`QRIS ${currentTierInfo.name}`}
@@ -621,17 +588,17 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                         borderRadius: '6px',
                       }}
                     />
-                    <div style={{ fontSize: '10px', color: '#0F172A', fontWeight: 800, marginTop: '4px' }}>
+                    <div style={{ fontSize: '10px', color: '#0F172A', fontWeight: 800, marginTop: '6px' }}>
                       NMID: ID1026649384090
                     </div>
                   </div>
 
                   {/* QRIS Instruction & File Upload */}
                   <div style={{ flex: 1, minWidth: '240px' }}>
-                    <p style={{ fontSize: '12.5px', color: 'var(--muted, #94A3B8)', margin: '0 0 12px', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 14px', lineHeight: 1.55 }}>
                       {isEn
-                        ? 'Open your mobile banking or e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan the official QRIS and pay the exact amount.'
-                        : 'Silakan buka mobile banking / e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan QRIS di samping dan bayar sesuai nominal tagihan.'}
+                        ? 'Open your mobile banking or e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan the official QRIS on the left and pay the exact amount.'
+                        : 'Silakan buka mobile banking atau e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan QRIS di samping dan selesaikan pembayaran sesuai tagihan.'}
                     </p>
 
                     <label
@@ -639,21 +606,21 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                         display: 'block',
                         fontSize: '12px',
                         fontWeight: 700,
-                        color: '#F8FAFC',
+                        color: 'var(--text)',
                         marginBottom: '6px',
                       }}
                     >
-                      {isEn ? 'Upload Proof of QRIS Payment:' : 'Unggah Bukti Transfer QRIS:'}
+                      {isEn ? 'Upload Proof of QRIS Payment (Screenshot / Receipt Image):' : 'Unggah Bukti Transfer QRIS (Screenshot / Foto Struk):'}
                     </label>
 
                     <div
                       style={{
-                        border: '2px dashed var(--border, #1F293D)',
+                        border: '2px dashed var(--border-strong)',
                         borderRadius: '10px',
-                        padding: '14px',
+                        padding: '16px',
                         textAlign: 'center',
                         cursor: 'pointer',
-                        background: 'var(--bg, #0A0E17)',
+                        background: 'var(--surface)',
                       }}
                     >
                       <input
@@ -673,11 +640,11 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                           gap: '6px',
                         }}
                       >
-                        <Upload size={20} style={{ color: currentTierInfo.color }} />
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#93C5FD' }}>
+                        <Upload size={22} style={{ color: currentTierInfo.color }} />
+                        <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--primary)' }}>
                           {isEn ? 'Click to select receipt / screenshot' : 'Klik untuk pilih foto struk / screenshot'}
                         </span>
-                        <span style={{ fontSize: '10.5px', color: 'var(--muted, #94A3B8)' }}>
+                        <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
                           {isEn ? 'JPG/PNG/WebP, max 5 MB' : 'Format JPG/PNG/WebP, maksimal 5 MB'}
                         </span>
                       </label>
@@ -690,18 +657,19 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                           alignItems: 'center',
                           gap: '10px',
                           marginTop: '10px',
-                          padding: '6px 10px',
+                          padding: '8px 12px',
                           borderRadius: '8px',
-                          background: 'rgba(16, 185, 129, 0.1)',
-                          border: '1px solid rgba(16, 185, 129, 0.3)',
+                          background: 'var(--primary-soft)',
+                          border: '1px solid var(--primary-border)',
                         }}
                       >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={proofPreview}
                           alt="Preview bukti bayar"
-                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                          style={{ width: '42px', height: '42px', objectFit: 'cover', borderRadius: '4px' }}
                         />
-                        <span style={{ fontSize: '12px', color: '#34D399', fontWeight: 600 }}>
+                        <span style={{ fontSize: '12px', color: 'var(--primary-text)', fontWeight: 600 }}>
                           {isEn ? 'Proof of payment attached' : 'Bukti pembayaran terlampir'}
                         </span>
                       </div>
@@ -715,13 +683,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             {isFree && (
               <div
                 style={{
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  background: 'var(--primary-soft)',
+                  border: '1px solid var(--primary-border)',
                   borderRadius: '10px',
-                  padding: '12px 16px',
+                  padding: '14px 16px',
                   marginBottom: '20px',
                   fontSize: '12.5px',
-                  color: '#A7F3D0',
+                  color: 'var(--primary-text)',
                   lineHeight: 1.5,
                 }}
               >
@@ -733,17 +701,14 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             )}
 
             {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '24px' }}>
               <button
                 type="button"
                 onClick={onClose}
                 disabled={submitting}
+                className="btn btn-outline"
                 style={{
                   padding: '10px 18px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border, #1F293D)',
-                  background: 'transparent',
-                  color: 'var(--muted, #94A3B8)',
                   fontSize: '13px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -755,21 +720,15 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               <button
                 type="submit"
                 disabled={submitting}
+                className="btn btn-primary"
                 style={{
                   padding: '10px 22px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: isFree
-                    ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
-                    : 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-                  color: '#FFFFFF',
                   fontSize: '13px',
                   fontWeight: 700,
                   cursor: submitting ? 'wait' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
                 }}
               >
                 {submitting ? (
