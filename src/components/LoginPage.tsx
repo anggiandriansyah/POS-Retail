@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import {
   Activity,
   Barcode,
@@ -202,7 +203,10 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-corner-toggles">
+      <div className="login-corner-toggles" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Link href="/" className="btn btn-outline btn-sm" style={{ textDecoration: 'none', fontSize: '0.82rem' }}>
+          ← Beranda
+        </Link>
         <ThemeLangToggles />
       </div>
 

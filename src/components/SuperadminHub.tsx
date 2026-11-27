@@ -6,7 +6,13 @@ import { formatRupiah } from '../utils/format';
 import ThemeLangToggles from './ThemeLangToggles';
 import { AlphosLogo } from './AlphosLogo';
 import { useThemeLang } from '../contexts/useThemeLang';
-import { Store, ShieldCheck, LogOut, ExternalLink, Search, CheckCircle, AlertTriangle, XCircle, Info } from 'lucide-react';
+import { Store, ShieldCheck, LogOut, ExternalLink, Search, CheckCircle, AlertTriangle, XCircle, Info, CreditCard, Eye, Mail, Check, X, QrCode } from 'lucide-react';
+import {
+  getLocalRegistrations,
+  approveLocalRegistration,
+  rejectLocalRegistration,
+  type SubscriptionRegistration,
+} from '../utils/subscriptionStorage';
 
 interface MerchantTenant {
   id: string;
@@ -147,15 +153,70 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
   const [actionSuccessMessage, setActionSuccessMessage] = useState('');
   const [isSprint5SignedOff, setIsSprint5SignedOff] = useState(false);
 
+  // Sprint 7: Subscription Registrations & QRIS Approval State
+  const [activeSuperadminTab, setActiveSuperadminTab] = useState<'merchants' | 'registrations'>('merchants');
+  const [registrations, setRegistrations] = useState<SubscriptionRegistration[]>([]);
+  const [regFilter, setRegFilter] = useState<'all' | 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED'>('all');
+  const [previewProof, setPreviewProof] = useState<string | null>(null);
+  const [approvedNotification, setApprovedNotification] = useState<{
+    storeName: string;
+    email: string;
+    token: string;
+    tier: string;
+  } | null>(null);
+
   useEffect(() => {
     try {
       if (typeof window !== 'undefined' && localStorage.getItem('alphos_sprint5_signed_off') === 'true') {
         setIsSprint5SignedOff(true);
       }
+      setRegistrations(getLocalRegistrations());
     } catch {
       // ignore storage access errors
     }
   }, []);
+
+  const pendingRegsCount = useMemo(() => {
+    return registrations.filter(r => r.status === 'PENDING_APPROVAL').length;
+  }, [registrations]);
+
+  const filteredRegistrations = useMemo(() => {
+    return registrations.filter(r => {
+      const matchSearch =
+        r.store_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.username.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchStatus = regFilter === 'all' || r.status === regFilter;
+      return matchSearch && matchStatus;
+    });
+  }, [registrations, searchQuery, regFilter]);
+
+  const handleApproveReg = (reg: SubscriptionRegistration) => {
+    const res = approveLocalRegistration(reg.id);
+    if (res.success && res.registration) {
+      setRegistrations(getLocalRegistrations());
+      setApprovedNotification({
+        storeName: reg.store_name,
+        email: reg.email,
+        token: res.registration.verification_token,
+        tier: reg.package_tier,
+      });
+      setActionSuccessMessage(`Pendaftaran ${reg.store_name} (${reg.package_tier.toUpperCase()}) disetujui! Notifikasi email dikirim via PT AlphaGen Info.`);
+      setTimeout(() => setActionSuccessMessage(''), 5000);
+    }
+  };
+
+  const handleRejectReg = (reg: SubscriptionRegistration) => {
+    const reason = prompt('Masukkan alasan penolakan pembayaran/pendaftaran:', 'Bukti pembayaran QRIS tidak sesuai/tidak terbaca.');
+    if (reason === null) return;
+    const updated = rejectLocalRegistration(reg.id, reason);
+    if (updated) {
+      setRegistrations(getLocalRegistrations());
+      setActionSuccessMessage(`Pendaftaran ${reg.store_name} telah ditolak.`);
+      setTimeout(() => setActionSuccessMessage(''), 4000);
+    }
+  };
 
   // Metrics
   const metrics = useMemo(() => {
@@ -366,7 +427,72 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           </div>
         </section>
 
-        {/* Multi-Tenant Merchant Management Table Section */}
+        {/* Sprint 7: Superadmin Sub-Navigation Bar */}
+        <div style={{ display: 'flex', gap: '10px', margin: '20px 0 16px', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={() => setActiveSuperadminTab('merchants')}
+            className={`btn ${activeSuperadminTab === 'merchants' ? 'btn-primary' : 'btn-outline'}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontWeight: 600 }}
+          >
+            <Store size={16} />
+            <span>{isEn ? 'Retail Tenant Management' : 'Manajemen Tenant Ritel'} ({merchants.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSuperadminTab('registrations')}
+            className={`btn ${activeSuperadminTab === 'registrations' ? 'btn-primary' : 'btn-outline'}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontWeight: 600 }}
+          >
+            <CreditCard size={16} />
+            <span>{isEn ? 'Subscription & QRIS Approvals' : 'Persetujuan Registrasi & QRIS'}</span>
+            {pendingRegsCount > 0 && (
+              <span className="badge badge-warning" style={{ fontWeight: 800 }}>
+                {pendingRegsCount} {isEn ? 'Pending' : 'Menunggu'}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Approved Email Dispatch Notification Banner */}
+        {approvedNotification && (
+          <div className="alert alert-success" style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px', borderLeft: '4px solid var(--primary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <strong style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Mail size={16} style={{ color: 'var(--primary)' }} />
+                Email Konfirmasi Terkirim Resmi: PT AlphaGen Info &lt;no-reply@alphagen.co.id&gt;
+              </strong>
+              <button
+                type="button"
+                onClick={() => setApprovedNotification(null)}
+                className="icon-btn"
+                style={{ border: 'none', background: 'transparent' }}
+                title="Tutup pemberitahuan"
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ fontSize: '0.86rem', color: 'var(--text)' }}>
+              Toko <strong>{approvedNotification.storeName}</strong> ({approvedNotification.tier.toUpperCase()}) telah disetujui. Tautan verifikasi akun telah dikirim ke <strong>{approvedNotification.email}</strong>:
+              <div style={{ marginTop: '6px' }}>
+                <a
+                  href={`/verify-account?token=${approvedNotification.token}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}
+                >
+                  <ExternalLink size={13} />
+                  <span>Uji Tautan Verifikasi: /verify-account?token={approvedNotification.token}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 1: Multi-Tenant Merchant Management Table Section */}
+        {activeSuperadminTab === 'merchants' && (
         <section className="card">
           <div className="superadmin-table-controls">
             <div>
@@ -519,6 +645,193 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
             </table>
           </div>
         </section>
+        )}
+
+        {/* TAB 2: Subscription Registrations & QRIS Approval Section */}
+        {activeSuperadminTab === 'registrations' && (
+          <section className="card">
+            <div className="superadmin-table-controls">
+              <div>
+                <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem', fontWeight: 800 }}>
+                  Persetujuan Registrasi & Pembayaran QRIS
+                </h2>
+                <p className="muted-text" style={{ margin: 0, fontSize: '0.82rem' }}>
+                  Verifikasi bukti transfer QRIS dan persetujuan pembuatan akun POS ritel baru.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' }}>
+                <div className="superadmin-search-wrap">
+                  <input
+                    type="text"
+                    placeholder="Cari toko, nama pemilik, email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="input"
+                  />
+                  <span className="superadmin-search-icon">
+                    <Search size={14} />
+                  </span>
+                </div>
+
+                <div className="superadmin-filter-group">
+                  {(['all', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED'] as const).map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setRegFilter(st)}
+                      className={`chip ${regFilter === st ? 'active' : ''}`}
+                    >
+                      {st === 'all'
+                        ? 'Semua Status'
+                        : st === 'PENDING_APPROVAL'
+                        ? '⏳ Menunggu Approval'
+                        : st === 'APPROVED'
+                        ? '✓ Disetujui'
+                        : '✕ Ditolak'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="table-responsive">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Toko & Pemilik</th>
+                    <th>Kontak & Username</th>
+                    <th>Paket Layanan</th>
+                    <th>Nominal</th>
+                    <th>Bukti Pembayaran</th>
+                    <th>Status Approval</th>
+                    <th>Verifikasi</th>
+                    <th style={{ textAlign: 'center' }}>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRegistrations.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--muted)' }}>
+                        Tidak ada permohonan registrasi yang sesuai.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredRegistrations.map((r) => (
+                      <tr key={r.id}>
+                        <td>
+                          <strong style={{ display: 'block', color: 'var(--text)' }}>{r.store_name}</strong>
+                          <span className="muted-text" style={{ fontSize: '0.74rem' }}>
+                            {r.full_name} • <code>{r.id}</code>
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ fontSize: '0.82rem' }}>{r.email}</div>
+                          <span className="muted-text" style={{ fontSize: '0.74rem' }}>
+                            {r.phone} • User: <code>{r.username}</code>
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              r.package_tier === 'gen_gamma'
+                                ? 'badge-plan-enterprise'
+                                : r.package_tier === 'gen_beta'
+                                ? 'badge-plan-pro'
+                                : 'badge-plan-starter'
+                            }`}
+                          >
+                            {r.package_tier.toUpperCase()}
+                          </span>
+                        </td>
+                        <td style={{ fontWeight: 700 }}>
+                          {r.amount === 0 ? 'Gratis (Rp 0)' : formatRupiah(r.amount)}
+                        </td>
+                        <td>
+                          {r.payment_proof_url ? (
+                            <button
+                              type="button"
+                              onClick={() => setPreviewProof(r.payment_proof_url!)}
+                              className="btn btn-outline btn-sm"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', fontSize: '0.78rem' }}
+                            >
+                              <Eye size={13} />
+                              <span>Lihat Bukti QRIS</span>
+                            </button>
+                          ) : (
+                            <span className="muted-text" style={{ fontSize: '0.78rem' }}>Tanpa Berkas</span>
+                          )}
+                        </td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              r.status === 'APPROVED'
+                                ? 'badge-success'
+                                : r.status === 'PENDING_APPROVAL'
+                                ? 'badge-warning'
+                                : 'badge-danger'
+                            }`}
+                          >
+                            {r.status === 'APPROVED' ? 'Disetujui' : r.status === 'PENDING_APPROVAL' ? 'Menunggu Approval' : 'Ditolak'}
+                          </span>
+                        </td>
+                        <td>
+                          {r.is_verified ? (
+                            <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>
+                              <Check size={11} /> Terverifikasi
+                            </span>
+                          ) : (
+                            <span className="badge" style={{ fontSize: '0.72rem' }}>
+                              Belum Aktivasi
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <div style={{ display: 'inline-flex', gap: '6px' }}>
+                            {r.status === 'PENDING_APPROVAL' && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => handleApproveReg(r)}
+                                  className="btn btn-primary btn-sm"
+                                  title="Setujui pendaftaran dan kirim email aktivasi"
+                                >
+                                  <Check size={13} />
+                                  <span>Setujui</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRejectReg(r)}
+                                  className="btn btn-danger btn-sm"
+                                  title="Tolak pendaftaran"
+                                >
+                                  <X size={13} />
+                                  <span>Tolak</span>
+                                </button>
+                              </>
+                            )}
+                            {r.status === 'APPROVED' && (
+                              <a
+                                href={`/verify-account?token=${r.verification_token}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-outline btn-sm"
+                                title="Buka tautan verifikasi akun"
+                              >
+                                <ExternalLink size={12} />
+                                <span>Tautan</span>
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
 
         {/* Merchant Detail Modal */}
         {selectedMerchant && (
@@ -600,6 +913,31 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                   className="btn btn-outline btn-sm"
                 >
                   {s.closeModal}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Proof Lightbox Modal */}
+        {previewProof && (
+          <div className="modal-backdrop" onClick={() => setPreviewProof(null)}>
+            <div className="modal-card" style={{ maxWidth: '480px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Pratinjau Bukti Pembayaran QRIS</h3>
+                <button type="button" onClick={() => setPreviewProof(null)} className="icon-btn">✕</button>
+              </div>
+              <div style={{ margin: '16px 0', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewProof}
+                  alt="Bukti Transfer QRIS"
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setPreviewProof(null)} className="btn btn-primary btn-sm">
+                  Tutup Pratinjau
                 </button>
               </div>
             </div>
