@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -27,8 +27,13 @@ import {
   type Transaction,
   type TransactionItem,
 } from '../types/pos';
-import { formatRupiah, generateInvoiceNumber } from '../utils/format';
+import { formatRupiah, generateInvoiceNumber, formatErrorMessage } from '../utils/format';
 import { calculateOrderPricing } from '../utils/pricing';
+import {
+  getOfflineQueue,
+  saveOfflineSale,
+  syncOfflineQueue,
+} from '../utils/offlineQueue';
 import BarcodeScanner from './BarcodeScanner';
 
 export interface PosCashierProps {
@@ -58,6 +63,40 @@ export default function PosCashier({
   const [applyTaxOverride, setApplyTaxOverride] = useState<boolean | null>(null);
   const [feedback, setFeedback] = useState<FeedbackMessage | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [offlineQueueCount, setOfflineQueueCount] = useState(0);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleManualSync = useCallback(async () => {
+    if (!supabase) return;
+    setIsSyncing(true);
+    try {
+      const res = await syncOfflineQueue(supabase);
+      setOfflineQueueCount(getOfflineQueue().length);
+      if (res.synced > 0) {
+        setFeedback({
+          type: 'success',
+          text: `Berhasil menyinkronkan ${res.synced} transaksi offline ke server cloud!`,
+        });
+        await onProductsChanged();
+      }
+    } catch (err) {
+      setFeedback({
+        type: 'error',
+        text: `Gagal sinkronisasi antrean: ${formatErrorMessage(err)}`,
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [onProductsChanged]);
+
+  useEffect(() => {
+    setOfflineQueueCount(getOfflineQueue().length);
+    const onOnline = () => {
+      handleManualSync();
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [handleManualSync]);
 
   const applyTax = applyTaxOverride ?? Boolean(settings.tax_enabled);
 
@@ -212,50 +251,147 @@ export default function PosCashier({
         discount_value: item.discount_value || 0,
       }));
 
-      const { data: rpcResult, error: rpcError } = await supabase.rpc('process_sale', {
-        p_invoice_number: invoiceNumber,
-        p_payment_method: paymentMethod,
-        p_cash_received: numericCash,
-        p_items: rpcItems,
-        p_discount_type: orderDiscountType,
-        p_discount_value: Number(orderDiscountValue) || 0,
-        p_apply_tax: applyTax,
-      });
+      let isNetworkOutage = typeof navigator !== 'undefined' && !navigator.onLine;
 
-      if (rpcError) {
-        if (rpcError.message?.includes('SHIFT_REQUIRED')) {
-          await refreshShift();
-          throw new Error(
-            'Shift belum dibuka atau sudah ditutup. Silakan buka shift terlebih dahulu.'
-          );
+      if (!isNetworkOutage) {
+        try {
+          const { data: rpcResult, error: rpcError } = await supabase.rpc('process_sale', {
+            p_invoice_number: invoiceNumber,
+            p_payment_method: paymentMethod,
+            p_cash_received: numericCash,
+            p_items: rpcItems,
+            p_discount_type: orderDiscountType,
+            p_discount_value: Number(orderDiscountValue) || 0,
+            p_apply_tax: applyTax,
+          });
+
+          if (rpcError) {
+            const errMsg = rpcError.message || '';
+            if (
+              errMsg.includes('Failed to fetch') ||
+              errMsg.includes('network') ||
+              errMsg.includes('NetworkError') ||
+              errMsg.includes('Load failed')
+            ) {
+              isNetworkOutage = true;
+            } else {
+              if (errMsg.includes('SHIFT_REQUIRED')) {
+                await refreshShift();
+                throw new Error(
+                  'Shift belum dibuka atau sudah ditutup. Silakan buka shift terlebih dahulu.'
+                );
+              }
+              throw rpcError;
+            }
+          } else {
+            const typedResult = rpcResult as {
+              transaction: Transaction;
+              items?: TransactionItem[];
+            };
+
+            const txData: Transaction = {
+              ...typedResult.transaction,
+              cashier_name: profile?.full_name || 'Kasir',
+            };
+            const receiptItems: TransactionItem[] = typedResult.items || [];
+
+            setCart([]);
+            setCashReceived('');
+            setOrderDiscountValue('');
+            setOrderDiscountType('nominal');
+            setApplyTaxOverride(null);
+            setFeedback({ type: 'success', text: `Transaksi ${invoiceNumber} berhasil!` });
+            await onProductsChanged();
+            onCheckoutSuccess({
+              transaction: txData,
+              items: receiptItems,
+            });
+            return;
+          }
+        } catch (fetchErr) {
+          const fetchMsg = formatErrorMessage(fetchErr);
+          if (
+            fetchMsg.includes('Failed to fetch') ||
+            fetchMsg.includes('network') ||
+            fetchMsg.includes('NetworkError') ||
+            fetchMsg.includes('Load failed')
+          ) {
+            isNetworkOutage = true;
+          } else {
+            throw fetchErr;
+          }
         }
-        throw rpcError;
       }
 
-      const typedResult = rpcResult as {
-        transaction: Transaction;
-        items?: TransactionItem[];
-      };
+      if (isNetworkOutage) {
+        // Offline-First Queue Resilience
+        const receiptItems: TransactionItem[] = cart.map((item, idx) => {
+          const itemPricing = pricing.items[idx];
+          return {
+            id: `off-item-${Date.now()}-${idx}`,
+            transaction_id: `off-tx-${Date.now()}`,
+            product_id: item.id,
+            product_name: item.name,
+            price: item.sell_price,
+            qty: item.qty,
+            subtotal: itemPricing?.lineGross ?? item.sell_price * item.qty,
+            discount_type: item.discount_type || 'nominal',
+            discount_value: item.discount_value || 0,
+            discount_amount: itemPricing?.itemDiscountAmount ?? 0,
+          };
+        });
 
-      const txData: Transaction = {
-        ...typedResult.transaction,
-        cashier_name: profile?.full_name || 'Kasir',
-      };
-      const receiptItems: TransactionItem[] = typedResult.items || [];
+        const txData: Transaction = {
+          id: `off-tx-${Date.now()}`,
+          invoice_number: invoiceNumber,
+          cashier_id: profile?.id || '',
+          cashier_name: profile?.full_name || 'Kasir',
+          shift_id: activeShift.id,
+          total_amount: pricing.totalAmount,
+          subtotal_amount: pricing.subtotalAmount,
+          discount_type: orderDiscountType,
+          discount_value: Number(orderDiscountValue) || 0,
+          discount_amount: pricing.orderDiscountAmount,
+          tax_amount: pricing.taxAmount,
+          payment_method: paymentMethod,
+          cash_received: paymentMethod === 'cash' ? numericCash : pricing.totalAmount,
+          change_amount: paymentMethod === 'cash' ? Math.max(0, numericCash - pricing.totalAmount) : 0,
+          created_at: new Date().toISOString(),
+          transaction_items: receiptItems,
+        };
 
-      setCart([]);
-      setCashReceived('');
-      setOrderDiscountValue('');
-      setOrderDiscountType('nominal');
-      setApplyTaxOverride(null);
-      setFeedback({ type: 'success', text: `Transaksi ${invoiceNumber} berhasil!` });
-      await onProductsChanged();
-      onCheckoutSuccess({
-        transaction: txData,
-        items: receiptItems,
-      });
+        saveOfflineSale({
+          id: txData.id,
+          invoice_number: invoiceNumber,
+          payment_method: paymentMethod,
+          cash_received: numericCash,
+          items: rpcItems,
+          discount_type: orderDiscountType,
+          discount_value: Number(orderDiscountValue) || 0,
+          apply_tax: applyTax,
+          timestamp: new Date().toISOString(),
+          transaction: txData,
+          receipt_items: receiptItems,
+        });
+
+        setOfflineQueueCount(getOfflineQueue().length);
+        setCart([]);
+        setCashReceived('');
+        setOrderDiscountValue('');
+        setOrderDiscountType('nominal');
+        setApplyTaxOverride(null);
+        setFeedback({
+          type: 'success',
+          text: `📶 Mode Offline-First: Transaksi ${invoiceNumber} tersimpan di antrean lokal. Struk belanja siap dicetak!`,
+        });
+
+        onCheckoutSuccess({
+          transaction: txData,
+          items: receiptItems,
+        });
+      }
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({
         type: 'error',
         text: `Gagal menyimpan transaksi: ${message}`,
@@ -267,6 +403,38 @@ export default function PosCashier({
 
   return (
     <div className="pos-wrapper">
+      {offlineQueueCount > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 16px',
+            background: 'rgba(245, 158, 11, 0.12)',
+            border: '1px solid rgba(245, 158, 11, 0.4)',
+            borderRadius: '10px',
+            marginBottom: '14px',
+            color: '#F59E0B',
+            fontSize: '13px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>📶</span>
+            <span>
+              <strong>Mode Offline-First Aktif:</strong> Terdapat {offlineQueueCount} transaksi dalam antrean lokal yang belum disinkronkan ke server cloud.
+            </span>
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ padding: '4px 12px', fontSize: '12px' }}
+            onClick={handleManualSync}
+            disabled={isSyncing}
+          >
+            {isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Sekarang'}
+          </button>
+        </div>
+      )}
       {!activeShift && (
         <div className="shift-warning-banner">
           <div className="shift-warning-text">
