@@ -432,13 +432,9 @@
       </div>
 
       <ul class="nav-list">
-        <li class="nav-item" onclick="switchTab('tabFlow', this)">
+        <li class="nav-item active" onclick="switchTab('tabFlow', this)">
           <span>🚀</span>
           <span>Sprint 6 Live Flow <span style="background:#10B981; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">100% DONE</span></span>
-        </li>
-        <li class="nav-item active" onclick="switchTab('tabChat', this)">
-          <span>💬</span>
-          <span>Live Interaksi Tim <span id="sidebarStatusTag" style="background:#EF4444; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">OFFLINE (STAND DOWN)</span></span>
         </li>
         <li class="nav-item" onclick="switchTab('tabApproval', this)" id="navItemApproval">
           <span>✍️</span>
@@ -482,9 +478,9 @@
           <button class="audio-btn" onclick="playOfficialJingle()">
             🔔 Putar Jingle Resmi
           </button>
-          <div class="leader-pill" id="leaderPillStatus" style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.3); color:#F87171;">
-            <div style="width:9px; height:9px; background:#EF4444; border-radius:50%; box-shadow:0 0 8px rgba(239,68,68,0.6);"></div>
-            <span>Monitor Stand Down • Team Leader: Anggi Andriansyah (Gege)</span>
+          <div class="leader-pill" style="background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.3); color:#34D399;">
+            <div class="live-pulse"></div>
+            <span>Team Leader: Anggi Andriansyah (Gege)</span>
           </div>
         </div>
       </header>
@@ -494,7 +490,7 @@
         
         <!-- ==================== TAB 1: SPRINT 5 ANIMATED FLOW ==================== -->
         <!-- ==================== TAB 1: SPRINT 6 LIVE WORKFLOW & PIPELINE ==================== -->
-        <section class="tab-section" id="tabFlow">
+        <section class="tab-section active" id="tabFlow">
           <div class="flow-wrapper">
             <div class="flow-title">
               <span>⚡</span>
@@ -643,72 +639,7 @@
           </div>
         </section>
 
-        <!-- ==================== TAB 2: LIVE INTERAKSI 2-ARAH (AI-ANTI-SLOP ENGINE) ==================== -->
-        <section class="tab-section active" id="tabChat">
-          <div class="chat-card">
-            <div class="chat-header">
-              <div class="chat-title-box">
-                <h3 class="chat-title">
-                  <span>💬</span>
-                  <span>#pt-alphagen-command-room</span>
-                </h3>
-                <span class="chat-stats-pill" id="chatStatusPill" style="background:rgba(239, 68, 68, 0.18); border-color:#EF4444; color:#F87171;">🔴 LIVE INTERAKSI DINONAKTIFKAN • TEAM STAND DOWN • OUTING MODE 100% AKTIF 🏖️✈️</span>
-              </div>
-              <div class="chat-controls">
-                <button class="control-chip active" id="monitorStatusChip" onclick="toggleLiveMonitor()" style="background:rgba(239,68,68,0.15); border-color:#EF4444; color:#F87171;">
-                  <span>🔴</span> <span id="monitorStatusText">Status: Stand Down</span>
-                </button>
-                <button class="control-chip active" id="soundToggleBtn" onclick="toggleChatSound()">
-                  <span>🔔</span> <span id="soundLabel">Sound: ON</span>
-                </button>
-                <button class="control-chip" onclick="clearChatHistory()">
-                  <span>🧹</span> <span>Reset Chat</span>
-                </button>
-              </div>
-            </div>
 
-            <!-- Chat Messages Feed -->
-            <div class="chat-feed" id="chatFeedBox">
-              <!-- Initial real conversations injected by JS -->
-            </div>
-
-            <!-- Real-time Typing Indicator -->
-            <div class="typing-box" id="typingIndicator">
-              <div class="typing-dots">
-                <span></span><span></span><span></span>
-              </div>
-              <span id="typingText">Seseorang sedang mengetik...</span>
-            </div>
-
-            <!-- Input area with quick prompt chips -->
-            <div class="chat-bottom">
-              <div id="standDownBanner" style="background:linear-gradient(135deg, rgba(239,68,68,0.12), rgba(245,158,11,0.12)); border:1px solid rgba(239,68,68,0.35); border-radius:12px; padding:12px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <span style="font-size:22px;">🏖️</span>
-                  <div>
-                    <div style="font-size:13px; font-weight:800; color:#FCA5A5;">LIVE INTERACTION MONITOR TEAM TELAH DIMATIKAN</div>
-                    <div style="font-size:11.5px; color:#CBD5E1;">Seluruh tim AlphaGen resmi STAND DOWN &amp; 100% fokus liburan outing ke Malaysia tanpa beban pekerjaan.</div>
-                  </div>
-                </div>
-                <span style="background:#EF4444; color:white; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; white-space:nowrap;">STAND DOWN</span>
-              </div>
-              <div class="quick-tags">
-                <span class="quick-tag" onclick="injectQuickMessage('matikan live interaction monitor team')">🛑 Matikan Monitor Team</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Have fun geys! Jangan lupa foto-foto yaa')">🎉 Have Fun Geys!</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Nitip cokelat Beryl\'s dan oleh-oleh khas Malaysia ya!')">🍫 Titip Cokelat</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Full squad wajib foto di Petronas Twin Tower &amp; River of Life!')">📸 Foto Menara Kembar</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Siapa yang ketahuan buka laptop didenda kelapa muda ya! 🥥')">🥥 Denda Buka Laptop</span>
-              </div>
-              <div class="chat-input-bar">
-                <input type="text" id="leaderChatInput" class="chat-input" placeholder="Live interaksi telah dimatikan — Tim sedang menikmati liburan outing di Malaysia 🌴🇲🇾" disabled style="opacity:0.6; cursor:not-allowed;" onkeydown="if(event.key==='Enter') postLeaderMessage()">
-                <button class="chat-btn" id="leaderChatBtn" onclick="postLeaderMessage()" disabled style="opacity:0.6; cursor:not-allowed;">
-                  <span>Kirim</span>
-                  <span>🚀</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <!-- ==================== TAB 3: SPRINT EVOLUTION (1 - 5) ==================== -->
         <section class="tab-section" id="tabBacklog">
@@ -1336,8 +1267,8 @@
                 <span style="font-size:12px; color:var(--muted);">
                   💡 Seluruh divisi (18 staf + leads) siap menindaklanjuti poin-poin evaluasi Mas Gege.
                 </span>
-                <button type="button" class="control-chip active" style="font-size:12px; padding:8px 16px;" onclick="switchTab('tabChat', document.querySelectorAll('.nav-item')[1])">
-                  💬 Kembali ke Live Chat Interaksi Tim
+                <button type="button" class="control-chip active" style="font-size:12px; padding:8px 16px;" onclick="switchTab('tabFlow', document.querySelectorAll('.nav-item')[0])">
+                  🚀 Kembali ke Sprint Flow
                 </button>
               </div>
 
@@ -1563,7 +1494,6 @@
 
       const titles = {
         'tabFlow': 'Sprint 6 Selesai 100% (Hotfix v1.5.1 Live & PRD Subscription Approved)',
-        'tabChat': 'Live Interaksi Tim (Anti-Slop & Mindset Nyata)',
         'tabApproval': 'Portal Verifikasi Kelengkapan Dokumen & Sign-off Sprint 6',
         'tabBacklog': 'Daftar Backlog Sprint 6 (100% Selesai) & Riwayat Sprint Evolution (1 - 6)',
         'tabDivisions': 'Formasi Lengkap 17 Divisi & 46 Personel (Status: Selesai Sprint 6 & Siap Outing)',
