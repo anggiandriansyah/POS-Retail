@@ -680,16 +680,16 @@
             <!-- Input area with quick prompt chips -->
             <div class="chat-bottom">
               <div class="quick-tags">
-                <span class="quick-tag" onclick="injectQuickMessage('Cek countdown timer dan integritas waktu realtime tim!')">⏱️ Cek Countdown</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Gimana rasa kopinya tim? Udah nyobain mesin kopi di pantry?')">☕ Tanya Kopi</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Donat J.CO masih ada gak di pantry? Kebagian semua kan?')">🍩 Cek Donat</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Gimana progress user superadmin admindev dan adminprod?')">🔑 Superadmin Hub</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Apakah DEV di Vercel sudah siap kita review?')">☁️ Cek DEV Vercel</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Semangat tim! Jangan lupa istirahat ya')">🔥 Semangat Tim</span>
-                <span class="quick-tag" onclick="injectQuickMessage('@FE Lead @BE Lead gimana koordinasi API analytics hari ini?')">🎯 Colek Lead</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Have fun geys! Jangan lupa foto-foto yaa')">🎉 Have Fun Geys!</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Gimana situasi perjalanan di bus dan persiapan bandara?')">🚌 Situasi Bus & Bandara</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Nitip cokelat Beryl\'s dan oleh-oleh khas Malaysia ya!')">🍫 Titip Cokelat</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Full squad wajib foto di Petronas Twin Tower & River of Life!')">📸 Foto Menara Kembar</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Mba Rina, pastikan paspor dan tiket 46 personel aman ya')">🛂 Cek Paspor & Tiket</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Siapa yang ketahuan buka laptop didenda kelapa muda ya! 🥥')">🥥 Denda Buka Laptop</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Makan siang dan kuliner Bukit Bintang nanti pesan yang enak!')">🍛 Kuliner Bukit Bintang</span>
               </div>
               <div class="chat-input-bar">
-                <input type="text" id="leaderChatInput" class="chat-input" placeholder="Ketik pesan untuk tim... (Misal: tanya kopi di pantry, donat, status dev, superadmin, dll)" onkeydown="if(event.key==='Enter') postLeaderMessage()">
+                <input type="text" id="leaderChatInput" class="chat-input" placeholder="Ketik pesan untuk tim di bus / bandara... (Misal: tanya situasi, titip cokelat, foto squad, dll)" onkeydown="if(event.key==='Enter') postLeaderMessage()">
                 <button class="chat-btn" onclick="postLeaderMessage()">
                   <span>Kirim</span>
                   <span>🚀</span>
@@ -1933,6 +1933,76 @@
           text: "📢 BRIEFING CEPAT MBA RINA: 1. Paspor fisik dicek di saku masing-masing. 2. Form MDAC (Malaysia Digital Arrival Card) beres kami koordinasikan via travel guide. 3. Semua biaya (Hotel bintang, Makan 3x sehari, Tiket destinasi, Transportasi bus AC KL, & Local Guide) ALL-IN ditanggung Mas Gege & AlphaGen! Let's fly! ✈️🇲🇾",
           time: "11:44",
           reactions: { "🫡": 46, "🇲🇾": 46, "🎉": 46 }
+        },
+        {
+          id: "m44",
+          isLeader: true,
+          text: "have fun geys, buat live chatnya dong biar aku tau situasi obrolan kalian 🚌✈️🇲🇾",
+          time: "11:45",
+          reactions: { "👑": 46, "❤️": 46, "🎉": 46, "🔥": 46 }
+        },
+        {
+          id: "m45",
+          person: { name: "Fauzan Akbar", role: "Intern QA", avatar: "🧪", tag: "INTERN", color: "#10B981" },
+          text: "Siaaap Mas Gege! Kita live report langsung dari bus nih! Posisi bus baru masuk Gerbang Tol Bandara Soetta. Di baris belakang lagi seru banget, sound system bus dipake karaoke lagu koplo bareng Mas Eko Backend! Goyang tipis-tipis Mas Gege! 🎤🤣🔥",
+          time: "11:46",
+          reactions: { "🎤": 44, "🔥": 46, "😂": 40 }
+        },
+        {
+          id: "m46",
+          person: ROSTER.rina,
+          text: "Situasi Bus Terkini Mas Gege: 46 paspor verified 100% aman di tas Mba Rina. Snack box donat J.CO udah ludes, sekarang anak-anak lagi ngunyah keripik singkong & wafer. Semua wajah sumringah full senyum, energi 1000%! Makasih banyaaak Mas Gege tercinta! 🍩❤️🥰",
+          time: "11:46",
+          reactions: { "🍩": 42, "❤️": 46, "🥰": 45 }
+        },
+        {
+          id: "m47",
+          person: ROSTER.reza,
+          text: "Mas Gege tenang aja, aturan emas 'NO LAPTOP' ditaati 100%! Tadi Mas Eko baru mau buka resleting ransel langsung diteriakin satu bus 'AWAS DENDA KELAPA MUDA!' wkwk auto kicep tangannya 🥥🌴🤣",
+          time: "11:47",
+          reactions: { "🥥": 46, "🌴": 44, "🤣": 45 }
+        },
+        {
+          id: "m48",
+          person: ROSTER.eko,
+          text: "Wkwk fitnah kejam lo Za! Gue cuma mau ngambil Antimo sama minyak kayu putih biar ga mabuk darat & mabuk udara wkwk! Database Supabase udah tenang di cloud, sekarang otak gue 100% fokus mikirin Nasi Lemak Sambal Sotong & Roti Canai di Bukit Bintang nanti malam! 🍛🤤",
+          time: "11:47",
+          reactions: { "🍛": 44, "🤤": 45, "☕": 41 }
+        },
+        {
+          id: "m49",
+          person: ROSTER.citra,
+          text: "Alya (anak magang UI) udah siapin mirrorless sama stabilizer! Kita udah list angle foto: Jembatan Putrajaya waktu golden hour, terus malamnya hunting instalasi neon biru di River of Life! Mas Gege nanti wajib foto di tengah squad yaa! 📸🏙️✨",
+          time: "11:48",
+          reactions: { "📸": 45, "✨": 46, "💖": 42 }
+        },
+        {
+          id: "m50",
+          person: ROSTER.aris,
+          text: "Laporan DevOps dari kursi bus: Dashboard monitoring di HP menunjukkan ALPHOS POS latency 42ms, server load 18%, 0 crash. Server autopilot aman ditinggal, tim DevOps resmi beralih ke mode HEALING! 🚀🌴",
+          time: "11:48",
+          reactions: { "🚀": 46, "📊": 42, "🥳": 46 }
+        },
+        {
+          id: "m51",
+          person: { name: "Dimas Ramadhan", role: "Intern TW", avatar: "📑", tag: "INTERN", color: "#10B981" },
+          text: "Gue lagi nulis logbook magang: 'Hari ke-90 magang di AlphaGen: Diajak Team Leader Mas Gege terbang ke Kuala Lumpur 2D1N.' Temen-temen kampus gue di grup WA langsung heboh iri dengki haha! 😭🔥",
+          time: "11:49",
+          reactions: { "📑": 40, "🔥": 46, "😂": 44 }
+        },
+        {
+          id: "m52",
+          person: ROSTER.bambang,
+          text: "eSIM roaming data Malaysia udah aktif di hp semua koordinator. Asuransi perjalanan Allianz 46 personel sudah terproteksi ganda. Terminal 3 Soekarno-Hatta sudah kelihatan di depan kaca bus! 🛡️🛫",
+          time: "11:49",
+          reactions: { "🛡️": 46, "🛫": 46, "🛂": 42 }
+        },
+        {
+          id: "m53",
+          person: ROSTER.agung,
+          text: "Sebagai arsitek sistem, saya menyatakan arsitektur kebahagiaan tim AlphaGen hari ini mencapai availability 99.999%! Have fun juga buat Mas Gege, safe flight dan sampai ketemu di Menara Petronas! 👑🇲🇾🚀",
+          time: "11:50",
+          reactions: { "👑": 46, "🇲🇾": 46, "🚀": 46, "🥂": 46 }
         }
 
       ];
@@ -2063,6 +2133,22 @@
     }
 
     function handleLeaderInteraction(lower) {
+      // 00. Topic: Outing, Malaysia, Have Fun, Situasi, Bus, Bandara, Foto, Cokelat
+      if (lower.includes('have fun') || lower.includes('situasi') || lower.includes('obrolan') || lower.includes('malaysia') || lower.includes('outing') || lower.includes('bus') || lower.includes('bandara') || lower.includes('pesawat') || lower.includes('foto') || lower.includes('cokelat') || lower.includes('petronas') || lower.includes('paspor') || lower.includes('kelapa muda') || lower.includes('laptop')) {
+        setTimeout(() => {
+          pushTeamMessage(ROSTER.rina, "Lapor Mas Gege! Situasi di bus sekarang 1000% seru dan bahagia! Koper bagasi aman, paspor 46 orang udah dipegang Mba Rina, dan snack masih melimpah. Kita bentar lagi sampe Terminal 3 Soetta! ❤️✈️", 1000);
+
+          setTimeout(() => {
+            pushTeamMessage({ name: "Fauzan Akbar", role: "Intern QA", avatar: "🧪", tag: "INTERN", color: "#10B981" }, "Siap Mas Gege! Cokelat Beryl's sama foto estetik di Petronas Twin Tower & River of Life bakal kita bawain khusus buat Mas Gege! Makasih banyak ya Mas! 🍫📸✨", 2000);
+
+            setTimeout(() => {
+              pushTeamMessage(ROSTER.reza, "Dan tenang Mas Gege, laptop beneran 0 unit yang dibawa! Siapapun yang ketahuan mikirin ngoding auto didenda kelapa muda! Selamat have fun juga Mas Gege! 🥥🌴😎", 2200);
+            }, 3000);
+          }, 1800);
+        }, 500);
+        return;
+      }
+
       // 0. Topic: Realtime Process, Countdown, Estimasi & Integritas Kerja
       if (lower.includes('realtime') || lower.includes('countdown') || lower.includes('estimasi') || lower.includes('integritas') || lower.includes('waktu') || lower.includes('tepat') || lower.includes('jam')) {
         setTimeout(() => {
@@ -2241,28 +2327,32 @@
     }
 
     // =========================================================================
-    // ☕ REALISTIC BACKGROUND OFFICE BANTER (ANTI-SLOP MULTI-MSG THREADS)
+    // 🚌 REALISTIC LIVE OUTING & AIRPORT BANTER (STREAMING MULTI-MSG THREADS)
     // =========================================================================
-    const naturalOfficeThreads = [
+    const naturalOutingThreads = [
       [
-        { person: ROSTER.andi, text: "Mas @Bimo Wicaksono tombol toggle audio di StoreSettingsForm udah aku tambahin transisi smooth nih. Enak dilihatnya.", wait: 1000 },
-        { person: ROSTER.bimo, text: "Cakep Ndi! Pastiin pas state-nya 'OFF' icon volumenya ada garis coret merahnya ya biar user gak bingung.", wait: 2400 }
+        { person: { name: "Alya Nadira", role: "Intern UI/UX", avatar: "🎨", tag: "INTERN", color: "#10B981" }, text: "Kak @Citra Lestari aku udah download offline maps Kuala Lumpur & rute LRT dari KL Sentral ke Bukit Bintang! Biar ga nyasar pas hunting foto!", wait: 1000 },
+        { person: ROSTER.citra, text: "Kereen Alya! Nanti malam sehabis dari River of Life kita kulineran durian Musang King bareng anak-anak ya! 📸✨", wait: 2400 }
       ],
       [
-        { person: ROSTER.doni, text: "Mbak @Siti Rahma ini font tabel Superadmin Hub pake Plus Jakarta Sans kan? Bersih banget di layar FHD.", wait: 1000 },
-        { person: ROSTER.siti, text: "Iya Don, emang kita standarin pake Plus Jakarta Sans biar senada sama branding ALPHOS. Angka nominalnya pake font tabular biar lurus.", wait: 2600 }
+        { person: { name: "Fauzan Akbar", role: "Intern QA", avatar: "🧪", tag: "INTERN", color: "#10B981" }, text: "Mas @Eko Wijaya nada tingginya dapet banget tadi pas nyanyi 'Dan' Sheila on 7 di mic bus! Next song giliran lagu koplo Rungkad ya mas! 🎤🤣", wait: 1000 },
+        { person: ROSTER.eko, text: "Hahaha tenggorokan gue udah anget kena kopi tadi pagi Zan! Tarik ses mas e! Goyang tipis! 💃🔥", wait: 2200 }
       ],
       [
-        { person: ROSTER.maya, text: "Mas @Reza Pratama query sum omzet transaksi multi-tenant pake materialized view apa live query aja?", wait: 1000 },
-        { person: ROSTER.reza, text: "Live query dulu May, kan udah kita pasang composite index di (tenant_id, created_at). Latency-nya masih di bawah 15ms kok, enteng.", wait: 2800 }
+        { person: ROSTER.rina, text: "Perhatian 46 personel: begitu bus parkir di Drop-Off Terminal 3 Gate 4, koper bagasi langsung diturunkan dan kumpul di barisan Mba Rina yaa! 🧳✈️", wait: 1000 },
+        { person: ROSTER.budi, text: "Siap Bu Rina! Squad PO dan Bisnis bakal bantuin ngabsen barisan anak-anak magang biar ga tercecer. 📋🫡", wait: 2400 }
       ],
       [
-        { person: ROSTER.budi, text: "Notice buat tim dev: Playwright E2E kasir v1.4.0 72/72 masih 100% hijau ya. Jangan sampe ada regression pas nge-merge fitur baru.", wait: 1200 },
-        { person: ROSTER.aris, text: "Tenang Mas Budi, pipeline CI/CD GitHub Actions udah gue pasang blocker. Kalau ada 1 test fail, auto stop deploy.", wait: 2600 }
+        { person: ROSTER.reza, text: "Guys, tadi gue cek kurs 1 MYR sekitar Rp3.580. Ada yang mau tukar bareng di money changer bandara? 💵🇲🇾", wait: 1000 },
+        { person: { name: "Naufal Hidayat", role: "Intern Backend", avatar: "⚡", tag: "INTERN", color: "#10B981" }, text: "Aku ikutan tukar Mas Reza! Mau borong cokelat Beryl's tiramisu sama Milo cube buat oleh-oleh orang rumah hehe. 🍫🤤", wait: 2200 }
       ],
       [
-        { person: ROSTER.rina, text: "Info pantry: mesin kopi Venuella biji kopinya barusan udah aku refill yaa. Yang mau bikin espresso silakan, stok aman!", wait: 1000 },
-        { person: ROSTER.dimas, text: "Wah pas banget bu Rina, mata mulai 5 watt nih wkwk. Meluncur ke pantry!", wait: 2200 }
+        { person: ROSTER.aris, text: "Ping terakhir sebelum masuk bandara: Vercel CDN 38ms, Supabase idle 0 error. Kita pantau santai lewat smartwatch aja! Laptop aman di kantor! 😎🚀", wait: 1000 },
+        { person: ROSTER.agung, text: "Mantap Aris. Liburan tenang berkat sprint yang disiplin dan zero bug. Selamat bersenang-senang semua! 🌴✨", wait: 2500 }
+      ],
+      [
+        { person: ROSTER.dewi, text: "Mba Rina, snack kacang sama permen mint masih ada gak? Lumayan buat ngemil pas nunggu boarding pass. 🍬🥜", wait: 1000 },
+        { person: ROSTER.rina, text: "Masih banyak Mbak Dewi! Ada biskuit gandum, cokelat, sama tolak angin juga. Sini merapat ke barisan depan! 🍩❤️", wait: 2200 }
       ]
     ];
 
@@ -2271,7 +2361,7 @@
       // Don't interrupt if typing indicator is active
       if (document.getElementById('typingIndicator').style.display === 'flex') return;
 
-      const thread = naturalOfficeThreads[threadIndex % naturalOfficeThreads.length];
+      const thread = naturalOutingThreads[threadIndex % naturalOutingThreads.length];
       threadIndex++;
 
       // Post 1st message
@@ -2286,7 +2376,7 @@
         }
       }, 500);
 
-    }, 24000); // Trigger subtle natural conversation thread every 24s
+    }, 14000); // Trigger live natural bus banter every 14s
 
     // =========================================================================
     // 🏢 17 DIVISIONS DATA
