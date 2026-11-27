@@ -2548,42 +2548,88 @@ body {
   color: var(--price-red);
 }
 
-/* Shield Badges */
-.landing-shield-badge {
-  font-family: var(--font-sans);
+/* Authentic Heraldic Shield Badges (ATM POSe Style) */
+.landing-shield-wrapper {
+  position: relative;
+  width: 86px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 150ms ease;
+}
+
+.landing-shield-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+.landing-shield-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.landing-shield-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 86px;
-  height: 80px;
-  border-radius: 12px 12px 34px 34px;
-  padding: 8px 6px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  flex-shrink: 0;
+  padding-bottom: 8px;
+  font-family: var(--font-sans);
+  pointer-events: none;
 }
 
-.shield-emerald {
-  border: 2px solid var(--price-emerald);
+.shield-wrapper-emerald .shield-top-text {
+  font-size: 0.74rem;
+  font-weight: 700;
   color: var(--price-emerald);
-  background: var(--surface);
+  line-height: 1.15;
 }
 
-.shield-blue {
-  border: 2px solid var(--price-blue);
+.shield-wrapper-emerald .shield-bottom-text {
+  font-size: 0.94rem;
+  font-weight: 900;
+  color: var(--price-emerald);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.shield-wrapper-blue .shield-top-text {
+  font-size: 0.74rem;
+  font-weight: 700;
   color: var(--price-blue);
-  background: var(--surface);
+  line-height: 1.15;
 }
 
-.shield-featured {
-  background: var(--price-red-gradient);
+.shield-wrapper-blue .shield-bottom-text {
+  font-size: 0.94rem;
+  font-weight: 900;
+  color: var(--price-blue);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.shield-wrapper-red .shield-top-text {
+  font-size: 0.74rem;
+  font-weight: 700;
   color: #ffffff;
-  border: none;
-  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.38);
+  line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.shield-wrapper-red .shield-bottom-text {
+  font-size: 0.94rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 /* Tier Name & Subtitle */

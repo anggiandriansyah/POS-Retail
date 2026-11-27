@@ -23,41 +23,125 @@ import RegistrationModal from './RegistrationModal';
 import type { PackageTier } from '../utils/subscriptionStorage';
 import { useThemeLang } from '../contexts/useThemeLang';
 
+function ShieldBadge({
+  variant,
+  topText,
+  bottomText,
+}: {
+  variant: 'emerald' | 'blue' | 'red';
+  topText: string;
+  bottomText: string;
+}) {
+  return (
+    <div className={`landing-shield-wrapper shield-wrapper-${variant}`}>
+      <svg
+        className="landing-shield-svg"
+        viewBox="0 0 84 88"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="shieldGradRed" x1="0" y1="0" x2="84" y2="88" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#EF4444" />
+            <stop offset="100%" stopColor="#DC2626" />
+          </linearGradient>
+          <filter id="shieldDropRed" x="-10%" y="-10%" width="130%" height="135%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="rgba(220, 38, 38, 0.4)" />
+          </filter>
+        </defs>
+
+        {variant === 'red' ? (
+          <path
+            d="M 12 4 H 72 C 78 4 82 8 82 14 V 42 C 82 66 45 84 42 85 C 39 84 2 66 2 42 V 14 C 2 8 6 4 12 4 Z"
+            fill="url(#shieldGradRed)"
+            filter="url(#shieldDropRed)"
+          />
+        ) : variant === 'emerald' ? (
+          <path
+            d="M 12 4 H 72 C 78 4 82 8 82 14 V 42 C 82 66 45 84 42 85 C 39 84 2 66 2 42 V 14 C 2 8 6 4 12 4 Z"
+            fill="var(--surface)"
+            stroke="var(--price-emerald)"
+            strokeWidth="2.8"
+            strokeLinejoin="round"
+          />
+        ) : (
+          <path
+            d="M 12 4 H 72 C 78 4 82 8 82 14 V 42 C 82 66 45 84 42 85 C 39 84 2 66 2 42 V 14 C 2 8 6 4 12 4 Z"
+            fill="var(--surface)"
+            stroke="var(--price-blue)"
+            strokeWidth="2.8"
+            strokeLinejoin="round"
+          />
+        )}
+      </svg>
+
+      <div className="landing-shield-content">
+        <span className="shield-top-text">{topText}</span>
+        <span className="shield-bottom-text">{bottomText}</span>
+      </div>
+    </div>
+  );
+}
+
 function DeviceGraphic({ type }: { type: 'alpha' | 'beta' | 'gamma' }) {
   if (type === 'alpha') {
     return (
-      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="13" y="4" width="22" height="40" rx="5" stroke="currentColor" strokeWidth="2.4" fill="none" />
-        <line x1="20" y1="8" x2="28" y2="8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-        <rect x="17" y="12" width="14" height="20" rx="2" fill="currentColor" fillOpacity="0.16" />
-        <path d="M20 16V28M23 16V28M25.5 16V28M28 16V28" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <circle cx="24" cy="38.5" r="1.4" fill="currentColor" />
+      <svg width="48" height="48" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="15" y="4" width="26" height="48" rx="6" fill="var(--surface)" stroke="var(--price-emerald)" strokeWidth="2.4" />
+        <rect x="18" y="10" width="20" height="34" rx="3" fill="var(--price-emerald-soft)" />
+        <line x1="21" y1="7" x2="35" y2="7" stroke="var(--price-emerald)" strokeWidth="2" strokeLinecap="round" />
+        <rect x="20" y="13" width="16" height="3" rx="1.5" fill="var(--price-emerald)" />
+        <rect x="20" y="18" width="12" height="2" rx="1" fill="var(--price-emerald)" fillOpacity="0.6" />
+        <rect x="20" y="22" width="16" height="2" rx="1" fill="var(--price-emerald)" fillOpacity="0.4" />
+        <rect x="20" y="26" width="10" height="2" rx="1" fill="var(--price-emerald)" fillOpacity="0.4" />
+        <line x1="16" y1="33" x2="40" y2="33" stroke="var(--price-emerald)" strokeWidth="1.8" strokeDasharray="2 1" />
+        <line x1="22" y1="36" x2="22" y2="41" stroke="var(--price-emerald)" strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="25" y1="36" x2="25" y2="41" stroke="var(--price-emerald)" strokeWidth="2" strokeLinecap="round" />
+        <line x1="29" y1="36" x2="29" y2="41" stroke="var(--price-emerald)" strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="33" y1="36" x2="33" y2="41" stroke="var(--price-emerald)" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="28" cy="48" r="1.5" fill="var(--price-emerald)" />
       </svg>
     );
   }
   if (type === 'beta') {
     return (
-      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="6" y="8" width="36" height="25" rx="4" stroke="currentColor" strokeWidth="2.4" fill="none" />
-        <rect x="10" y="12" width="28" height="17" rx="2" fill="currentColor" fillOpacity="0.16" />
-        <path d="M14 17H21M14 21H18M25 17H34M25 21H30" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M18 33L15 41H33L30 33" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" />
-        <line x1="12" y1="41" x2="36" y2="41" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+      <svg width="48" height="48" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M14 50H42" stroke="var(--price-blue)" strokeWidth="2.8" strokeLinecap="round" />
+        <path d="M22 39L19 49H37L34 39" stroke="var(--price-blue)" strokeWidth="2.4" strokeLinejoin="round" fill="var(--price-blue-soft)" />
+        <rect x="6" y="8" width="44" height="31" rx="5" fill="var(--surface)" stroke="var(--price-blue)" strokeWidth="2.4" />
+        <rect x="10" y="12" width="36" height="23" rx="3" fill="var(--price-blue-soft)" />
+        <rect x="13" y="15" width="18" height="3" rx="1.5" fill="var(--price-blue)" />
+        <rect x="13" y="20" width="13" height="2" rx="1" fill="var(--price-blue)" fillOpacity="0.6" />
+        <rect x="13" y="24" width="16" height="2" rx="1" fill="var(--price-blue)" fillOpacity="0.4" />
+        <rect x="13" y="28" width="10" height="2" rx="1" fill="var(--price-blue)" fillOpacity="0.4" />
+        <rect x="33" y="15" width="10" height="15" rx="2" fill="var(--surface)" stroke="var(--price-blue)" strokeWidth="1.2" />
+        <line x1="35" y1="18" x2="41" y2="18" stroke="var(--price-blue)" strokeWidth="1.2" />
+        <circle cx="36" cy="22" r="1" fill="var(--price-blue)" />
+        <circle cx="40" cy="22" r="1" fill="var(--price-blue)" />
+        <circle cx="36" cy="26" r="1" fill="var(--price-blue)" />
+        <circle cx="40" cy="26" r="1" fill="var(--price-blue)" />
       </svg>
     );
   }
   return (
-    <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="11" y="4" width="26" height="40" rx="5" stroke="currentColor" strokeWidth="2.4" fill="none" />
-      <rect x="15" y="8" width="18" height="15" rx="2" fill="currentColor" fillOpacity="0.18" />
-      <path d="M18 14H25M18 18H22" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <rect x="16" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <rect x="22.25" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <rect x="28.5" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <rect x="16" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <rect x="22.25" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <rect x="28.5" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
-      <path d="M17 38.5H31" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <svg width="48" height="48" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M20 10V3H36V10" fill="var(--surface)" stroke="var(--price-red)" strokeWidth="1.8" strokeLinejoin="round" />
+      <line x1="23" y1="5.5" x2="33" y2="5.5" stroke="var(--price-red)" strokeWidth="1.2" strokeDasharray="1.5 1" />
+      <line x1="23" y1="8" x2="31" y2="8" stroke="var(--price-red)" strokeWidth="1.2" strokeDasharray="1.5 1" />
+      <rect x="12" y="8" width="32" height="44" rx="6" fill="var(--surface)" stroke="var(--price-red)" strokeWidth="2.4" />
+      <rect x="16" y="12" width="24" height="18" rx="3" fill="var(--price-red-soft)" />
+      <rect x="19" y="15" width="14" height="3" rx="1.5" fill="var(--price-red)" />
+      <rect x="19" y="20" width="18" height="2" rx="1" fill="var(--price-red)" fillOpacity="0.6" />
+      <rect x="19" y="24" width="11" height="2" rx="1" fill="var(--price-red)" fillOpacity="0.4" />
+      <path d="M34 16C36 17.5 36 20.5 34 22" stroke="var(--price-red)" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="17" y="33" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <rect x="25.5" y="33" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <rect x="34" y="33" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <rect x="17" y="39" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <rect x="25.5" y="39" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <rect x="34" y="39" width="5" height="3.5" rx="1" fill="var(--price-red)" fillOpacity="0.8" />
+      <line x1="20" y1="47" x2="36" y2="47" stroke="var(--price-red)" strokeWidth="2.2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -303,10 +387,11 @@ export default function LandingPage() {
                   <div className="landing-device-box device-emerald">
                     <DeviceGraphic type="alpha" />
                   </div>
-                  <div className="landing-shield-badge shield-emerald">
-                    <span>{l.shieldPerintis.split('\n')[0]}</span>
-                    <span>{l.shieldPerintis.split('\n')[1]}</span>
-                  </div>
+                  <ShieldBadge
+                    variant="emerald"
+                    topText={l.shieldPerintis.split('\n')[0]}
+                    bottomText={l.shieldPerintis.split('\n')[1]}
+                  />
                 </div>
 
                 <div className="landing-tier-header">
@@ -364,10 +449,11 @@ export default function LandingPage() {
                   <div className="landing-device-box device-blue">
                     <DeviceGraphic type="beta" />
                   </div>
-                  <div className="landing-shield-badge shield-blue">
-                    <span>{l.shieldBeta.split('\n')[0]}</span>
-                    <span>{l.shieldBeta.split('\n')[1]}</span>
-                  </div>
+                  <ShieldBadge
+                    variant="blue"
+                    topText={l.shieldBeta.split('\n')[0]}
+                    bottomText={l.shieldBeta.split('\n')[1]}
+                  />
                 </div>
 
                 <div className="landing-tier-header">
@@ -426,10 +512,11 @@ export default function LandingPage() {
                   <div className="landing-device-box device-red">
                     <DeviceGraphic type="gamma" />
                   </div>
-                  <div className="landing-shield-badge shield-featured">
-                    <span>{l.shieldGamma.split('\n')[0]}</span>
-                    <span>{l.shieldGamma.split('\n')[1]}</span>
-                  </div>
+                  <ShieldBadge
+                    variant="red"
+                    topText={l.shieldGamma.split('\n')[0]}
+                    bottomText={l.shieldGamma.split('\n')[1]}
+                  />
                 </div>
 
                 <div className="landing-tier-header">
