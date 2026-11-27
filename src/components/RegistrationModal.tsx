@@ -20,6 +20,7 @@ import {
 import type { PackageTier, SubscriptionRegistration } from '../utils/subscriptionStorage';
 import { saveLocalRegistration } from '../utils/subscriptionStorage';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+import { useThemeLang } from '../contexts/useThemeLang';
 
 interface RegistrationModalProps {
   initialTier: PackageTier;
@@ -57,6 +58,8 @@ const TIER_DETAILS: Record<
 };
 
 export default function RegistrationModal({ initialTier, onClose, onSuccess }: RegistrationModalProps) {
+  const { lang } = useThemeLang();
+  const isEn = lang === 'en';
   const [tier, setTier] = useState<PackageTier>(initialTier);
   const [fullName, setFullName] = useState('');
   const [storeName, setStoreName] = useState('');
@@ -239,24 +242,39 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
             <h3 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 8px' }}>
               {successReg.status === 'APPROVED'
-                ? 'Pendaftaran Toko Berhasil Aktif!'
-                : 'Bukti Pembayaran & Pendaftaran Berhasil Dikirim!'}
+                ? (isEn ? 'Store Registration Successfully Activated!' : 'Pendaftaran Toko Berhasil Aktif!')
+                : (isEn ? 'Payment Proof & Registration Successfully Submitted!' : 'Bukti Pembayaran & Pendaftaran Berhasil Dikirim!')}
             </h3>
 
             <p style={{ color: 'var(--muted, #94A3B8)', fontSize: '14px', lineHeight: 1.6, margin: '0 0 20px' }}>
               {successReg.status === 'APPROVED' ? (
-                <>
-                  Selamat, toko <strong>{successReg.store_name}</strong> telah terdaftar pada paket{' '}
-                  <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.name}</strong>. Email notifikasi
-                  dan tautan verifikasi resmi telah dikirimkan dari:
-                </>
+                isEn ? (
+                  <>
+                    Congratulations, <strong>{successReg.store_name}</strong> is registered on{' '}
+                    <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.name}</strong>. Official confirmation email and activation button dispatched from:
+                  </>
+                ) : (
+                  <>
+                    Selamat, toko <strong>{successReg.store_name}</strong> telah terdaftar pada paket{' '}
+                    <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.name}</strong>. Email notifikasi
+                    dan tautan verifikasi resmi telah dikirimkan dari:
+                  </>
+                )
               ) : (
-                <>
-                  Terima kasih, <strong>{successReg.full_name}</strong>. Pendaftaran toko{' '}
-                  <strong>{successReg.store_name}</strong> dengan pembayaran QRIS sebesar{' '}
-                  <strong>{currentTierInfo.priceText}</strong> sedang dalam antrean verifikasi manual oleh tim
-                  Superadmin PT AlphaGen.
-                </>
+                isEn ? (
+                  <>
+                    Thank you, <strong>{successReg.full_name}</strong>. Store registration for{' '}
+                    <strong>{successReg.store_name}</strong> with QRIS payment of{' '}
+                    <strong>{currentTierInfo.priceText}</strong> is currently pending manual verification by PT AlphaGen Superadmin team.
+                  </>
+                ) : (
+                  <>
+                    Terima kasih, <strong>{successReg.full_name}</strong>. Pendaftaran toko{' '}
+                    <strong>{successReg.store_name}</strong> dengan pembayaran QRIS sebesar{' '}
+                    <strong>{currentTierInfo.priceText}</strong> sedang dalam antrean verifikasi manual oleh tim
+                    Superadmin PT AlphaGen.
+                  </>
+                )
               )}
             </p>
 
@@ -289,8 +307,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
               <div style={{ marginTop: '8px', color: 'var(--muted, #94A3B8)', fontSize: '12px' }}>
                 {successReg.status === 'APPROVED'
-                  ? 'Silakan klik tombol di bawah untuk menyelesaikan verifikasi akun toko Anda.'
-                  : 'Setelah pembayaran disetujui Superadmin, email berisi tombol verifikasi akan otomatis meluncur ke email Anda.'}
+                  ? (isEn ? 'Please click the button below to complete your store account verification.' : 'Silakan klik tombol di bawah untuk menyelesaikan verifikasi akun toko Anda.')
+                  : (isEn ? 'Once payment is approved by Superadmin, an email with verification button will be dispatched automatically.' : 'Setelah pembayaran disetujui Superadmin, email berisi tombol verifikasi akan otomatis meluncur ke email Anda.')}
               </div>
             </div>
 
@@ -310,7 +328,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   fontSize: '14px',
                 }}
               >
-                <span>Buka Verifikasi Akun</span>
+                <span>{isEn ? 'Open Account Verification' : 'Buka Verifikasi Akun'}</span>
                 <ArrowRight size={16} />
               </a>
               <a
@@ -329,7 +347,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   fontSize: '14px',
                 }}
               >
-                <span>Halaman Login Kasir</span>
+                <span>{isEn ? 'Cashier Login Page' : 'Halaman Login Kasir'}</span>
               </a>
             </div>
           </div>
@@ -349,13 +367,16 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   marginBottom: '8px',
                 }}
               >
-                {currentTierInfo.badge}
+                {isEn ? (tier === 'gen_alpha' ? 'Free Forever' : tier === 'gen_beta' ? 'Popular Tier' : 'Best Recommendation') : currentTierInfo.badge}
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px' }}>
-                Formulir Pendaftaran Toko — {currentTierInfo.name}
+                {isEn ? `Store Registration Form — ${currentTierInfo.name}` : `Formulir Pendaftaran Toko — ${currentTierInfo.name}`}
               </h2>
               <p style={{ color: 'var(--muted, #94A3B8)', fontSize: '13px', margin: 0 }}>
-                Biaya: <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.priceText}</strong>
+                {isEn ? 'Plan Fee: ' : 'Biaya: '}
+                <strong style={{ color: currentTierInfo.color }}>
+                  {isEn ? (tier === 'gen_alpha' ? 'IDR 0 / Forever' : tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
+                </strong>
               </p>
             </div>
 
@@ -415,12 +436,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             >
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Nama Lengkap Pemilik
+                  {isEn ? 'Full Owner Name' : 'Nama Lengkap Pemilik'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: Anggi Andriansyah"
+                  placeholder={isEn ? 'e.g. John Doe' : 'Contoh: Anggi Andriansyah'}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   style={{
@@ -438,12 +459,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Nama Toko / Usaha Ritel
+                  {isEn ? 'Store / Retail Name' : 'Nama Toko / Usaha Ritel'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: Toko Berkah Makmur"
+                  placeholder={isEn ? 'e.g. Makmur Mart' : 'Contoh: Toko Berkah Makmur'}
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                   style={{
@@ -461,12 +482,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Alamat Email (Untuk Notifikasi)
+                  {isEn ? 'Email Address (For Notifications)' : 'Alamat Email (Untuk Notifikasi)'}
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="nama@toko.com"
+                  placeholder="name@store.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={{
@@ -484,7 +505,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Nomor WhatsApp / HP
+                  {isEn ? 'WhatsApp / Phone Number' : 'Nomor WhatsApp / HP'}
                 </label>
                 <input
                   type="tel"
@@ -507,12 +528,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Username Login Kasir
+                  {isEn ? 'POS Login Username' : 'Username Login Kasir'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: anggitoko"
+                  placeholder={isEn ? 'e.g. anggistore' : 'Contoh: anggitoko'}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   style={{
@@ -530,12 +551,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px' }}>
-                  Password Akun
+                  {isEn ? 'Account Password' : 'Password Akun'}
                 </label>
                 <input
                   type="password"
                   required
-                  placeholder="Minimal 6 karakter"
+                  placeholder={isEn ? 'Minimum 6 characters' : 'Minimal 6 karakter'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   style={{
@@ -566,7 +587,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                   <QrCode size={18} style={{ color: currentTierInfo.color }} />
                   <span style={{ fontSize: '14px', fontWeight: 800 }}>
-                    Pembayaran QRIS Resmi: {currentTierInfo.priceText}
+                    {isEn ? 'Official QRIS Payment: ' : 'Pembayaran QRIS Resmi: '}
+                    {isEn ? (tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
                   </span>
                 </div>
 
@@ -607,9 +629,9 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   {/* QRIS Instruction & File Upload */}
                   <div style={{ flex: 1, minWidth: '240px' }}>
                     <p style={{ fontSize: '12.5px', color: 'var(--muted, #94A3B8)', margin: '0 0 12px', lineHeight: 1.5 }}>
-                      Silakan buka mobile banking / e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan QRIS di
-                      samping dan bayar sesuai nominal tagihan{' '}
-                      <strong style={{ color: '#F8FAFC' }}>{currentTierInfo.priceText}</strong>.
+                      {isEn
+                        ? 'Open your mobile banking or e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan the official QRIS and pay the exact amount.'
+                        : 'Silakan buka mobile banking / e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan QRIS di samping dan bayar sesuai nominal tagihan.'}
                     </p>
 
                     <label
@@ -621,7 +643,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                         marginBottom: '6px',
                       }}
                     >
-                      Unggah Bukti Transfer QRIS:
+                      {isEn ? 'Upload Proof of QRIS Payment:' : 'Unggah Bukti Transfer QRIS:'}
                     </label>
 
                     <div
@@ -653,10 +675,10 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                       >
                         <Upload size={20} style={{ color: currentTierInfo.color }} />
                         <span style={{ fontSize: '12px', fontWeight: 600, color: '#93C5FD' }}>
-                          Klik untuk pilih foto struk / screenshot
+                          {isEn ? 'Click to select receipt / screenshot' : 'Klik untuk pilih foto struk / screenshot'}
                         </span>
                         <span style={{ fontSize: '10.5px', color: 'var(--muted, #94A3B8)' }}>
-                          Format JPG/PNG/WebP, maksimal 5 MB
+                          {isEn ? 'JPG/PNG/WebP, max 5 MB' : 'Format JPG/PNG/WebP, maksimal 5 MB'}
                         </span>
                       </label>
                     </div>
@@ -680,7 +702,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                           style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                         />
                         <span style={{ fontSize: '12px', color: '#34D399', fontWeight: 600 }}>
-                          Bukti pembayaran terlampir
+                          {isEn ? 'Proof of payment attached' : 'Bukti pembayaran terlampir'}
                         </span>
                       </div>
                     )}
@@ -703,8 +725,10 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   lineHeight: 1.5,
                 }}
               >
-                🎉 <strong>Paket Gratis Selamanya:</strong> Anda tidak dikenakan biaya apa pun. Setelah mendaftar, akun
-                toko Anda langsung aktif secara instan dan dapat langsung melayani transaksi kasir.
+                🎉 <strong>{isEn ? 'Free Plan Forever:' : 'Paket Gratis Selamanya:'}</strong>{' '}
+                {isEn
+                  ? 'No charges apply. Upon registering, your store account activates immediately.'
+                  : 'Anda tidak dikenakan biaya apa pun. Setelah mendaftar, akun toko Anda langsung aktif secara instan dan dapat langsung melayani transaksi kasir.'}
               </div>
             )}
 
@@ -725,7 +749,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   cursor: 'pointer',
                 }}
               >
-                Batal
+                {isEn ? 'Cancel' : 'Batal'}
               </button>
 
               <button
@@ -749,10 +773,14 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 }}
               >
                 {submitting ? (
-                  <span>Memproses pendaftaran...</span>
+                  <span>{isEn ? 'Processing registration...' : 'Memproses pendaftaran...'}</span>
                 ) : (
                   <>
-                    <span>{isFree ? 'Daftarkan Toko Sekarang (Gratis)' : 'Kirim Bukti & Selesaikan Pembayaran'}</span>
+                    <span>
+                      {isEn
+                        ? (isFree ? 'Register Store Now (Free)' : 'Submit Proof & Complete')
+                        : (isFree ? 'Daftarkan Toko Sekarang (Gratis)' : 'Kirim Bukti & Selesaikan Pembayaran')}
+                    </span>
                     <ArrowRight size={16} />
                   </>
                 )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   ShoppingBag,
@@ -23,25 +23,32 @@ import RegistrationModal from './RegistrationModal';
 import type { PackageTier } from '../utils/subscriptionStorage';
 import { useThemeLang } from '../contexts/useThemeLang';
 
-const OPERATIONAL_VALUES = [
-  'Bebas Biaya Langganan Selamanya',
-  'Kasir Tetap Scan Saat Internet Mati',
-  'Rekonsiliasi Kas Laci Tanpa Selisih',
-  'Pencegahan Kebocoran Kas & Stok Cabang',
-  'Analitik Visual Margin Profit Otomatis',
-];
-
 export default function LandingPage() {
-  const { theme } = useThemeLang();
+  const { theme, dict, lang } = useThemeLang();
+  const l = dict.landing;
   const [selectedTier, setSelectedTier] = useState<PackageTier | null>(null);
 
   // Typewriter effect state
+  const operationalValues = useMemo(() => [
+    l.typewriter1,
+    l.typewriter2,
+    l.typewriter3,
+    l.typewriter4,
+    l.typewriter5,
+  ], [l.typewriter1, l.typewriter2, l.typewriter3, l.typewriter4, l.typewriter5]);
+
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const fullText = OPERATIONAL_VALUES[currentPhraseIndex];
+    setCurrentText('');
+    setCurrentPhraseIndex(0);
+    setIsDeleting(false);
+  }, [lang]);
+
+  useEffect(() => {
+    const fullText = operationalValues[currentPhraseIndex] || operationalValues[0];
     const typingSpeed = isDeleting ? 30 : 60;
 
     const timer = setTimeout(() => {
@@ -49,7 +56,6 @@ export default function LandingPage() {
         if (currentText.length < fullText.length) {
           setCurrentText(fullText.slice(0, currentText.length + 1));
         } else {
-          // Pause before deleting
           setTimeout(() => setIsDeleting(true), 2200);
         }
       } else {
@@ -57,13 +63,13 @@ export default function LandingPage() {
           setCurrentText(fullText.slice(0, currentText.length - 1));
         } else {
           setIsDeleting(false);
-          setCurrentPhraseIndex((prev) => (prev + 1) % OPERATIONAL_VALUES.length);
+          setCurrentPhraseIndex((prev) => (prev + 1) % operationalValues.length);
         }
       }
     }, typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentPhraseIndex]);
+  }, [currentText, isDeleting, currentPhraseIndex, operationalValues]);
 
   return (
     <div className="landing-wrapper">
@@ -114,16 +120,16 @@ export default function LandingPage() {
           </div>
 
           <nav className="landing-nav" aria-label="Navigasi Halaman">
-            <a href="#fitur" className="landing-nav-link">Fitur Operasional</a>
-            <a href="#paket" className="landing-nav-link">Paket Harga</a>
-            <a href="#keunggulan" className="landing-nav-link">Keandalan Sistem</a>
-            <a href="#faq" className="landing-nav-link">Tanya Jawab</a>
+            <a href="#fitur" className="landing-nav-link">{l.navFeatures}</a>
+            <a href="#paket" className="landing-nav-link">{l.navPricing}</a>
+            <a href="#keunggulan" className="landing-nav-link">{l.navReliability}</a>
+            <a href="#faq" className="landing-nav-link">{l.navFaq}</a>
           </nav>
 
           <div className="landing-header-actions">
             <ThemeLangToggles compact />
             <Link href="/login" className="btn btn-primary landing-login-btn">
-              <span>Masuk ke POS</span>
+              <span>{l.enterPos}</span>
               <ArrowRight size={15} />
             </Link>
           </div>
@@ -136,11 +142,11 @@ export default function LandingPage() {
           <div className="landing-container landing-hero-inner">
             <div className="landing-hero-badge">
               <Sparkles size={14} className="landing-sparkle" />
-              <span>Sistem Kasir & Operasional Ritel Modern Indonesia</span>
+              <span>{l.heroBadge}</span>
             </div>
 
             <h1 className="landing-hero-title">
-              Kendali Operasional Ritel Anda:
+              {l.heroPrefix}
               <br />
               <span className="landing-typewriter-text">
                 {currentText}
@@ -149,7 +155,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="landing-hero-desc">
-              Kelola kasir, pantau stok multi-cabang, dan amankan perputaran kas harian dengan sistem Point of Sale tangguh yang tetap bekerja penuh meski koneksi internet terputus.
+              {l.heroDesc}
             </p>
 
             <div className="landing-hero-cta-group">
@@ -158,26 +164,26 @@ export default function LandingPage() {
                 onClick={() => setSelectedTier('gen_alpha')}
                 className="btn btn-primary landing-cta-primary"
               >
-                <span>Mulai Gratis Sekarang</span>
+                <span>{l.ctaPrimary}</span>
                 <ArrowRight size={16} />
               </button>
               <a href="#paket" className="btn btn-outline landing-cta-secondary">
-                <span>Lihat Pilihan Paket</span>
+                <span>{l.ctaSecondary}</span>
               </a>
             </div>
 
             <div className="landing-trust-strip">
               <div className="landing-trust-item">
                 <Check size={14} className="text-success" />
-                <span>Tanpa Biaya Tersembunyi</span>
+                <span>{l.trustNoHidden}</span>
               </div>
               <div className="landing-trust-item">
                 <Check size={14} className="text-success" />
-                <span>PWA Offline-First Resilience</span>
+                <span>{l.trustOffline}</span>
               </div>
               <div className="landing-trust-item">
                 <Check size={14} className="text-success" />
-                <span>Aktivasi Instan & Pembayaran QRIS Resmi</span>
+                <span>{l.trustInstant}</span>
               </div>
             </div>
           </div>
@@ -187,10 +193,8 @@ export default function LandingPage() {
         <section id="fitur" className="landing-section">
           <div className="landing-container">
             <div className="landing-section-header">
-              <h2 className="landing-section-title">Dibangun Khusus Mengatasi Masalah Riil Kasir & Pemilik Toko</h2>
-              <p className="landing-section-subtitle">
-                Fokus pada efisiensi transaksi, pencegahan kecurangan, dan akurasi rekonsiliasi kas di laci kasir.
-              </p>
+              <h2 className="landing-section-title">{l.featuresTitle}</h2>
+              <p className="landing-section-subtitle">{l.featuresSubtitle}</p>
             </div>
 
             <div className="landing-feature-grid">
@@ -198,60 +202,48 @@ export default function LandingPage() {
                 <div className="landing-feature-icon-wrap">
                   <WifiOff size={22} />
                 </div>
-                <h3>PWA Kasir Offline-First</h3>
-                <p>
-                  Kasir tetap dapat memindai barcode, menghitung kembalian, dan mencetak struk belanja saat internet padam. Antrean transaksi otomatis tersinkronisasi kembali saat jaringan online.
-                </p>
+                <h3>{l.feat1Title}</h3>
+                <p>{l.feat1Desc}</p>
               </div>
 
               <div className="landing-feature-card">
                 <div className="landing-feature-icon-wrap">
                   <Zap size={22} />
                 </div>
-                <h3>Rekonsiliasi Shift & Uang Laci</h3>
-                <p>
-                  Catat modal awal laci, pengeluaran kas kecil (petty cash), hingga setoran akhir shift. Menghilangkan selisih perhitungan antara kasir dan owner secara transparan.
-                </p>
+                <h3>{l.feat2Title}</h3>
+                <p>{l.feat2Desc}</p>
               </div>
 
               <div className="landing-feature-card">
                 <div className="landing-feature-icon-wrap">
                   <TrendingUp size={22} />
                 </div>
-                <h3>Visual Analytics 3-in-1</h3>
-                <p>
-                  Pantau jam puncak keramaian toko (Hourly Peak Sales), rincian margin profit bersih per produk, dan klasifikasi perputaran barang cepat/lambat (ABC Velocity).
-                </p>
+                <h3>{l.feat3Title}</h3>
+                <p>{l.feat3Desc}</p>
               </div>
 
               <div className="landing-feature-card">
                 <div className="landing-feature-icon-wrap">
                   <Boxes size={22} />
                 </div>
-                <h3>Multi-Gudang & Transfer Stok</h3>
-                <p>
-                  Kirim stok antar cabang dengan surat jalan digital, konfirmasi penerimaan barcode, dan peringatan otomatis jika stok toko telah menyentuh batas minimum.
-                </p>
+                <h3>{l.feat4Title}</h3>
+                <p>{l.feat4Desc}</p>
               </div>
 
               <div className="landing-feature-card">
                 <div className="landing-feature-icon-wrap">
                   <ShieldCheck size={22} />
                 </div>
-                <h3>Single-Device Session Lock</h3>
-                <p>
-                  Mencegah akun kasir dibuka bersamaan di perangkat yang tidak berwenang. Transaksi terkunci aman ke satu terminal kasir yang sedang bertugas.
-                </p>
+                <h3>{l.feat5Title}</h3>
+                <p>{l.feat5Desc}</p>
               </div>
 
               <div className="landing-feature-card">
                 <div className="landing-feature-icon-wrap">
                   <ShoppingBag size={22} />
                 </div>
-                <h3>Struk Belanja Digital & Fisik</h3>
-                <p>
-                  Cetak struk ke printer thermal Bluetooth/USB atau bagikan nota transaksi ramah lingkungan via tautan web langsung ke smartphone pelanggan.
-                </p>
+                <h3>{l.feat6Title}</h3>
+                <p>{l.feat6Desc}</p>
               </div>
             </div>
           </div>
@@ -261,45 +253,43 @@ export default function LandingPage() {
         <section id="paket" className="landing-section landing-section-alt">
           <div className="landing-container">
             <div className="landing-section-header">
-              <h2 className="landing-section-title">Pilihan Paket Transparan Sesuai Skala Bisnis Anda</h2>
-              <p className="landing-section-subtitle">
-                Mulai dari paket gratis untuk warung rintisan hingga kendali multi-cabang lengkap dengan analitik enterprise.
-              </p>
+              <h2 className="landing-section-title">{l.pricingTitle}</h2>
+              <p className="landing-section-subtitle">{l.pricingSubtitle}</p>
             </div>
 
             <div className="landing-pricing-grid">
               {/* Gen Alpha (Free) */}
               <div className="landing-pricing-card">
                 <div className="landing-pricing-header">
-                  <span className="landing-tier-badge">Paket Perintis</span>
-                  <h3 className="landing-tier-name">GEN ALPHA</h3>
+                  <span className="landing-tier-badge">{l.tierAlphaBadge}</span>
+                  <h3 className="landing-tier-name">{l.tierAlphaName}</h3>
                   <div className="landing-tier-price">
-                    <span className="price-num">Rp 0</span>
-                    <span className="price-period">/ selamanya</span>
+                    <span className="price-num">{l.tierAlphaPrice}</span>
+                    <span className="price-period">{l.tierAlphaPeriod}</span>
                   </div>
-                  <p className="landing-tier-desc">Cocok untuk toko kelontong, kios, atau warung perintis yang baru memulai komputerisasi kasir.</p>
+                  <p className="landing-tier-desc">{l.tierAlphaDesc}</p>
                 </div>
 
                 <div className="landing-pricing-features">
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Hingga 50 item katalog produk</span>
+                    <span>{l.tierAlphaF1}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>1 Akun kasir aktif</span>
+                    <span>{l.tierAlphaF2}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Mode kasir kilat & scan kamera</span>
+                    <span>{l.tierAlphaF3}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Cetak struk thermal & digital</span>
+                    <span>{l.tierAlphaF4}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Offline cache antrean kasir</span>
+                    <span>{l.tierAlphaF5}</span>
                   </div>
                 </div>
 
@@ -308,7 +298,7 @@ export default function LandingPage() {
                   onClick={() => setSelectedTier('gen_alpha')}
                   className="btn btn-outline landing-pricing-btn"
                 >
-                  <span>Daftar Akun Gratis</span>
+                  <span>{l.tierAlphaBtn}</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
@@ -316,35 +306,35 @@ export default function LandingPage() {
               {/* Gen Beta (Rp 20.000) */}
               <div className="landing-pricing-card">
                 <div className="landing-pricing-header">
-                  <span className="landing-tier-badge badge-popular">Toko Berkembang</span>
-                  <h3 className="landing-tier-name">GEN BETA</h3>
+                  <span className="landing-tier-badge badge-popular">{l.tierBetaBadge}</span>
+                  <h3 className="landing-tier-name">{l.tierBetaName}</h3>
                   <div className="landing-tier-price">
-                    <span className="price-num">Rp 20.000</span>
-                    <span className="price-period">/ bulan</span>
+                    <span className="price-num">{l.tierBetaPrice}</span>
+                    <span className="price-period">{l.tierBetaPeriod}</span>
                   </div>
-                  <p className="landing-tier-desc">Pilihan tepat untuk minimarket, toko grosir, dan retail berkembang dengan tim kasir.</p>
+                  <p className="landing-tier-desc">{l.tierBetaDesc}</p>
                 </div>
 
                 <div className="landing-pricing-features">
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span><strong>Katalog produk tanpa batas</strong></span>
+                    <span><strong>{l.tierBetaF1}</strong></span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Hingga 3 outlet & 5 akun staf kasir</span>
+                    <span>{l.tierBetaF2}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Peringatan stok minimum real-time</span>
+                    <span>{l.tierBetaF3}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Audit shift & rekonsiliasi kas laci</span>
+                    <span>{l.tierBetaF4}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Ekspor laporan penjualan Excel/CSV</span>
+                    <span>{l.tierBetaF5}</span>
                   </div>
                 </div>
 
@@ -353,48 +343,48 @@ export default function LandingPage() {
                   onClick={() => setSelectedTier('gen_beta')}
                   className="btn btn-outline landing-pricing-btn"
                 >
-                  <span>Pilih Paket Gen Beta</span>
+                  <span>{l.tierBetaBtn}</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
 
               {/* Gen Gamma (Rp 30.000 - Recommended) */}
               <div className="landing-pricing-card landing-pricing-featured">
-                <div className="landing-featured-ribbon">Rekomendasi Terbaik</div>
+                <div className="landing-featured-ribbon">{l.tierGammaRibbon}</div>
                 <div className="landing-pricing-header">
-                  <span className="landing-tier-badge badge-featured">Solusi Lengkap</span>
-                  <h3 className="landing-tier-name">GEN GAMMA</h3>
+                  <span className="landing-tier-badge badge-featured">{l.tierGammaBadge}</span>
+                  <h3 className="landing-tier-name">{l.tierGammaName}</h3>
                   <div className="landing-tier-price">
-                    <span className="price-num">Rp 30.000</span>
-                    <span className="price-period">/ bulan</span>
+                    <span className="price-num">{l.tierGammaPrice}</span>
+                    <span className="price-period">{l.tierGammaPeriod}</span>
                   </div>
-                  <p className="landing-tier-desc">Solusi all-in-one untuk ritel multi-cabang, waralaba, dan manajemen pergudangan terpadu.</p>
+                  <p className="landing-tier-desc">{l.tierGammaDesc}</p>
                 </div>
 
                 <div className="landing-pricing-features">
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span><strong>Semua fitur Gen Beta tanpa batas</strong></span>
+                    <span><strong>{l.tierGammaF1}</strong></span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Multi-cabang & multi-gudang bebas</span>
+                    <span>{l.tierGammaF2}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Visual Analytics 3-in-1 (Peak, Margin, ABC)</span>
+                    <span>{l.tierGammaF3}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Transfer stok antar cabang & surat jalan</span>
+                    <span>{l.tierGammaF4}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Single-Device Session Lock (Anti-Fraud)</span>
+                    <span>{l.tierGammaF5}</span>
                   </div>
                   <div className="landing-feature-line">
                     <Check size={16} className="text-success" />
-                    <span>Dukungan prioritas tim teknis PT AlphaGen</span>
+                    <span>{l.tierGammaF6}</span>
                   </div>
                 </div>
 
@@ -403,7 +393,7 @@ export default function LandingPage() {
                   onClick={() => setSelectedTier('gen_gamma')}
                   className="btn btn-primary landing-pricing-btn"
                 >
-                  <span>Pilih Paket Gen Gamma</span>
+                  <span>{l.tierGammaBtn}</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
@@ -416,27 +406,27 @@ export default function LandingPage() {
           <div className="landing-container">
             <div className="landing-reliability-card">
               <div className="landing-reliability-text">
-                <h2 className="landing-section-title">Mengapa Toko Ritel Mempercayakan ALPHOS?</h2>
+                <h2 className="landing-section-title">{l.relTitle}</h2>
                 <div className="landing-reliability-list">
                   <div className="landing-rel-item">
                     <Lock size={18} className="text-primary" />
                     <div>
-                      <strong>Integritas Baris Transaksi</strong>
-                      <p>Kunci deterministik berbasis basis data mencegah selisih stok saat checkout bersamaan di multi-kasir.</p>
+                      <strong>{l.relItem1Title}</strong>
+                      <p>{l.relItem1Desc}</p>
                     </div>
                   </div>
                   <div className="landing-rel-item">
                     <Store size={18} className="text-primary" />
                     <div>
-                      <strong>Resistensi Pemadaman Jaringan</strong>
-                      <p>Antrean offline berbasis indexed storage lokal menjamin kasir tetap melayani pembeli tanpa henti.</p>
+                      <strong>{l.relItem2Title}</strong>
+                      <p>{l.relItem2Desc}</p>
                     </div>
                   </div>
                   <div className="landing-rel-item">
                     <FileCheck2 size={18} className="text-primary" />
                     <div>
-                      <strong>Persetujuan & Verifikasi Resmi</strong>
-                      <p>Registrasi paket divalidasi langsung oleh tim internal PT AlphaGen dengan notifikasi email terverifikasi.</p>
+                      <strong>{l.relItem3Title}</strong>
+                      <p>{l.relItem3Desc}</p>
                     </div>
                   </div>
                 </div>
@@ -449,37 +439,29 @@ export default function LandingPage() {
         <section id="faq" className="landing-section landing-section-alt">
           <div className="landing-container">
             <div className="landing-section-header">
-              <h2 className="landing-section-title">Pertanyaan yang Sering Diajukan</h2>
-              <p className="landing-section-subtitle">Informasi seputar pendaftaran, aktivasi, dan penggunaan ALPHOS.</p>
+              <h2 className="landing-section-title">{l.faqTitle}</h2>
+              <p className="landing-section-subtitle">{l.faqSubtitle}</p>
             </div>
 
             <div className="landing-faq-grid">
               <div className="landing-faq-card">
-                <h4>Bagaimana cara kerja pembayaran QRIS?</h4>
-                <p>
-                  Setelah memilih paket berbayar (Gen Beta / Gen Gamma), Anda cukup memindai kode QRIS resmi AlphaGen Ecosystem dari aplikasi perbankan atau e-wallet apa pun, lalu unggah bukti transfer saat mendaftar.
-                </p>
+                <h4>{l.faqQ1}</h4>
+                <p>{l.faqA1}</p>
               </div>
 
               <div className="landing-faq-card">
-                <h4>Berapa lama proses verifikasi akun?</h4>
-                <p>
-                  Paket gratis (Gen Alpha) langsung aktif secara instan. Untuk paket berbayar, tim admin kami memverifikasi bukti pembayaran maksimal dalam 15 menit, lalu Anda menerima email aktivasi resmi.
-                </p>
+                <h4>{l.faqQ2}</h4>
+                <p>{l.faqA2}</p>
               </div>
 
               <div className="landing-faq-card">
-                <h4>Apakah butuh perangkat keras (hardware) khusus?</h4>
-                <p>
-                  Tidak. ALPHOS berjalan di peramban web modern pada smartphone, tablet, laptop, maupun komputer kasir desktop, dan kompatibel dengan printer struk thermal Bluetooth maupun USB.
-                </p>
+                <h4>{l.faqQ3}</h4>
+                <p>{l.faqA3}</p>
               </div>
 
               <div className="landing-faq-card">
-                <h4>Bagaimana jika internet di toko mati mendadak?</h4>
-                <p>
-                  Sistem otomatis beralih ke mode offline. Kasir tetap dapat memindai barang, menghitung total, dan menyelesaikan penjualan. Data akan otomatis disinkronkan saat koneksi kembali pulih.
-                </p>
+                <h4>{l.faqQ4}</h4>
+                <p>{l.faqA4}</p>
               </div>
             </div>
           </div>
@@ -491,9 +473,7 @@ export default function LandingPage() {
         <div className="landing-container landing-footer-inner">
           <div className="landing-footer-brand">
             <AlphosLogo variant="light" width={140} height={34} />
-            <p className="landing-footer-tagline">
-              Platform Point of Sale dan manajemen ritel cerdas karya anak bangsa.
-            </p>
+            <p className="landing-footer-tagline">{l.footerTagline}</p>
             <p className="landing-footer-corp">
               Dikelola oleh <strong>PT AlphaGen Info</strong> (<a href="mailto:no-reply@alphagen.co.id">no-reply@alphagen.co.id</a>)
             </p>
@@ -501,26 +481,26 @@ export default function LandingPage() {
 
           <div className="landing-footer-links">
             <div className="landing-footer-col">
-              <h5>Navigasi</h5>
-              <a href="#fitur">Fitur Utama</a>
-              <a href="#paket">Paket Harga</a>
-              <a href="#faq">Pertanyaan Umum</a>
-              <Link href="/login">Portal Kasir / Login</Link>
+              <h5>{l.footerNavTitle}</h5>
+              <a href="#fitur">{l.navFeatures}</a>
+              <a href="#paket">{l.navPricing}</a>
+              <a href="#faq">{l.navFaq}</a>
+              <Link href="/login">{l.enterPos}</Link>
             </div>
 
             <div className="landing-footer-col">
-              <h5>Ekosistem ALPHOS</h5>
-              <Link href="/login">Kasir & Dashboard Owner</Link>
-              <a href="/monitor.html" target="_blank" rel="noopener noreferrer">Command Center Monitoring</a>
-              <Link href="/login">Superadmin Internal</Link>
+              <h5>{l.footerEcoTitle}</h5>
+              <Link href="/login">{l.footerEcoPos}</Link>
+              <a href="/monitor.html" target="_blank" rel="noopener noreferrer">{l.footerEcoMonitor}</a>
+              <Link href="/login">{l.footerEcoAdmin}</Link>
             </div>
           </div>
         </div>
 
         <div className="landing-footer-bottom">
           <div className="landing-container landing-footer-bottom-inner">
-            <span>&copy; {new Date().getFullYear()} PT AlphaGen. Seluruh hak cipta dilindungi undang-undang.</span>
-            <span>Versi Sistem: 1.5.1 (Production Ready)</span>
+            <span>&copy; {new Date().getFullYear()} {l.footerRights}</span>
+            <span>{l.footerVersion}</span>
           </div>
         </div>
       </footer>
