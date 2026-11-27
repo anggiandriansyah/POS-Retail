@@ -16,6 +16,12 @@ import {
   HelpCircle,
   FileCheck2,
   Lock,
+  Coffee,
+  Layers,
+  Smartphone,
+  Laptop,
+  Printer,
+  ScanBarcode,
 } from 'lucide-react';
 import AlphosLogo from './AlphosLogo';
 import ThemeLangToggles from './ThemeLangToggles';
@@ -244,6 +250,7 @@ export default function LandingPage() {
 
           <nav className="landing-nav" aria-label="Navigasi Halaman">
             <a href="#fitur" className="landing-nav-link">{l.navFeatures}</a>
+            <a href="#solusi" className="landing-nav-link">{l.navSolutions}</a>
             <a href="#paket" className="landing-nav-link">{l.navPricing}</a>
             <a href="#keunggulan" className="landing-nav-link">{l.navReliability}</a>
             <a href="#faq" className="landing-nav-link">{l.navFaq}</a>
@@ -372,8 +379,86 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Business Solutions Section (Moka POS Inspired) */}
+        <section id="solusi" className="landing-section landing-section-alt">
+          <div className="landing-container">
+            <div className="landing-section-header">
+              <h2 className="landing-section-title">{l.solutionsTitle}</h2>
+              <p className="landing-section-subtitle">{l.solutionsSubtitle}</p>
+            </div>
+
+            <div className="landing-solutions-grid">
+              {/* Card 1: Retail & Grocery */}
+              <div className="landing-solution-card">
+                <div className="landing-solution-tag">{l.solRetailTag}</div>
+                <div className="landing-solution-icon-box sol-icon-emerald">
+                  <Store size={26} />
+                </div>
+                <h3>{l.solRetailTitle}</h3>
+                <p>{l.solRetailDesc}</p>
+              </div>
+
+              {/* Card 2: F&B & Coffee Shops */}
+              <div className="landing-solution-card">
+                <div className="landing-solution-tag">{l.solFnbTag}</div>
+                <div className="landing-solution-icon-box sol-icon-blue">
+                  <Coffee size={26} />
+                </div>
+                <h3>{l.solFnbTitle}</h3>
+                <p>{l.solFnbDesc}</p>
+              </div>
+
+              {/* Card 3: Fashion & Specialty */}
+              <div className="landing-solution-card">
+                <div className="landing-solution-tag">{l.solFashionTag}</div>
+                <div className="landing-solution-icon-box sol-icon-purple">
+                  <Layers size={26} />
+                </div>
+                <h3>{l.solFashionTitle}</h3>
+                <p>{l.solFashionDesc}</p>
+              </div>
+
+              {/* Card 4: Service Businesses */}
+              <div className="landing-solution-card">
+                <div className="landing-solution-tag">{l.solServiceTag}</div>
+                <div className="landing-solution-icon-box sol-icon-coral">
+                  <Sparkles size={26} />
+                </div>
+                <h3>{l.solServiceTitle}</h3>
+                <p>{l.solServiceDesc}</p>
+              </div>
+            </div>
+
+            {/* Hardware Flexibility Ecosystem Banner (Moka Style) */}
+            <div className="landing-hardware-banner">
+              <div className="landing-hardware-header">
+                <h3>{l.hwTitle}</h3>
+                <p>{l.hwSubtitle}</p>
+              </div>
+              <div className="landing-hardware-badges">
+                <div className="landing-hw-badge">
+                  <Smartphone size={20} className="hw-icon" />
+                  <span>{l.hwDevice1}</span>
+                </div>
+                <div className="landing-hw-badge">
+                  <Laptop size={20} className="hw-icon" />
+                  <span>{l.hwDevice2}</span>
+                </div>
+                <div className="landing-hw-badge">
+                  <Printer size={20} className="hw-icon" />
+                  <span>{l.hwDevice3}</span>
+                </div>
+                <div className="landing-hw-badge">
+                  <ScanBarcode size={20} className="hw-icon" />
+                  <span>{l.hwDevice4}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Pricing Packages Section */}
-        <section id="paket" className="landing-section landing-section-alt">
+        <section id="paket" className="landing-section">
           <div className="landing-container">
             <div className="landing-section-header">
               <h2 className="landing-section-title">{l.pricingTitle}</h2>
