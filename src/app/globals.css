@@ -53,6 +53,18 @@ body {
   --hero-text: #f8fafc;
   --hero-muted: #cbd5e1;
 
+  /* ATM Eye-Catching Pricing Tokens */
+  --price-emerald: #059669;
+  --price-emerald-soft: rgba(5, 150, 105, 0.1);
+  --price-emerald-border: rgba(5, 150, 105, 0.28);
+  --price-blue: #2563EB;
+  --price-blue-soft: rgba(37, 99, 235, 0.1);
+  --price-blue-border: rgba(37, 99, 235, 0.28);
+  --price-red: #DC2626;
+  --price-red-soft: rgba(220, 38, 38, 0.1);
+  --price-red-border: rgba(220, 38, 38, 0.28);
+  --price-red-gradient: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+
   --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
   --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
@@ -96,6 +108,18 @@ body {
   --hero-bg: linear-gradient(145deg, #022c22 0%, #090d16 100%);
   --hero-text: #f8fafc;
   --hero-muted: #94a3b8;
+
+  /* ATM Eye-Catching Pricing Tokens */
+  --price-emerald: #10B981;
+  --price-emerald-soft: rgba(16, 185, 129, 0.15);
+  --price-emerald-border: rgba(16, 185, 129, 0.35);
+  --price-blue: #3B82F6;
+  --price-blue-soft: rgba(59, 130, 246, 0.15);
+  --price-blue-border: rgba(59, 130, 246, 0.35);
+  --price-red: #EF4444;
+  --price-red-soft: rgba(239, 68, 68, 0.15);
+  --price-red-border: rgba(239, 68, 68, 0.35);
+  --price-red-gradient: linear-gradient(135deg, #F87171 0%, #EF4444 100%);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -2435,142 +2459,331 @@ body {
   margin: 0;
 }
 
-/* Pricing Grid */
+/* ATM Pricing Grid (Amati Tiru Modifikasi - Full 3 Menyamping) */
 .landing-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
   align-items: stretch;
 }
 
+@media (max-width: 991px) {
+  .landing-pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
 .landing-pricing-card {
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px 28px;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 30px 24px 26px;
   display: flex;
   flex-direction: column;
   position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .landing-pricing-card:hover {
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
 }
 
+/* Card Featured (Gen Gamma) pop-out */
 .landing-pricing-featured {
   background-color: var(--surface);
-  border: 2px solid var(--primary);
-  box-shadow: var(--shadow-lg);
-  transform: scale(1.02);
+  border: 2px solid var(--price-red);
+  box-shadow: 0 8px 30px rgba(220, 38, 38, 0.14);
 }
 
 .landing-pricing-featured:hover {
-  transform: scale(1.03);
+  border-color: #b91c1c;
+  box-shadow: 0 14px 40px rgba(220, 38, 38, 0.22);
 }
 
-.landing-featured-ribbon {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--primary);
-  color: #ffffff;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 4px 16px;
-  border-radius: 9999px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+/* Top Row: Device Graphic Left + Shield Badge Right */
+.landing-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.landing-pricing-header {
-  margin-bottom: 24px;
+.landing-device-box {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.landing-tier-badge {
-  display: inline-block;
+.device-emerald {
+  background: var(--price-emerald-soft);
+  border: 1px solid var(--price-emerald-border);
+  color: var(--price-emerald);
+}
+
+.device-blue {
+  background: var(--price-blue-soft);
+  border: 1px solid var(--price-blue-border);
+  color: var(--price-blue);
+}
+
+.device-red {
+  background: var(--price-red-soft);
+  border: 1px solid var(--price-red-border);
+  color: var(--price-red);
+}
+
+/* Shield Badges */
+.landing-shield-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 86px;
+  height: 80px;
+  border-radius: 12px 12px 34px 34px;
+  padding: 8px 6px;
   font-size: 0.8rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-
-.landing-tier-badge.badge-popular {
-  background-color: var(--info-bg);
-  border-color: var(--info-border);
-  color: var(--info-text);
-}
-
-.landing-tier-badge.badge-featured {
-  background-color: var(--primary-soft);
-  border-color: var(--primary-border);
-  color: var(--primary-text);
-}
-
-.landing-tier-name {
-  font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text);
-  margin: 0 0 8px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
 }
 
-.landing-tier-price {
+.shield-emerald {
+  border: 2px solid var(--price-emerald);
+  color: var(--price-emerald);
+  background: var(--surface);
+}
+
+.shield-blue {
+  border: 2px solid var(--price-blue);
+  color: var(--price-blue);
+  background: var(--surface);
+}
+
+.shield-featured {
+  background: var(--price-red-gradient);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.38);
+}
+
+/* Tier Name & Subtitle */
+.landing-tier-header {
+  margin-bottom: 18px;
+}
+
+.landing-atm-tier-name {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.landing-atm-tier-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0;
+  min-height: 48px;
+}
+
+/* Big Typography Price Box */
+.landing-atm-price-box {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.landing-atm-start-from {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.landing-atm-price-row {
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 3px;
 }
 
-.landing-tier-price .price-num {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--text);
+.landing-atm-currency {
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
-.landing-tier-price .price-period {
-  font-size: 0.92rem;
-  color: var(--muted);
+.currency-emerald {
+  color: var(--price-emerald);
 }
 
-.landing-tier-desc {
+.currency-blue {
+  color: var(--price-blue);
+}
+
+.currency-red {
+  color: var(--price-red);
+}
+
+.landing-atm-num {
+  font-size: 3.4rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.num-emerald {
+  color: var(--price-emerald);
+}
+
+.num-blue {
+  color: var(--price-blue);
+}
+
+.num-red {
+  color: var(--price-red);
+}
+
+.landing-atm-cents {
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.cents-blue {
+  color: var(--price-blue);
+}
+
+.cents-red {
+  color: var(--price-red);
+}
+
+.landing-atm-period {
   font-size: 0.88rem;
+  font-weight: 600;
   color: var(--muted);
-  line-height: 1.5;
-  margin: 0;
+  margin-left: 4px;
+}
+
+/* Included Features List */
+.landing-atm-included-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
 }
 
 .landing-pricing-features {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin-bottom: 28px;
   flex-grow: 1;
 }
 
-.landing-feature-line {
+.landing-atm-feature-line {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
-.landing-pricing-btn {
+.landing-atm-bullet {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bullet-emerald {
+  background: var(--price-emerald-soft);
+  color: var(--price-emerald);
+}
+
+.bullet-blue {
+  background: var(--price-blue-soft);
+  color: var(--price-blue);
+}
+
+.bullet-red {
+  background: var(--price-red-soft);
+  color: var(--price-red);
+}
+
+/* CTA Buttons */
+.landing-atm-btn {
   width: 100%;
-  padding: 12px 20px;
-  font-size: 0.98rem;
-  font-weight: 700;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 0.96rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  margin-top: auto;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  border: 1.5px solid transparent;
+}
+
+.landing-atm-btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-atm-emerald {
+  background: var(--surface);
+  color: var(--price-emerald);
+  border-color: var(--price-emerald);
+}
+
+.btn-atm-emerald:hover {
+  background: var(--price-emerald);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+}
+
+.btn-atm-blue {
+  background: var(--surface);
+  color: var(--price-blue);
+  border-color: var(--price-blue);
+}
+
+.btn-atm-blue:hover {
+  background: var(--price-blue);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.btn-atm-red {
+  background: var(--price-red-gradient);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35);
+}
+
+.btn-atm-red:hover {
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
 }
 
 /* Reliability Card */

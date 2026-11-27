@@ -23,6 +23,45 @@ import RegistrationModal from './RegistrationModal';
 import type { PackageTier } from '../utils/subscriptionStorage';
 import { useThemeLang } from '../contexts/useThemeLang';
 
+function DeviceGraphic({ type }: { type: 'alpha' | 'beta' | 'gamma' }) {
+  if (type === 'alpha') {
+    return (
+      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="13" y="4" width="22" height="40" rx="5" stroke="currentColor" strokeWidth="2.4" fill="none" />
+        <line x1="20" y1="8" x2="28" y2="8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+        <rect x="17" y="12" width="14" height="20" rx="2" fill="currentColor" fillOpacity="0.16" />
+        <path d="M20 16V28M23 16V28M25.5 16V28M28 16V28" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="24" cy="38.5" r="1.4" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (type === 'beta') {
+    return (
+      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="6" y="8" width="36" height="25" rx="4" stroke="currentColor" strokeWidth="2.4" fill="none" />
+        <rect x="10" y="12" width="28" height="17" rx="2" fill="currentColor" fillOpacity="0.16" />
+        <path d="M14 17H21M14 21H18M25 17H34M25 21H30" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M18 33L15 41H33L30 33" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" />
+        <line x1="12" y1="41" x2="36" y2="41" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="11" y="4" width="26" height="40" rx="5" stroke="currentColor" strokeWidth="2.4" fill="none" />
+      <rect x="15" y="8" width="18" height="15" rx="2" fill="currentColor" fillOpacity="0.18" />
+      <path d="M18 14H25M18 18H22" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="16" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <rect x="22.25" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <rect x="28.5" y="27" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <rect x="16" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <rect x="22.25" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <rect x="28.5" y="32" width="3.5" height="2.5" rx="0.8" fill="currentColor" />
+      <path d="M17 38.5H31" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function LandingPage() {
   const { theme, dict, lang } = useThemeLang();
   const l = dict.landing;
@@ -258,37 +297,53 @@ export default function LandingPage() {
             </div>
 
             <div className="landing-pricing-grid">
-              {/* Gen Alpha (Free) */}
+              {/* Gen Alpha (Free / Rp 0) - ATM Card 1 */}
               <div className="landing-pricing-card">
-                <div className="landing-pricing-header">
-                  <span className="landing-tier-badge">{l.tierAlphaBadge}</span>
-                  <h3 className="landing-tier-name">{l.tierAlphaName}</h3>
-                  <div className="landing-tier-price">
-                    <span className="price-num">{l.tierAlphaPrice}</span>
-                    <span className="price-period">{l.tierAlphaPeriod}</span>
+                <div className="landing-card-top">
+                  <div className="landing-device-box device-emerald">
+                    <DeviceGraphic type="alpha" />
                   </div>
-                  <p className="landing-tier-desc">{l.tierAlphaDesc}</p>
+                  <div className="landing-shield-badge shield-emerald">
+                    <span>{l.shieldPerintis.split('\n')[0]}</span>
+                    <span>{l.shieldPerintis.split('\n')[1]}</span>
+                  </div>
                 </div>
 
+                <div className="landing-tier-header">
+                  <h3 className="landing-atm-tier-name">{l.tierAlphaName}</h3>
+                  <p className="landing-atm-tier-desc">{l.tierAlphaDesc}</p>
+                </div>
+
+                <div className="landing-atm-price-box">
+                  <span className="landing-atm-start-from">{l.startFrom}</span>
+                  <div className="landing-atm-price-row">
+                    <span className="landing-atm-currency currency-emerald">Rp</span>
+                    <span className="landing-atm-num num-emerald">0</span>
+                    <span className="landing-atm-period">{l.tierAlphaPeriod}</span>
+                  </div>
+                </div>
+
+                <div className="landing-atm-included-label">{l.alreadyIncluded}</div>
+
                 <div className="landing-pricing-features">
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-emerald"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierAlphaF1}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-emerald"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierAlphaF2}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-emerald"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierAlphaF3}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-emerald"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierAlphaF4}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-emerald"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierAlphaF5}</span>
                   </div>
                 </div>
@@ -296,44 +351,61 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedTier('gen_alpha')}
-                  className="btn btn-outline landing-pricing-btn"
+                  className="landing-atm-btn btn-atm-emerald"
                 >
                   <span>{l.tierAlphaBtn}</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
 
-              {/* Gen Beta (Rp 20.000) */}
+              {/* Gen Beta (Rp 20.000) - ATM Card 2 */}
               <div className="landing-pricing-card">
-                <div className="landing-pricing-header">
-                  <span className="landing-tier-badge badge-popular">{l.tierBetaBadge}</span>
-                  <h3 className="landing-tier-name">{l.tierBetaName}</h3>
-                  <div className="landing-tier-price">
-                    <span className="price-num">{l.tierBetaPrice}</span>
-                    <span className="price-period">{l.tierBetaPeriod}</span>
+                <div className="landing-card-top">
+                  <div className="landing-device-box device-blue">
+                    <DeviceGraphic type="beta" />
                   </div>
-                  <p className="landing-tier-desc">{l.tierBetaDesc}</p>
+                  <div className="landing-shield-badge shield-blue">
+                    <span>{l.shieldBeta.split('\n')[0]}</span>
+                    <span>{l.shieldBeta.split('\n')[1]}</span>
+                  </div>
                 </div>
 
+                <div className="landing-tier-header">
+                  <h3 className="landing-atm-tier-name">{l.tierBetaName}</h3>
+                  <p className="landing-atm-tier-desc">{l.tierBetaDesc}</p>
+                </div>
+
+                <div className="landing-atm-price-box">
+                  <span className="landing-atm-start-from">{l.startFrom}</span>
+                  <div className="landing-atm-price-row">
+                    <span className="landing-atm-currency currency-blue">Rp</span>
+                    <span className="landing-atm-num num-blue">20</span>
+                    <span className="landing-atm-cents cents-blue">.000</span>
+                    <span className="landing-atm-period">{l.tierBetaPeriod}</span>
+                  </div>
+                </div>
+
+                <div className="landing-atm-included-label">{l.alreadyIncluded}</div>
+
                 <div className="landing-pricing-features">
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-blue"><Check size={12} strokeWidth={3} /></span>
                     <span><strong>{l.tierBetaF1}</strong></span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-blue"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierBetaF2}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-blue"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierBetaF3}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-blue"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierBetaF4}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-blue"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierBetaF5}</span>
                   </div>
                 </div>
@@ -341,49 +413,65 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedTier('gen_beta')}
-                  className="btn btn-outline landing-pricing-btn"
+                  className="landing-atm-btn btn-atm-blue"
                 >
                   <span>{l.tierBetaBtn}</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
 
-              {/* Gen Gamma (Rp 30.000 - Recommended) */}
+              {/* Gen Gamma (Rp 30.000 - Pop-Out Highlight) - ATM Card 3 */}
               <div className="landing-pricing-card landing-pricing-featured">
-                <div className="landing-featured-ribbon">{l.tierGammaRibbon}</div>
-                <div className="landing-pricing-header">
-                  <span className="landing-tier-badge badge-featured">{l.tierGammaBadge}</span>
-                  <h3 className="landing-tier-name">{l.tierGammaName}</h3>
-                  <div className="landing-tier-price">
-                    <span className="price-num">{l.tierGammaPrice}</span>
-                    <span className="price-period">{l.tierGammaPeriod}</span>
+                <div className="landing-card-top">
+                  <div className="landing-device-box device-red">
+                    <DeviceGraphic type="gamma" />
                   </div>
-                  <p className="landing-tier-desc">{l.tierGammaDesc}</p>
+                  <div className="landing-shield-badge shield-featured">
+                    <span>{l.shieldGamma.split('\n')[0]}</span>
+                    <span>{l.shieldGamma.split('\n')[1]}</span>
+                  </div>
                 </div>
 
+                <div className="landing-tier-header">
+                  <h3 className="landing-atm-tier-name">{l.tierGammaName}</h3>
+                  <p className="landing-atm-tier-desc">{l.tierGammaDesc}</p>
+                </div>
+
+                <div className="landing-atm-price-box">
+                  <span className="landing-atm-start-from">{l.startFrom}</span>
+                  <div className="landing-atm-price-row">
+                    <span className="landing-atm-currency currency-red">Rp</span>
+                    <span className="landing-atm-num num-red">30</span>
+                    <span className="landing-atm-cents cents-red">.000</span>
+                    <span className="landing-atm-period">{l.tierGammaPeriod}</span>
+                  </div>
+                </div>
+
+                <div className="landing-atm-included-label">{l.alreadyIncluded}</div>
+
                 <div className="landing-pricing-features">
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span><strong>{l.tierGammaF1}</strong></span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierGammaF2}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierGammaF3}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierGammaF4}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierGammaF5}</span>
                   </div>
-                  <div className="landing-feature-line">
-                    <Check size={16} className="text-success" />
+                  <div className="landing-atm-feature-line">
+                    <span className="landing-atm-bullet bullet-red"><Check size={12} strokeWidth={3} /></span>
                     <span>{l.tierGammaF6}</span>
                   </div>
                 </div>
@@ -391,7 +479,7 @@ export default function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedTier('gen_gamma')}
-                  className="btn btn-primary landing-pricing-btn"
+                  className="landing-atm-btn btn-atm-red"
                 >
                   <span>{l.tierGammaBtn}</span>
                   <ArrowRight size={15} />
