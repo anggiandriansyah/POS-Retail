@@ -56,6 +56,8 @@ export interface Profile {
   username?: string | null;
   email?: string | null;
   role: UserRole;
+  owner_id?: string | null;
+  created_by?: string | null;
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;

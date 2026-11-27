@@ -85,7 +85,7 @@ async function fetchLiveSnapshot(): Promise<LiveSnapshot> {
     recentTransactions: (txData as Transaction[]) || [],
     products: (productsData as Product[]) || [],
     stockRequests: (reqData as StockRequest[]) || [],
-    profiles: (profilesData as Profile[]) || [],
+    profiles: ((profilesData as Profile[]) || []).filter((p) => p.role !== 'superadmin'),
   };
 }
 
