@@ -203,11 +203,11 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-corner-toggles" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <Link href="/" className="btn btn-outline btn-sm" style={{ textDecoration: 'none', fontSize: '0.82rem' }}>
+      <div className="login-corner-toggles">
+        <Link href="/" className="btn btn-outline btn-sm login-back-btn">
           ← Beranda
         </Link>
-        <ThemeLangToggles />
+        <ThemeLangToggles compact />
       </div>
 
       <div className="login-split-shell">
