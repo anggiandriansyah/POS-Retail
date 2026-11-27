@@ -1,11 +1,11 @@
 -- ============================================================================
--- ALPHOS HOTFIX v1.6.1: NATIVE SUPERADMIN SEEDING & ONBOARDING DDL (DEV & PROD)
+-- ALPHOS RELEASE v1.6.0: NATIVE SUPERADMIN SEEDING & ONBOARDING DDL (DEV & PROD)
 -- ============================================================================
 
 -- 1. Pastikan ekstensi pgcrypto aktif untuk hashing kata sandi bcrypt
 create extension if not exists pgcrypto with schema extensions;
 
--- 2. Pastikan tabel app_versions mencatat versi 1.6.1
+-- 2. Pastikan tabel app_versions mencatat versi 1.6.0
 create table if not exists public.app_versions (
   id uuid primary key default gen_random_uuid(),
   version text unique not null,
@@ -13,7 +13,7 @@ create table if not exists public.app_versions (
 );
 
 insert into public.app_versions (version)
-values ('1.6.1')
+values ('1.6.0')
 on conflict (version) do nothing;
 
 -- 3. DDL Subscription Registrations (Sprint 7 / B2B Superadmin Hub)
