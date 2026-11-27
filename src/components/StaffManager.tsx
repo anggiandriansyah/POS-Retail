@@ -10,14 +10,31 @@ import { formatDateTime } from '../utils/format';
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_.]{3,30}$/;
 
-async function fetchProfiles(): Promise<Profile[]> {
+async function fetchProfiles(ownerId?: string): Promise<Profile[]> {
   if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
-  const { data, error } = await supabase
+  let query = supabase
     .from('profiles')
     .select('*')
     .order('created_at', { ascending: true });
+
+  if (ownerId) {
+    query = query.or(`id.eq.${ownerId},owner_id.eq.${ownerId}`);
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
-  return (data as Profile[]) || [];
+
+  // Strict Tenant Isolation:
+  // 1. Never show superadmin to regular store owners
+  // 2. Only show current owner and their own created cashiers
+  const all = (data as Profile[]) || [];
+  return all.filter((p) => {
+    if (p.role === 'superadmin') return false;
+    if (ownerId) {
+      return p.id === ownerId || p.owner_id === ownerId;
+    }
+    return true;
+  });
 }
 
 export default function StaffManager() {
@@ -38,7 +55,7 @@ export default function StaffManager() {
   const loadProfiles = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchProfiles();
+      const data = await fetchProfiles(user?.id);
       setProfiles(data);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -46,11 +63,11 @@ export default function StaffManager() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     let cancelled = false;
-    fetchProfiles()
+    fetchProfiles(user?.id)
       .then((data) => {
         if (cancelled) return;
         setProfiles(data);
@@ -66,7 +83,7 @@ export default function StaffManager() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [user?.id]);
 
   async function handleCreateCashier(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -98,10 +115,20 @@ export default function StaffManager() {
           data: {
             full_name: fullName.trim(),
             username: cleanUsername,
+            owner_id: user?.id,
+            created_by: user?.id,
           },
         },
       });
       if (error) throw error;
+
+      // Pastikan owner_id terikat kuat di profiles
+      if (data.user?.id && user?.id && supabase) {
+        await supabase
+          .from('profiles')
+          .update({ owner_id: user.id, created_by: user.id })
+          .eq('id', data.user.id);
+      }
 
       const createdName = fullName.trim();
       setFullName('');
@@ -125,8 +152,16 @@ export default function StaffManager() {
 
   async function handleToggleActive(staff: Profile) {
     if (!supabase) return;
+    if (staff.role === 'superadmin') {
+      setFeedback({ type: 'error', text: 'Tidak memiliki izin mengubah akun Superadmin.' });
+      return;
+    }
     if (staff.id === user?.id) {
       setFeedback({ type: 'error', text: t.errSelfDeactivate });
+      return;
+    }
+    if (staff.owner_id && user?.id && staff.owner_id !== user.id) {
+      setFeedback({ type: 'error', text: 'Anda hanya dapat mengelola staf toko Anda sendiri.' });
       return;
     }
     setFeedback(null);
@@ -149,8 +184,16 @@ export default function StaffManager() {
 
   async function handleToggleRole(staff: Profile) {
     if (!supabase) return;
+    if (staff.role === 'superadmin') {
+      setFeedback({ type: 'error', text: 'Tidak memiliki izin mengubah akun Superadmin.' });
+      return;
+    }
     if (staff.id === user?.id) {
       setFeedback({ type: 'error', text: t.errSelfRole });
+      return;
+    }
+    if (staff.owner_id && user?.id && staff.owner_id !== user.id) {
+      setFeedback({ type: 'error', text: 'Anda hanya dapat mengelola staf toko Anda sendiri.' });
       return;
     }
     setFeedback(null);
