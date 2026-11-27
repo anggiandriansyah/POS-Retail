@@ -267,7 +267,8 @@ export default function LandingPage() {
           <div className="landing-header-actions">
             <ThemeLangToggles compact />
             <Link href="/login" className="btn btn-primary landing-login-btn">
-              <span>{l.enterPos}</span>
+              <span className="landing-login-btn-full">{l.enterPos}</span>
+              <span className="landing-login-btn-short">{l.enterPosShort || (lang === 'en' ? 'Login' : 'Masuk')}</span>
               <ArrowRight size={15} />
             </Link>
           </div>
