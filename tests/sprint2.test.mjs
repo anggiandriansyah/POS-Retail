@@ -49,8 +49,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 describe('Unit Tests - src/utils/format.ts', () => {
-  it('APP_VERSION should be 1.6.0 (Minor Release v1.6.0)', () => {
-    assert.equal(APP_VERSION, '1.6.0');
+  it('APP_VERSION should be 1.6.1 (Minor Release v1.6.1)', () => {
+    assert.equal(APP_VERSION, '1.6.1');
   });
 
   it('STORE_INFO provides non-placeholder ALPHOS defaults', () => {
