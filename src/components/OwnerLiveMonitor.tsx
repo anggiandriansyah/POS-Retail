@@ -22,7 +22,7 @@ import type {
   StockRequestStatus,
   Transaction,
 } from '../types/pos';
-import { formatClockTime, formatDateTime, formatRupiah } from '../utils/format';
+import { formatClockTime, formatDateTime, formatRupiah, formatErrorMessage } from '../utils/format';
 
 function requestBadgeClass(status: string): string {
   switch (status) {
@@ -117,7 +117,7 @@ export default function OwnerLiveMonitor({ onProductsChanged }: OwnerLiveMonitor
       setStockRequests(snap.stockRequests);
       setProfiles(snap.profiles);
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setLoading(false);
@@ -227,7 +227,7 @@ export default function OwnerLiveMonitor({ onProductsChanged }: OwnerLiveMonitor
       await loadSnapshot();
       if (onProductsChanged) await onProductsChanged();
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setBusyId(null);
@@ -251,7 +251,7 @@ export default function OwnerLiveMonitor({ onProductsChanged }: OwnerLiveMonitor
       });
       await loadSnapshot();
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setBusyId(null);

@@ -228,7 +228,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-user-pill">
             <span className="superadmin-dot-online" />
             <span>
-              {s.sessionPrefix}: <strong>{profile.username || 'admindev'}</strong> ({profile.full_name})
+              {s.sessionPrefix}: <strong>{profile.username || 'admin'}</strong> ({profile.full_name})
             </span>
           </div>
 

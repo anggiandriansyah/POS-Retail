@@ -47,3 +47,18 @@ export function generateInvoiceNumber(): string {
   const randPart = Math.floor(100 + Math.random() * 900);
   return `INV-${datePart}-${timePart}-${randPart}`;
 }
+
+export function formatErrorMessage(err: unknown): string {
+  if (!err) return 'Terjadi kendala pada sistem.';
+  if (typeof err === 'string') return err.trim() || 'Terjadi kendala pada sistem.';
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    const obj = err as Record<string, unknown>;
+    if (typeof obj.message === 'string' && obj.message.trim()) return obj.message.trim();
+    if (typeof obj.error_description === 'string' && obj.error_description.trim()) return obj.error_description.trim();
+    if (typeof obj.error === 'string' && obj.error.trim()) return obj.error.trim();
+    if (typeof obj.details === 'string' && obj.details.trim()) return obj.details.trim();
+    if (typeof obj.hint === 'string' && obj.hint.trim()) return obj.hint.trim();
+  }
+  return 'Terjadi kendala pada sistem.';
+}

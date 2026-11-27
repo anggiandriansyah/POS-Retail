@@ -137,33 +137,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     async function init() {
-      // Check stored Superadmin session first
-      if (typeof window !== 'undefined') {
-        const storedSuperadmin = localStorage.getItem('alphos_superadmin_session');
-        if (storedSuperadmin) {
-          try {
-            const parsed = JSON.parse(storedSuperadmin);
-            if (parsed.profile?.role === 'superadmin') {
-              if (!mounted) return;
-              setProfile(parsed.profile);
-              setUser(parsed.user);
-              setSession({
-                access_token: 'superadmin-alphos-jwt-token',
-                refresh_token: 'superadmin-alphos-refresh-token',
-                expires_in: 3600,
-                token_type: 'bearer',
-                user: parsed.user,
-              } as unknown as Session);
-              setLoading(false);
-              return;
-            }
-          } catch {
-            localStorage.removeItem('alphos_superadmin_session');
-      clearActiveSession();
-          }
-        }
-      }
-
       if (!client) return;
       await checkHasOwner();
       const { data } = await client.auth.getSession();
@@ -212,52 +185,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentDeviceId = getLocalDeviceId();
       if (existingSession && existingSession.userId && existingSession.deviceId !== currentDeviceId && (existingSession.userId === cleanId || existingSession.userId === trimmed)) {
         throw new Error('User Sedang Aktif Digunakan di perangkat lain.');
-      }
-
-      // Superadmin Authentication check for admindev and adminprod
-      const isSuperAdminDev = (cleanId === 'admindev' || cleanId === 'admindev@alphagen.id') && password === 'Jakarta123';
-      const isSuperAdminProd = (cleanId === 'adminprod' || cleanId === 'adminprod@alphagen.id') && password === 'Jakarta123';
-
-      if (isSuperAdminDev || isSuperAdminProd) {
-        const superadminProfile: Profile = {
-          id: isSuperAdminDev ? 'superadmin-dev-001' : 'superadmin-prod-001',
-          full_name: 'Anggi Andriansyah (Superadmin)',
-          username: isSuperAdminDev ? 'admindev' : 'adminprod',
-          email: isSuperAdminDev ? 'admindev@alphagen.id' : 'adminprod@alphagen.id',
-          role: 'superadmin',
-          is_active: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-
-        const mockUser = {
-          id: superadminProfile.id,
-          app_metadata: { provider: 'email' },
-          user_metadata: { full_name: superadminProfile.full_name, username: superadminProfile.username },
-          aud: 'authenticated',
-          created_at: superadminProfile.created_at!,
-          email: superadminProfile.email!,
-        } as unknown as User;
-
-        const mockSession = {
-          access_token: 'superadmin-alphos-jwt-token',
-          refresh_token: 'superadmin-alphos-refresh-token',
-          expires_in: 3600,
-          token_type: 'bearer',
-          user: mockUser,
-        } as unknown as Session;
-
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('alphos_superadmin_session', JSON.stringify({ profile: superadminProfile, user: mockUser }));
-          registerLocalSession(superadminProfile.username || 'superadmin');
-        }
-
-        setSession(mockSession);
-        setUser(mockUser);
-        setProfile(superadminProfile);
-        setActiveShift(null);
-        setAuthError('');
-        return { user: mockUser, session: mockSession };
       }
 
       if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
@@ -364,9 +291,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('alphos_superadmin_session');
-    }
+    clearActiveSession();
     if (!supabase) {
       setSession(null);
       setUser(null);

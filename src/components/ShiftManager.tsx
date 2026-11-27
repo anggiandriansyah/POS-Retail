@@ -13,7 +13,7 @@ import { useAuth } from '../contexts/useAuth';
 import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import type { FeedbackMessage, PettyCashLog, PettyCashType } from '../types/pos';
-import { formatClockTime, formatDateTime, formatRupiah } from '../utils/format';
+import { formatClockTime, formatDateTime, formatRupiah, formatErrorMessage } from '../utils/format';
 import DigitalClock from './DigitalClock';
 
 const PETTY_CATEGORIES = [
@@ -156,9 +156,10 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     e.preventDefault();
     if (!supabase || !user) return;
     setFeedback(null);
-    const amount = Number(openingCash);
-    if (Number.isNaN(amount) || amount < 0) {
-      setFeedback({ type: 'error', text: t.errOpeningCash });
+    const rawSanitized = String(openingCash).trim().replace(/\./g, '').replace(/,/g, '.');
+    const amount = Number(rawSanitized);
+    if (!Number.isFinite(amount) || Number.isNaN(amount) || amount < 0) {
+      setFeedback({ type: 'error', text: 'Modal awal laci tidak boleh bernilai negatif atau format tidak valid.' });
       return;
     }
 
@@ -177,7 +178,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
       setFeedback({ type: 'success', text: t.msgShiftOpened });
       if (onShiftOpened) onShiftOpened();
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setSubmitting(false);
@@ -188,8 +189,9 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     e.preventDefault();
     if (!supabase || !user || !activeShift) return;
     setFeedback(null);
-    const amount = Number(pettyAmount);
-    if (Number.isNaN(amount) || amount <= 0) {
+    const rawSanitized = String(pettyAmount).trim().replace(/\./g, '').replace(/,/g, '.');
+    const amount = Number(rawSanitized);
+    if (!Number.isFinite(amount) || Number.isNaN(amount) || amount <= 0) {
       setFeedback({ type: 'error', text: t.errPettyAmount });
       return;
     }
@@ -214,7 +216,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
       });
       await loadDetails();
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setSubmitting(false);
@@ -226,7 +228,9 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     if (!supabase || !activeShift) return;
     setFeedback(null);
 
-    if (!hasActualInput || Number.isNaN(numericActual) || numericActual < 0) {
+    const sanitizedActual = String(actualCash).trim().replace(/\./g, '').replace(/,/g, '.');
+    const numActual = Number(sanitizedActual);
+    if (!hasActualInput || !Number.isFinite(numActual) || Number.isNaN(numActual) || numActual < 0) {
       setFeedback({ type: 'error', text: t.errActualCash });
       return;
     }
@@ -240,7 +244,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     try {
       const { data: closedShift, error } = await supabase.rpc('close_shift', {
         p_shift_id: activeShift.id,
-        p_actual_cash: numericActual,
+        p_actual_cash: numActual,
         p_notes: closeNotes.trim() || null,
       });
       if (error) throw error;
@@ -264,7 +268,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
         text: `${t.msgShiftClosed} ${diffText}.`,
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = formatErrorMessage(err);
       setFeedback({ type: 'error', text: message });
     } finally {
       setSubmitting(false);

@@ -24,7 +24,7 @@ import { useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 import { isAdminRole, type Product, type ReceiptModalData } from '../types/pos';
-import { APP_VERSION, STORE_INFO } from '../utils/format';
+import { APP_VERSION, STORE_INFO, formatErrorMessage } from '../utils/format';
 import AlphosLogo from '../components/AlphosLogo';
 import LoginPage from '../components/LoginPage';
 import ThemeLangToggles from '../components/ThemeLangToggles';
@@ -61,7 +61,7 @@ async function queryProducts(): Promise<{ data: Product[]; error: string }> {
     .select('*')
     .order('name', { ascending: true });
   if (error) {
-    return { data: [], error: `Gagal memuat produk: ${error.message}` };
+    return { data: [], error: `Gagal memuat produk: ${formatErrorMessage(error)}` };
   }
   return { data: (data as Product[]) || [], error: '' };
 }
