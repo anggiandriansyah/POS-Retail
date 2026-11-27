@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .app-shell {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: #0f172a;
+    border-bottom: 1px solid #334155;
+  }
+  .badge-root {
+    background: #065f46;
+    color: #6ee7b7;
+    border: 1px solid #059669;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 10px;
+  }
+  .superadmin-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 16px 24px 0;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+  }
+  .tab-btn {
+    padding: 10px 18px;
+    border-radius: 8px 8px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: #0f172a;
+    color: #10b981;
+    border: 1px solid #334155;
+    border-bottom: 1px solid #0f172a;
+  }
+  .counter-badge {
+    background: #dc2626;
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-left: 6px;
+  }
+  .content-area {
+    padding: 24px;
+    background: #0f172a;
+  }
+  .filter-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+  }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #94a3b8;
+  }
+  .chip.active {
+    background: #065f46;
+    border-color: #10b981;
+    color: #6ee7b7;
+  }
+  .search-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 7px 14px;
+    color: #f8fafc;
+    width: 260px;
+    font-size: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #334155;
+  }
+  th {
+    background: #151e2e;
+    color: #94a3b8;
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #334155;
+  }
+  td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #273549;
+    font-size: 12.5px;
+  }
+  .badge-tier-gamma {
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    color: #f87171;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10.5px;
+  }
+  .badge-tier-beta {
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.4);
+    color: #60a5fa;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10.5px;
+  }
+  .badge-tier-alpha {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10.5px;
+  }
+  .badge-status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .badge-status-approved {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .badge-status-rejected {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-approve {
+    background: #059669;
+    color: #fff;
+  }
+  .btn-reject {
+    background: #dc2626;
+    color: #fff;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+  }
+  .toast-banner {
+    background: #064e3b;
+    border: 1px solid #10b981;
+    color: #a7f3d0;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .email-card {
+    background: #151e2e;
+    border: 1px solid #334155;
+    border-left: 4px solid #10b981;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 12px;
+  }
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-box {
+    background: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 14px;
+    width: 480px;
+    padding: 22px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+</style></head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <svg width="180" height="44" viewBox="0 0 320 74" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(6, 6)"><path d="M 44 19 C 31 15, 14 25, 14 37 C 14 48, 25 52, 34 45 L 39 52 L 53 19" stroke="#059669" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></g><text x="74" y="42" fill="#0F172A" font-size="28" font-weight="800" font-family="system-ui, -apple-system, sans-serif" letter-spacing="2.5">ALPHOS</text><text x="76" y="58" fill="#059669" font-size="10" font-weight="700" font-family="system-ui, -apple-system, sans-serif" letter-spacing="3">by <tspan fill="#10B981">AlphaGen</tspan></text></svg>
+        <span style="color:#64748b;">|</span>
+        <strong style="font-size:14px;">Portal Superadmin Internal</strong>
+        <span class="badge-root">ROOT ACCESS</span>
+      </div>
+      <div style="font-size:12px;color:#94a3b8;">
+        Operator: <strong style="color:#f8fafc;">Anggi Andriansyah</strong> • Sesi Terproteksi
+      </div>
+    </div>
+
+    <div class="superadmin-tabs">
+      <button class="tab-btn">🏪 Kelola Toko & Tenant (12)</button>
+      <button class="tab-btn active">
+        💳 Persetujuan Registrasi & QRIS
+        <span class="counter-badge">3 PENDING</span>
+      </button>
+      <button class="tab-btn">📈 Audit Transaksi Global</button>
+    </div>
+
+    <div class="content-area">
+      <div class="filter-strip">
+        <div class="chips">
+          <div class="chip">Semua Permohonan</div>
+          <div class="chip active">⏳ Menunggu Verifikasi (3)</div>
+          <div class="chip">✓ Sudah Disetujui</div>
+          <div class="chip">✕ Ditolak</div>
+        </div>
+        <input type="text" class="search-box" value="Cari nama toko, nomor HP, email..." readonly />
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Toko & Pemilik</th>
+            <th>Kontak & Kredensial</th>
+            <th>Paket SaaS</th>
+            <th>Tagihan</th>
+            <th>Bukti QRIS</th>
+            <th>Status Verifikasi</th>
+            <th style="text-align:center;">Tindakan Superadmin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#1e293b;">
+            <td>
+              <strong style="font-size:13px;color:#f8fafc;">Toko Berkah Makmur</strong><br/>
+              <span style="font-size:11px;color:#94a3b8;">Anggi Andriansyah • <code>REG-20261127-001</code></span>
+            </td>
+            <td>
+              <div>anggi@berkahmakmur.com</div>
+              <span style="font-size:11px;color:#94a3b8;">0812-3456-7890 • User: <code>anggitoko</code></span>
+            </td>
+            <td><span class="badge-tier-gamma">GEN GAMMA</span></td>
+            <td><strong style="color:#f8fafc;">Rp 30.000</strong><span style="font-size:11px;color:#94a3b8;"> / bln</span></td>
+            <td>
+              <button class="btn-action btn-outline" style="border-color:#38bdf8;color:#38bdf8;">
+                👁️ Lihat Bukti QRIS
+              </button>
+            </td>
+            <td><span class="badge-status-pending">⏳ Menunggu Approval</span></td>
+            <td style="text-align:center;">
+              <button class="btn-action btn-approve">✓ Setujui</button>
+              <button class="btn-action btn-reject">✕ Tolak</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong style="font-size:13px;color:#f8fafc;">Kios Sinar Jaya</strong><br/>
+              <span style="font-size:11px;color:#94a3b8;">Siti Rahmawati • <code>REG-20261127-002</code></span>
+            </td>
+            <td>
+              <div>siti@sinarjaya.id</div>
+              <span style="font-size:11px;color:#94a3b8;">0857-9876-5432 • User: <code>sitikasir</code></span>
+            </td>
+            <td><span class="badge-tier-beta">GEN BETA</span></td>
+            <td><strong style="color:#f8fafc;">Rp 20.000</strong><span style="font-size:11px;color:#94a3b8;"> / bln</span></td>
+            <td>
+              <button class="btn-action btn-outline" style="border-color:#38bdf8;color:#38bdf8;">
+                👁️ Lihat Bukti QRIS
+              </button>
+            </td>
+            <td><span class="badge-status-pending">⏳ Menunggu Approval</span></td>
+            <td style="text-align:center;">
+              <button class="btn-action btn-approve">✓ Setujui</button>
+              <button class="btn-action btn-reject">✕ Tolak</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong style="font-size:13px;color:#f8fafc;">Warung Barokah 24 Jam</strong><br/>
+              <span style="font-size:11px;color:#94a3b8;">Ahmad Fadillah • <code>REG-20261127-003</code></span>
+            </td>
+            <td>
+              <div>ahmad@warungbarokah.id</div>
+              <span style="font-size:11px;color:#94a3b8;">0813-1122-3344 • User: <code>ahmadkasir</code></span>
+            </td>
+            <td><span class="badge-tier-alpha">GEN ALPHA</span></td>
+            <td><strong style="color:#34d399;">Gratis (Rp 0)</strong></td>
+            <td><span style="color:#64748b;font-size:11px;">Tanpa Berkas (Free)</span></td>
+            <td><span class="badge-status-approved">✓ Aktif Instan</span></td>
+            <td style="text-align:center;">
+              <button class="btn-action btn-outline" style="font-size:11px;">🔗 Tautan Login</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
