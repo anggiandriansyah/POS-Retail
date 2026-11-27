@@ -241,7 +241,7 @@ export default function LandingPage() {
             ],
             creator: {
               '@type': 'Organization',
-              name: 'PT AlphaGen',
+              name: 'PT AlphaGen Ecosystem',
               url: 'https://alphagen.co.id',
             },
           }),
@@ -1113,7 +1113,7 @@ export default function LandingPage() {
             <AlphosLogo variant="light" width={140} height={34} />
             <p className="landing-footer-tagline">{l.footerTagline}</p>
             <p className="landing-footer-corp">
-              Dikelola oleh <strong>PT AlphaGen Info</strong> (<a href="mailto:no-reply@alphagen.co.id">no-reply@alphagen.co.id</a>)
+              Dikelola oleh <strong>PT AlphaGen Ecosystem</strong> (<a href="mailto:alphagen.ecosystem@gmail.com">alphagen.ecosystem@gmail.com</a>)
             </p>
           </div>
 
@@ -1141,7 +1141,7 @@ export default function LandingPage() {
               <a href="https://wa.me/6281280004276" target="_blank" rel="noopener noreferrer">
                 WhatsApp 24 Jam
               </a>
-              <a href="mailto:no-reply@alphagen.co.id">no-reply@alphagen.co.id</a>
+              <a href="mailto:alphos.helpdesk@gmail.com">alphos.helpdesk@gmail.com</a>
               <a href="#faq">{l.navFaq}</a>
               <Link href="/login">{l.enterPos}</Link>
             </div>
