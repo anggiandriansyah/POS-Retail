@@ -140,6 +140,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 code {
   font-family: var(--font-mono);
   font-size: 0.84em;
@@ -2543,6 +2550,7 @@ body {
 
 /* Shield Badges */
 .landing-shield-badge {
+  font-family: var(--font-sans);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2732,11 +2740,13 @@ body {
 
 /* CTA Buttons */
 .landing-atm-btn {
+  font-family: var(--font-sans);
   width: 100%;
   padding: 13px 20px;
   border-radius: 12px;
-  font-size: 0.96rem;
-  font-weight: 800;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2961,6 +2971,7 @@ body {
 
 /* Floating WhatsApp Support Pill (POSe Style) */
 .landing-wa-float {
+  font-family: var(--font-sans);
   position: fixed;
   bottom: 26px;
   right: 26px;
