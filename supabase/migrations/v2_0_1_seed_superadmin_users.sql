@@ -5,18 +5,26 @@
 -- 1. Pastikan ekstensi pgcrypto aktif untuk hashing kata sandi bcrypt
 create extension if not exists pgcrypto with schema extensions;
 
--- 2. Pastikan tabel app_versions mencatat versi 1.6.0
-create table if not exists public.app_versions (
-  id uuid primary key default gen_random_uuid(),
-  version text unique not null,
-  applied_at timestamptz not null default now()
-);
+-- 2. Pastikan tabel app_versions mencatat versi 1.6.0 sesuai skema existing
+insert into public.app_versions (version, phase, notes)
+values (
+  '1.6.0',
+  'Fase 4 - Sprint 7',
+  'B2B Subscriptions, ATM POS Simulator, Native Superadmin Onboarding & Multi-Tenant Ecosystem'
+)
+on conflict (version) do update set
+  phase = excluded.phase,
+  notes = excluded.notes;
 
-insert into public.app_versions (version)
-values ('1.6.0')
-on conflict (version) do nothing;
+-- 3. Perbarui constraint role pada profiles agar mendukung 'superadmin'
+do $$
+begin
+  alter table public.profiles drop constraint if exists profiles_role_check;
+  alter table public.profiles add constraint profiles_role_check
+    check (role in ('owner', 'kasir', 'admin', 'user', 'superadmin'));
+end $$;
 
--- 3. DDL Subscription Registrations (Sprint 7 / B2B Superadmin Hub)
+-- 4. DDL Subscription Registrations (Sprint 7 / B2B Superadmin Hub)
 alter table if exists public.profiles
   add column if not exists subscription_tier text default 'gen_alpha';
 
@@ -74,7 +82,7 @@ create policy "Superadmin manage registrations"
   using (true)
   with check (true);
 
--- 4. SEED SUPERADMIN DEV: admindev / Jakarta123
+-- 5. SEED SUPERADMIN DEV: admindev / Jakarta123
 do $$
 declare
   v_dev_id uuid := '00000000-0000-0000-0000-000000000001';
@@ -84,29 +92,14 @@ declare
 begin
   if not exists (select 1 from auth.users where email = v_dev_email or id = v_dev_id) then
     insert into auth.users (
-      instance_id,
-      id,
-      aud,
-      role,
-      email,
-      encrypted_password,
-      email_confirmed_at,
-      raw_app_meta_data,
-      raw_user_meta_data,
-      created_at,
-      updated_at
+      instance_id, id, aud, role, email, encrypted_password,
+      email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+      created_at, updated_at
     ) values (
-      '00000000-0000-0000-0000-000000000000',
-      v_dev_id,
-      'authenticated',
-      'authenticated',
-      v_dev_email,
-      extensions.crypt(v_dev_pass, extensions.gen_salt('bf')),
-      now(),
+      '00000000-0000-0000-0000-000000000000', v_dev_id, 'authenticated', 'authenticated', v_dev_email,
+      extensions.crypt(v_dev_pass, extensions.gen_salt('bf')), now(),
       '{"provider":"email","providers":["email"]}'::jsonb,
-      jsonb_build_object('full_name', 'Superadmin DEV', 'username', v_dev_user),
-      now(),
-      now()
+      jsonb_build_object('full_name', 'Superadmin DEV', 'username', v_dev_user), now(), now()
     );
   else
     update auth.users
@@ -121,14 +114,10 @@ begin
   insert into public.profiles (id, full_name, username, role, is_active, created_at, updated_at)
   values (v_dev_id, 'Superadmin DEV', v_dev_user, 'superadmin', true, now(), now())
   on conflict (id) do update set
-    role = 'superadmin',
-    username = v_dev_user,
-    full_name = 'Superadmin DEV',
-    is_active = true,
-    updated_at = now();
+    role = 'superadmin', username = v_dev_user, full_name = 'Superadmin DEV', is_active = true, updated_at = now();
 end $$;
 
--- 5. SEED SUPERADMIN PROD: adminprod / Jakarta123
+-- 6. SEED SUPERADMIN PROD: adminprod / Jakarta123
 do $$
 declare
   v_prod_id uuid := '00000000-0000-0000-0000-000000000002';
@@ -138,29 +127,14 @@ declare
 begin
   if not exists (select 1 from auth.users where email = v_prod_email or id = v_prod_id) then
     insert into auth.users (
-      instance_id,
-      id,
-      aud,
-      role,
-      email,
-      encrypted_password,
-      email_confirmed_at,
-      raw_app_meta_data,
-      raw_user_meta_data,
-      created_at,
-      updated_at
+      instance_id, id, aud, role, email, encrypted_password,
+      email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+      created_at, updated_at
     ) values (
-      '00000000-0000-0000-0000-000000000000',
-      v_prod_id,
-      'authenticated',
-      'authenticated',
-      v_prod_email,
-      extensions.crypt(v_prod_pass, extensions.gen_salt('bf')),
-      now(),
+      '00000000-0000-0000-0000-000000000000', v_prod_id, 'authenticated', 'authenticated', v_prod_email,
+      extensions.crypt(v_prod_pass, extensions.gen_salt('bf')), now(),
       '{"provider":"email","providers":["email"]}'::jsonb,
-      jsonb_build_object('full_name', 'Superadmin PROD', 'username', v_prod_user),
-      now(),
-      now()
+      jsonb_build_object('full_name', 'Superadmin PROD', 'username', v_prod_user), now(), now()
     );
   else
     update auth.users
@@ -175,159 +149,63 @@ begin
   insert into public.profiles (id, full_name, username, role, is_active, created_at, updated_at)
   values (v_prod_id, 'Superadmin PROD', v_prod_user, 'superadmin', true, now(), now())
   on conflict (id) do update set
-    role = 'superadmin',
-    username = v_prod_user,
-    full_name = 'Superadmin PROD',
-    is_active = true,
-    updated_at = now();
+    role = 'superadmin', username = v_prod_user, full_name = 'Superadmin PROD', is_active = true, updated_at = now();
 end $$;
 
--- 6. RPC functions for subscription onboarding & verification
+-- 7. RPC Functions
 create or replace function public.submit_subscription_registration(
-  p_full_name text,
-  p_store_name text,
-  p_email text,
-  p_phone text,
-  p_username text,
-  p_package_tier text,
-  p_payment_proof text default null
-)
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
-as $$
+  p_full_name text, p_store_name text, p_email text, p_phone text,
+  p_username text, p_package_tier text, p_payment_proof text default null
+) returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
   v_tier text := pg_catalog.lower(trim(coalesce(p_package_tier, 'gen_alpha')));
-  v_amount numeric(12,2) := 0;
-  v_status text := 'PENDING_APPROVAL';
-  v_token text;
-  v_reg_id uuid;
+  v_amount numeric(12,2) := 0; v_status text := 'PENDING_APPROVAL';
+  v_token text; v_reg_id uuid;
 begin
-  if v_tier = 'gen_beta' then
-    v_amount := 20000;
-  elsif v_tier = 'gen_gamma' then
-    v_amount := 30000;
-  else
-    v_tier := 'gen_alpha';
-    v_amount := 0;
-    v_status := 'APPROVED';
+  if v_tier = 'gen_beta' then v_amount := 20000;
+  elsif v_tier = 'gen_gamma' then v_amount := 30000;
+  else v_tier := 'gen_alpha'; v_amount := 0; v_status := 'APPROVED';
   end if;
-
-  v_token := encode(gen_random_bytes(24), 'hex');
-
+  v_token := encode(extensions.gen_random_bytes(24), 'hex');
   insert into public.subscription_registrations (
-    full_name, store_name, email, phone, username,
-    package_tier, amount, payment_proof_url,
-    status, verification_token, is_verified,
-    verified_at, approved_at
+    full_name, store_name, email, phone, username, package_tier, amount,
+    payment_proof_url, status, verification_token, is_verified, verified_at, approved_at
   ) values (
     trim(p_full_name), trim(p_store_name), lower(trim(p_email)), trim(p_phone), lower(trim(p_username)),
-    v_tier, v_amount, p_payment_proof,
-    v_status, v_token, (v_tier = 'gen_alpha'),
+    v_tier, v_amount, p_payment_proof, v_status, v_token, (v_tier = 'gen_alpha'),
     case when v_tier = 'gen_alpha' then now() else null end,
     case when v_tier = 'gen_alpha' then now() else null end
-  )
-  returning id into v_reg_id;
-
-  return jsonb_build_object(
-    'success', true,
-    'registration_id', v_reg_id,
-    'verification_token', v_token,
-    'status', v_status,
-    'package_tier', v_tier,
-    'amount', v_amount
-  );
-end;
-$$;
-
+  ) returning id into v_reg_id;
+  return jsonb_build_object('success', true, 'registration_id', v_reg_id, 'verification_token', v_token, 'status', v_status, 'package_tier', v_tier, 'amount', v_amount);
+end; $$;
 revoke all on function public.submit_subscription_registration(text, text, text, text, text, text, text) from public;
 grant execute on function public.submit_subscription_registration(text, text, text, text, text, text, text) to anon, authenticated;
 
-create or replace function public.verify_registration_token(p_token text)
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
-as $$
-declare
-  v_reg record;
+create or replace function public.verify_registration_token(p_token text) returns jsonb language plpgsql security definer set search_path = '' as $$
+declare v_reg record;
 begin
-  select * into v_reg
-  from public.subscription_registrations
-  where verification_token = trim(p_token)
-  limit 1;
-
-  if not found then
-    return jsonb_build_object('success', false, 'error', 'Token verifikasi tidak valid.');
-  end if;
-
+  select * into v_reg from public.subscription_registrations where verification_token = trim(p_token) limit 1;
+  if not found then return jsonb_build_object('success', false, 'error', 'Token verifikasi tidak valid.'); end if;
   if not v_reg.is_verified then
-    update public.subscription_registrations
-    set is_verified = true,
-        verified_at = now(),
-        updated_at = now()
-    where id = v_reg.id;
+    update public.subscription_registrations set is_verified = true, verified_at = now(), updated_at = now() where id = v_reg.id;
   end if;
-
-  return jsonb_build_object(
-    'success', true,
-    'registration_id', v_reg.id,
-    'store_name', v_reg.store_name,
-    'package_tier', v_reg.package_tier,
-    'status', v_reg.status,
-    'is_verified', true
-  );
-end;
-$$;
-
+  return jsonb_build_object('success', true, 'registration_id', v_reg.id, 'store_name', v_reg.store_name, 'package_tier', v_reg.package_tier, 'status', v_reg.status, 'is_verified', true);
+end; $$;
 revoke all on function public.verify_registration_token(text) from public;
 grant execute on function public.verify_registration_token(text) to anon, authenticated;
 
-create or replace function public.approve_subscription_registration(
-  p_registration_id uuid,
-  p_decision text,
-  p_reason text default null
-)
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
-as $$
-declare
-  v_action text := upper(trim(p_decision));
-  v_reg record;
+create or replace function public.approve_subscription_registration(p_registration_id uuid, p_decision text, p_reason text default null) returns jsonb language plpgsql security definer set search_path = '' as $$
+declare v_action text := upper(trim(p_decision)); v_reg record;
 begin
-  select * into v_reg
-  from public.subscription_registrations
-  where id = p_registration_id
-  limit 1;
-
-  if not found then
-    return jsonb_build_object('success', false, 'error', 'Registrasi tidak ditemukan.');
-  end if;
-
+  select * into v_reg from public.subscription_registrations where id = p_registration_id limit 1;
+  if not found then return jsonb_build_object('success', false, 'error', 'Registrasi tidak ditemukan.'); end if;
   if v_action = 'APPROVE' then
-    update public.subscription_registrations
-    set status = 'APPROVED',
-        approved_at = now(),
-        updated_at = now()
-    where id = p_registration_id;
-
+    update public.subscription_registrations set status = 'APPROVED', approved_at = now(), updated_at = now() where id = p_registration_id;
     return jsonb_build_object('success', true, 'status', 'APPROVED');
   elsif v_action = 'REJECT' then
-    update public.subscription_registrations
-    set status = 'REJECTED',
-        rejection_reason = p_reason,
-        updated_at = now()
-    where id = p_registration_id;
-
+    update public.subscription_registrations set status = 'REJECTED', rejection_reason = p_reason, updated_at = now() where id = p_registration_id;
     return jsonb_build_object('success', true, 'status', 'REJECTED');
-  else
-    return jsonb_build_object('success', false, 'error', 'Keputusan tidak valid (hanya APPROVE atau REJECT).');
-  end if;
-end;
-$$;
-
+  else return jsonb_build_object('success', false, 'error', 'Keputusan tidak valid.'); end if;
+end; $$;
 revoke all on function public.approve_subscription_registration(uuid, text, text) from public;
 grant execute on function public.approve_subscription_registration(uuid, text, text) to authenticated;
