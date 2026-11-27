@@ -22,6 +22,12 @@ import {
   Laptop,
   Printer,
   ScanBarcode,
+  Search,
+  ShoppingCart,
+  AlertCircle,
+  Clock,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import AlphosLogo from './AlphosLogo';
 import ThemeLangToggles from './ThemeLangToggles';
@@ -156,6 +162,7 @@ export default function LandingPage() {
   const { theme, dict, lang } = useThemeLang();
   const l = dict.landing;
   const [selectedTier, setSelectedTier] = useState<PackageTier | null>(null);
+  const [activePreviewTab, setActivePreviewTab] = useState<'pos' | 'stock' | 'shift'>('pos');
 
   // Typewriter effect state
   const operationalValues = useMemo(() => [
@@ -251,8 +258,9 @@ export default function LandingPage() {
           <nav className="landing-nav" aria-label="Navigasi Halaman">
             <a href="#fitur" className="landing-nav-link">{l.navFeatures}</a>
             <a href="#solusi" className="landing-nav-link">{l.navSolutions}</a>
+            <a href="#simulasi" className="landing-nav-link">Simulasi POS</a>
             <a href="#paket" className="landing-nav-link">{l.navPricing}</a>
-            <a href="#keunggulan" className="landing-nav-link">{l.navReliability}</a>
+            <a href="#perbandingan" className="landing-nav-link">Komparasi</a>
             <a href="#faq" className="landing-nav-link">{l.navFaq}</a>
           </nav>
 
@@ -453,6 +461,286 @@ export default function LandingPage() {
                   <span>{l.hwDevice4}</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive POS Workstation Preview Section (ATM Moka & Square) */}
+        <section id="simulasi" className="landing-section">
+          <div className="landing-container">
+            <div className="landing-section-header">
+              <h2 className="landing-section-title">{l.previewTitle}</h2>
+              <p className="landing-section-subtitle">{l.previewSubtitle}</p>
+            </div>
+
+            <div className="landing-preview-wrap">
+              {/* Tab Navigation */}
+              <div className="landing-preview-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activePreviewTab === 'pos'}
+                  className={`landing-preview-tab-btn ${activePreviewTab === 'pos' ? 'active' : ''}`}
+                  onClick={() => setActivePreviewTab('pos')}
+                >
+                  <ShoppingCart size={17} />
+                  <span>{l.previewTabPos}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activePreviewTab === 'stock'}
+                  className={`landing-preview-tab-btn ${activePreviewTab === 'stock' ? 'active' : ''}`}
+                  onClick={() => setActivePreviewTab('stock')}
+                >
+                  <Boxes size={17} />
+                  <span>{l.previewTabStock}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activePreviewTab === 'shift'}
+                  className={`landing-preview-tab-btn ${activePreviewTab === 'shift' ? 'active' : ''}`}
+                  onClick={() => setActivePreviewTab('shift')}
+                >
+                  <Clock size={17} />
+                  <span>{l.previewTabShift}</span>
+                </button>
+              </div>
+
+              {/* Mockup Terminal Top Bar */}
+              <div className="landing-mock-header">
+                <div className="landing-mock-store">
+                  <Store size={16} className="text-primary" />
+                  <span>Toko Ritel & Kafe Sumber Berkah • Outlet 01</span>
+                </div>
+                <div className="landing-mock-status">
+                  <span className="landing-status-pill status-emerald">
+                    <CheckCircle2 size={12} />
+                    <span>Kasir Aktif: Budi (Shift Pagi)</span>
+                  </span>
+                  <span className="landing-status-pill status-emerald">
+                    <WifiOff size={12} />
+                    <span>Offline Ready (PWA Cache)</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Tab 1: Terminal Kasir Kilat */}
+              {activePreviewTab === 'pos' && (
+                <div className="landing-pos-layout">
+                  <div className="landing-pos-catalog">
+                    <div className="landing-pos-searchbar">
+                      <Search size={16} />
+                      <span>Ketik nama produk atau scan barcode (e.g. 8991234567)...</span>
+                    </div>
+
+                    <div className="landing-pos-pills">
+                      <span className="landing-pos-pill active">Semua (180 SKU)</span>
+                      <span className="landing-pos-pill">Sembako</span>
+                      <span className="landing-pos-pill">Minuman</span>
+                      <span className="landing-pos-pill">Snack</span>
+                      <span className="landing-pos-pill">Perawatan</span>
+                    </div>
+
+                    <div className="landing-pos-item-grid">
+                      <div className="landing-pos-item-card">
+                        <span className="landing-pos-item-name">Minyak Goreng 2L Pouch</span>
+                        <span className="landing-pos-item-sku">SKU: MYK-002 • Stok: 48</span>
+                        <span className="landing-pos-item-price">Rp 34.000</span>
+                      </div>
+                      <div className="landing-pos-item-card">
+                        <span className="landing-pos-item-name">Beras Premium Pandan 5kg</span>
+                        <span className="landing-pos-item-sku">SKU: BRS-005 • Stok: 24</span>
+                        <span className="landing-pos-item-price">Rp 68.000</span>
+                      </div>
+                      <div className="landing-pos-item-card">
+                        <span className="landing-pos-item-name">Kopi Susu Gula Aren 250ml</span>
+                        <span className="landing-pos-item-sku">SKU: KOP-001 • Stok: 35</span>
+                        <span className="landing-pos-item-price">Rp 18.000</span>
+                      </div>
+                      <div className="landing-pos-item-card">
+                        <span className="landing-pos-item-name">Air Mineral Botol 600ml</span>
+                        <span className="landing-pos-item-sku">SKU: AIR-001 • Stok: 120</span>
+                        <span className="landing-pos-item-price">Rp 4.000</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="landing-pos-cart">
+                    <div className="landing-pos-cart-header">
+                      <span>Keranjang Transaksi</span>
+                      <span className="text-primary">3 Barang</span>
+                    </div>
+
+                    <div className="landing-pos-cart-list">
+                      <div className="landing-pos-cart-row">
+                        <div>
+                          <div><strong>1x</strong> Minyak Goreng 2L</div>
+                          <small className="text-muted">@ Rp 34.000</small>
+                        </div>
+                        <strong>Rp 34.000</strong>
+                      </div>
+                      <div className="landing-pos-cart-row">
+                        <div>
+                          <div><strong>2x</strong> Kopi Susu Gula Aren</div>
+                          <small className="text-muted">@ Rp 18.000</small>
+                        </div>
+                        <strong>Rp 36.000</strong>
+                      </div>
+                    </div>
+
+                    <div className="landing-pos-cart-totals">
+                      <div className="landing-pos-total-row">
+                        <span>Subtotal (DPP)</span>
+                        <span>Rp 70.000</span>
+                      </div>
+                      <div className="landing-pos-total-row">
+                        <span>Diskon Member Toko</span>
+                        <span className="text-success">- Rp 0</span>
+                      </div>
+                      <div className="landing-pos-total-row landing-pos-grand-total">
+                        <span>Total Tagihan</span>
+                        <span className="text-primary">Rp 70.000</span>
+                      </div>
+                    </div>
+
+                    <div className="landing-pos-pay-btns">
+                      <button type="button" className="landing-btn-cash">
+                        <Zap size={14} />
+                        <span>Tunai (Uang Pas)</span>
+                      </button>
+                      <button type="button" className="landing-btn-qris">
+                        <ScanBarcode size={14} />
+                        <span>QRIS Dinamis</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 2: Manajemen Stok Real-Time */}
+              {activePreviewTab === 'stock' && (
+                <div className="landing-stock-layout">
+                  <table className="landing-stock-table">
+                    <thead>
+                      <tr>
+                        <th>Kode SKU / Nama Barang</th>
+                        <th>Kategori</th>
+                        <th>Sisa Stok Fisik</th>
+                        <th>Batas Minimum</th>
+                        <th>Status Inventori</th>
+                        <th>Tindakan Operasional</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <strong>BRS-005</strong> — Beras Premium Pandan 5kg
+                        </td>
+                        <td>Sembako</td>
+                        <td><strong>3 Sak</strong></td>
+                        <td>5 Sak</td>
+                        <td>
+                          <span className="landing-status-pill status-amber">
+                            <AlertCircle size={12} />
+                            <span>Stok Menipis</span>
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-primary" style={{ fontWeight: 600 }}>Kirim PO ke Supplier</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>MYK-002</strong> — Minyak Goreng 2L Pouch
+                        </td>
+                        <td>Sembako</td>
+                        <td><strong>48 Pouch</strong></td>
+                        <td>10 Pouch</td>
+                        <td>
+                          <span className="landing-status-pill status-emerald">
+                            <CheckCircle2 size={12} />
+                            <span>Stok Aman</span>
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-muted">Cukup untuk 14 hari</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>SSU-100</strong> — Susu UHT Cokelat 1 Liter
+                        </td>
+                        <td>Minuman</td>
+                        <td><strong>0 Kotak</strong></td>
+                        <td>12 Kotak</td>
+                        <td>
+                          <span className="landing-status-pill status-red">
+                            <XCircle size={12} />
+                            <span>Habis Total</span>
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-danger" style={{ fontWeight: 600 }}>Tarik dari Gudang Sentral</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Tab 3: Rekonsiliasi Kas Laci (Zero Discrepancy) */}
+              {activePreviewTab === 'shift' && (
+                <div className="landing-shift-layout">
+                  <div className="landing-shift-panel">
+                    <h4>Rekonsiliasi Laci Kasir (Shift Pagi)</h4>
+                    <div className="landing-shift-line">
+                      <span>Modal Awal Kas Laci Toko</span>
+                      <strong>Rp 200.000</strong>
+                    </div>
+                    <div className="landing-shift-line">
+                      <span>Total Penjualan Tunai Bersih</span>
+                      <strong className="text-success">+ Rp 1.450.000</strong>
+                    </div>
+                    <div className="landing-shift-line">
+                      <span>Total Transaksi QRIS Dinamis (Masuk Rekening)</span>
+                      <strong className="text-primary">Rp 820.000</strong>
+                    </div>
+                    <div className="landing-shift-line">
+                      <span>Kas Kecil Keluar (Petty Cash: Pembelian Plastik Toko)</span>
+                      <strong className="text-danger">- Rp 50.000</strong>
+                    </div>
+                    <div className="landing-shift-line" style={{ borderBottom: '2px solid var(--border)', paddingTop: '6px' }}>
+                      <span><strong>Total Uang Tunai Seharusnya di Laci</strong></span>
+                      <strong>Rp 1.600.000</strong>
+                    </div>
+                    <div className="landing-shift-line">
+                      <span>Hitungan Fisik Uang Laci oleh Kasir</span>
+                      <strong>Rp 1.600.000</strong>
+                    </div>
+
+                    <div className="landing-shift-zero-diff">
+                      <CheckCircle2 size={18} />
+                      <span>Audit Sempurna: Selisih Kas = Rp 0 (100% Cocok)</span>
+                    </div>
+                  </div>
+
+                  <div className="landing-shift-panel">
+                    <h4>Keamanan & Catatan Audit Shift</h4>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--muted)', margin: 0, lineHeight: 1.5 }}>
+                      Setiap pergantian kasir tercatat dalam <em>immutable audit log</em>. Tidak ada kasir yang dapat mengubah nota setelah shift ditutup tanpa otorisasi PIN Owner toko.
+                    </p>
+                    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div className="landing-status-pill status-emerald" style={{ width: 'fit-content' }}>
+                        <Lock size={12} />
+                        <span>Single-Device Terminal Lock: Terminal POS-01 Terverifikasi</span>
+                      </div>
+                      <small className="text-muted">Laporan shift otomatis terkirim ke WhatsApp & Dashboard Owner.</small>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -695,6 +983,85 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Comparison Section (ATM Pawoon & Toast) */}
+        <section id="perbandingan" className="landing-section">
+          <div className="landing-container">
+            <div className="landing-section-header">
+              <h2 className="landing-section-title">{l.compareTitle}</h2>
+              <p className="landing-section-subtitle">{l.compareSubtitle}</p>
+            </div>
+
+            <div className="landing-compare-table-wrap">
+              <table className="landing-compare-table">
+                <thead>
+                  <tr>
+                    <th className="landing-compare-th-feat">{l.compareColFeature}</th>
+                    <th className="landing-compare-th-trad">{l.compareColTraditional}</th>
+                    <th className="landing-compare-th-alphos">{l.compareColAlphos}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="landing-compare-td-feat">{l.compareF1Title}</td>
+                    <td className="landing-compare-td-trad">{l.compareF1Trad}</td>
+                    <td className="landing-compare-td-alphos">
+                      <span className="text-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <Check size={16} strokeWidth={3} />
+                        <strong>Lebih Hemat & Bebas Memilih</strong>
+                      </span>
+                      <div>{l.compareF1Alphos}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="landing-compare-td-feat">{l.compareF2Title}</td>
+                    <td className="landing-compare-td-trad">{l.compareF2Trad}</td>
+                    <td className="landing-compare-td-alphos">
+                      <span className="text-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <Check size={16} strokeWidth={3} />
+                        <strong>Tanpa Gangguan Transaksi</strong>
+                      </span>
+                      <div>{l.compareF2Alphos}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="landing-compare-td-feat">{l.compareF3Title}</td>
+                    <td className="landing-compare-td-trad">{l.compareF3Trad}</td>
+                    <td className="landing-compare-td-alphos">
+                      <span className="text-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <Check size={16} strokeWidth={3} />
+                        <strong>Nol Kebocoran Uang Kas</strong>
+                      </span>
+                      <div>{l.compareF3Alphos}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="landing-compare-td-feat">{l.compareF4Title}</td>
+                    <td className="landing-compare-td-trad">{l.compareF4Trad}</td>
+                    <td className="landing-compare-td-alphos">
+                      <span className="text-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <Check size={16} strokeWidth={3} />
+                        <strong>Akurasi Stok Real-Time</strong>
+                      </span>
+                      <div>{l.compareF4Alphos}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="landing-compare-td-feat">{l.compareF5Title}</td>
+                    <td className="landing-compare-td-trad">{l.compareF5Trad}</td>
+                    <td className="landing-compare-td-alphos">
+                      <span className="text-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                        <Check size={16} strokeWidth={3} />
+                        <strong>Pantau dari Mana Saja</strong>
+                      </span>
+                      <div>{l.compareF5Alphos}</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
         <section id="faq" className="landing-section landing-section-alt">
           <div className="landing-container">
@@ -753,16 +1120,29 @@ export default function LandingPage() {
             <div className="landing-footer-col">
               <h5>{l.footerNavTitle}</h5>
               <a href="#fitur">{l.navFeatures}</a>
+              <a href="#solusi">{l.navSolutions}</a>
+              <a href="#simulasi">Simulasi POS</a>
               <a href="#paket">{l.navPricing}</a>
+              <a href="#perbandingan">Komparasi</a>
               <a href="#faq">{l.navFaq}</a>
-              <Link href="/login">{l.enterPos}</Link>
             </div>
 
             <div className="landing-footer-col">
-              <h5>{l.footerEcoTitle}</h5>
-              <Link href="/login">{l.footerEcoPos}</Link>
-              <a href="/monitor.html" target="_blank" rel="noopener noreferrer">{l.footerEcoMonitor}</a>
-              <Link href="/login">{l.footerEcoAdmin}</Link>
+              <h5>{l.footerSolTitle}</h5>
+              <a href="#solusi">{l.solRetailTitle}</a>
+              <a href="#solusi">{l.solFnbTitle}</a>
+              <a href="#solusi">{l.solFashionTitle}</a>
+              <a href="#solusi">{l.solServiceTitle}</a>
+            </div>
+
+            <div className="landing-footer-col">
+              <h5>{l.footerHelpTitle}</h5>
+              <a href="https://wa.me/6281280004276" target="_blank" rel="noopener noreferrer">
+                WhatsApp 24 Jam
+              </a>
+              <a href="mailto:no-reply@alphagen.co.id">no-reply@alphagen.co.id</a>
+              <a href="#faq">{l.navFaq}</a>
+              <Link href="/login">{l.enterPos}</Link>
             </div>
           </div>
         </div>
@@ -770,6 +1150,7 @@ export default function LandingPage() {
         <div className="landing-footer-bottom">
           <div className="landing-container landing-footer-bottom-inner">
             <span>&copy; {new Date().getFullYear()} {l.footerRights}</span>
+            <span className="landing-footer-security-pill">{l.footerSecurityBadge}</span>
             <span>{l.footerVersion}</span>
           </div>
         </div>
