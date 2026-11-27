@@ -1626,7 +1626,17 @@
       doni: { name: "Doni Saputra", role: "Staff QA Manual", avatar: "🔍", tag: "QA Man", color: "#E879F9" },
       kevin: { name: "Kevin Alamsyah", role: "Staff Cyber Security", avatar: "🕵️", tag: "Sec Staff", color: "#F43F5E" },
       andi: { name: "Andi Saputra", role: "Staff Frontend", avatar: "👨‍💻", tag: "FE Staff", color: "#93C5FD" },
-      maya: { name: "Maya Dewi", role: "Staff Backend", avatar: "👩‍💻", tag: "BE Staff", color: "#6EE7B7" }
+      maya: { name: "Maya Dewi", role: "Staff Backend", avatar: "👩‍💻", tag: "BE Staff", color: "#6EE7B7" },
+      dewi: { name: "Dewi Kartika", role: "Lead QA Automation", avatar: "🧪", tag: "Lead QA", color: "#FBBF24" },
+      agung: { name: "Agung Prasetyo", role: "System Architect & Tech Lead", avatar: "🏗️", tag: "Tech Lead", color: "#60A5FA" },
+      citra: { name: "Citra Lestari", role: "Lead UI/UX Designer", avatar: "🎨", tag: "Lead UI", color: "#C084FC" },
+      eko: { name: "Eko Wijaya", role: "Lead Backend Engineer", avatar: "⚙️", tag: "Lead BE", color: "#34D399" },
+      bambang: { name: "Bambang Setiawan", role: "Lead Cybersecurity & InfoSec", avatar: "🛡️", tag: "InfoSec", color: "#F87171" },
+      ferry: { name: "Ferry Irawan", role: "Lead Database Administrator (DBA)", avatar: "🗄️", tag: "Lead DBA", color: "#38BDF8" },
+      fauzan: { name: "Fauzan Akbar", role: "Intern QA", avatar: "🧪", tag: "INTERN", color: "#10B981" },
+      alya: { name: "Alya Nadira", role: "Intern UI/UX", avatar: "🎨", tag: "INTERN", color: "#10B981" },
+      dimas_intern: { name: "Dimas Ramadhan", role: "Intern TW", avatar: "📑", tag: "INTERN", color: "#10B981" },
+      naufal: { name: "Naufal Hidayat", role: "Intern Backend", avatar: "⚡", tag: "INTERN", color: "#10B981" }
     };
 
     // Realistic initial chat state that reflects office life
@@ -2108,18 +2118,48 @@
           text: "Status Live Verifikasi: Production POS [alphos-smartpos.vercel.app] 200 OK (latency 34ms). Zero Packet Loss. Semua aman terkendali 100% dari HP. Mas Gege, safe travel to Malaysia! 👑🇲🇾✨",
           time: "12:16",
           reactions: { "👑": 46, "🇲🇾": 46, "🚀": 46, "🌴": 46 }
+        },
+        {
+          id: "m69",
+          isLeader: true,
+          text: "live interaksi tim gak jalanya?",
+          time: "12:17",
+          reactions: { "👑": 46, "👀": 40, "💬": 44 }
+        },
+        {
+          id: "m70",
+          person: ROSTER.rina,
+          text: "JALAN KOK MAS GEGE! 🥳 Tadi barusan transit sinyal sebentar pas bus masuk underpass tol bandara! Sekarang udah connect lagi ke 5G Telkomsel roaming, obrolan live lanjut mengudara lancar jaya! Feed chat langsung auto-scroll ke paling bawah!",
+          time: "12:17",
+          reactions: { "🥳": 46, "📶": 46, "🚀": 44 }
+        },
+        {
+          id: "m71",
+          person: ROSTER.bimo,
+          text: "Sistem live feed 100% online & sinkron Mas Gege! Parser bubble sudah dipasang defensive guard dan auto-streaming setiap 12 detik aktif jalan. Suara notifikasi chime siap bunyi setiap ada pesan baru!",
+          time: "12:18",
+          reactions: { "💻": 44, "🔔": 42, "✨": 45 }
+        },
+        {
+          id: "m72",
+          person: ROSTER.agung,
+          text: "Semua koneksi real-time stabil hijau. Mas Gege bisa langsung lihat obrolan seru anak-anak di bus dan bisa ketik pesan apa saja lewat input bar di bawah. Selamat memantau Mas! 🚌🏖️",
+          time: "12:18",
+          reactions: { "👑": 46, "🫡": 46, "🌴": 46 }
         }
 
       ];
 
     function renderChatFeed() {
       const box = document.getElementById('chatFeedBox');
+      if (!box) return;
       box.innerHTML = chatMessages.map(m => {
         const isLeader = m.isLeader;
-        const authorName = isLeader ? "Team Leader: Anggi Andriansyah (Gege)" : m.person.name;
-        const roleTag = isLeader ? "TEAM LEADER" : m.person.tag;
-        const avatar = isLeader ? "👑" : m.person.avatar;
-        const avatarBg = isLeader ? "#059669" : "#1E293B";
+        const person = m.person || { name: "Tim AlphaGen", role: "Staff", avatar: "👥", tag: "TEAM", color: "#64748B" };
+        const authorName = isLeader ? "Team Leader: Anggi Andriansyah (Gege)" : person.name;
+        const roleTag = isLeader ? "TEAM LEADER" : person.tag;
+        const avatar = isLeader ? "👑" : person.avatar;
+        const avatarBg = isLeader ? "#059669" : (person.color || "#1E293B");
 
         const reactionsHtml = Object.entries(m.reactions || {}).map(([emoji, count]) => `
           <button class="reaction-btn" onclick="addReaction('${m.id}', '${emoji}')">
