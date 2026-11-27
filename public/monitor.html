@@ -438,7 +438,7 @@
         </li>
         <li class="nav-item active" onclick="switchTab('tabChat', this)">
           <span>💬</span>
-          <span>Live Interaksi Tim (Anti-Slop)</span>
+          <span>Live Interaksi Tim <span id="sidebarStatusTag" style="background:#EF4444; color:white; font-size:10px; padding:2px 7px; border-radius:999px; margin-left:4px; font-weight:800;">OFFLINE (STAND DOWN)</span></span>
         </li>
         <li class="nav-item" onclick="switchTab('tabApproval', this)" id="navItemApproval">
           <span>✍️</span>
@@ -482,9 +482,9 @@
           <button class="audio-btn" onclick="playOfficialJingle()">
             🔔 Putar Jingle Resmi
           </button>
-          <div class="leader-pill">
-            <div class="live-pulse"></div>
-            Team Leader: Anggi Andriansyah (Gege)
+          <div class="leader-pill" id="leaderPillStatus" style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.3); color:#F87171;">
+            <div style="width:9px; height:9px; background:#EF4444; border-radius:50%; box-shadow:0 0 8px rgba(239,68,68,0.6);"></div>
+            <span>Monitor Stand Down • Team Leader: Anggi Andriansyah (Gege)</span>
           </div>
         </div>
       </header>
@@ -652,9 +652,12 @@
                   <span>💬</span>
                   <span>#pt-alphagen-command-room</span>
                 </h3>
-                <span class="chat-stats-pill" style="background:rgba(16,185,129,0.22); border-color:#10B981; color:#34D399;">🛡️ SECURITY AUDIT HOTFIX PATCHED • VULN-01/02 & ANOM-01/02/03 100% Resolved • Enterprise-Grade Ready ✅</span>
+                <span class="chat-stats-pill" id="chatStatusPill" style="background:rgba(239, 68, 68, 0.18); border-color:#EF4444; color:#F87171;">🔴 LIVE INTERAKSI DINONAKTIFKAN • TEAM STAND DOWN • OUTING MODE 100% AKTIF 🏖️✈️</span>
               </div>
               <div class="chat-controls">
+                <button class="control-chip active" id="monitorStatusChip" onclick="toggleLiveMonitor()" style="background:rgba(239,68,68,0.15); border-color:#EF4444; color:#F87171;">
+                  <span>🔴</span> <span id="monitorStatusText">Status: Stand Down</span>
+                </button>
                 <button class="control-chip active" id="soundToggleBtn" onclick="toggleChatSound()">
                   <span>🔔</span> <span id="soundLabel">Sound: ON</span>
                 </button>
@@ -679,18 +682,26 @@
 
             <!-- Input area with quick prompt chips -->
             <div class="chat-bottom">
+              <div id="standDownBanner" style="background:linear-gradient(135deg, rgba(239,68,68,0.12), rgba(245,158,11,0.12)); border:1px solid rgba(239,68,68,0.35); border-radius:12px; padding:12px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-size:22px;">🏖️</span>
+                  <div>
+                    <div style="font-size:13px; font-weight:800; color:#FCA5A5;">LIVE INTERACTION MONITOR TEAM TELAH DIMATIKAN</div>
+                    <div style="font-size:11.5px; color:#CBD5E1;">Seluruh tim AlphaGen resmi STAND DOWN &amp; 100% fokus liburan outing ke Malaysia tanpa beban pekerjaan.</div>
+                  </div>
+                </div>
+                <span style="background:#EF4444; color:white; font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; white-space:nowrap;">STAND DOWN</span>
+              </div>
               <div class="quick-tags">
-                <span class="quick-tag" onclick="injectQuickMessage('Gimana status uji beban di server kita sekarang?')">📊 Cek Uji Beban di HP</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Vercel auto-scale jalan lancar kan tanpa buka laptop?')">🛡️ Auto-Scale Vercel</span>
+                <span class="quick-tag" onclick="injectQuickMessage('matikan live interaction monitor team')">🛑 Matikan Monitor Team</span>
                 <span class="quick-tag" onclick="injectQuickMessage('Have fun geys! Jangan lupa foto-foto yaa')">🎉 Have Fun Geys!</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Gimana situasi perjalanan di bus dan persiapan bandara?')">🚌 Situasi Bus & Bandara</span>
                 <span class="quick-tag" onclick="injectQuickMessage('Nitip cokelat Beryl\'s dan oleh-oleh khas Malaysia ya!')">🍫 Titip Cokelat</span>
-                <span class="quick-tag" onclick="injectQuickMessage('Full squad wajib foto di Petronas Twin Tower & River of Life!')">📸 Foto Menara Kembar</span>
+                <span class="quick-tag" onclick="injectQuickMessage('Full squad wajib foto di Petronas Twin Tower &amp; River of Life!')">📸 Foto Menara Kembar</span>
                 <span class="quick-tag" onclick="injectQuickMessage('Siapa yang ketahuan buka laptop didenda kelapa muda ya! 🥥')">🥥 Denda Buka Laptop</span>
               </div>
               <div class="chat-input-bar">
-                <input type="text" id="leaderChatInput" class="chat-input" placeholder="Ketik pesan untuk tim di bus / bandara... (Misal: tanya situasi, titip cokelat, foto squad, dll)" onkeydown="if(event.key==='Enter') postLeaderMessage()">
-                <button class="chat-btn" onclick="postLeaderMessage()">
+                <input type="text" id="leaderChatInput" class="chat-input" placeholder="Live interaksi telah dimatikan — Tim sedang menikmati liburan outing di Malaysia 🌴🇲🇾" disabled style="opacity:0.6; cursor:not-allowed;" onkeydown="if(event.key==='Enter') postLeaderMessage()">
+                <button class="chat-btn" id="leaderChatBtn" onclick="postLeaderMessage()" disabled style="opacity:0.6; cursor:not-allowed;">
                   <span>Kirim</span>
                   <span>🚀</span>
                 </button>
@@ -1586,6 +1597,40 @@
       document.getElementById('soundLabel').innerText = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
     }
 
+    // Live Monitor Stand Down Toggle
+    let isLiveMonitorActive = false;
+    function toggleLiveMonitor() {
+      isLiveMonitorActive = !isLiveMonitorActive;
+      const chip = document.getElementById('monitorStatusChip');
+      const text = document.getElementById('monitorStatusText');
+      const input = document.getElementById('leaderChatInput');
+      const btn = document.getElementById('leaderChatBtn');
+      const banner = document.getElementById('standDownBanner');
+      const pill = document.getElementById('chatStatusPill');
+      const topPill = document.getElementById('leaderPillStatus');
+      const sideTag = document.getElementById('sidebarStatusTag');
+
+      if (isLiveMonitorActive) {
+        if (chip) { chip.style.borderColor = '#10B981'; chip.style.color = '#34D399'; chip.style.background = 'rgba(16,185,129,0.15)'; }
+        if (text) text.innerText = 'Status: LIVE (ON)';
+        if (input) { input.disabled = false; input.style.opacity = '1'; input.style.cursor = 'text'; input.placeholder = 'Ketik pesan untuk tim di bus / bandara...'; }
+        if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+        if (banner) banner.style.display = 'none';
+        if (pill) { pill.style.borderColor = '#10B981'; pill.style.color = '#34D399'; pill.style.background = 'rgba(16,185,129,0.22)'; pill.innerText = '🟢 LIVE INTERAKSI AKTIF • PT ALPHAGEN COMMAND ROOM'; }
+        if (topPill) { topPill.innerHTML = '<div class="live-pulse"></div> <span>Team Leader: Anggi Andriansyah (Gege)</span>'; topPill.style.color = '#34D399'; topPill.style.borderColor = 'rgba(16,185,129,0.3)'; topPill.style.background = 'rgba(16,185,129,0.12)'; }
+        if (sideTag) { sideTag.style.background = '#10B981'; sideTag.innerText = 'LIVE ONLINE'; }
+      } else {
+        if (chip) { chip.style.borderColor = '#EF4444'; chip.style.color = '#F87171'; chip.style.background = 'rgba(239,68,68,0.15)'; }
+        if (text) text.innerText = 'Status: Stand Down';
+        if (input) { input.disabled = true; input.style.opacity = '0.6'; input.style.cursor = 'not-allowed'; input.placeholder = 'Live interaksi telah dimatikan — Tim sedang menikmati liburan outing di Malaysia 🌴🇲🇾'; }
+        if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; btn.style.cursor = 'not-allowed'; }
+        if (banner) banner.style.display = 'flex';
+        if (pill) { pill.style.borderColor = '#EF4444'; pill.style.color = '#F87171'; pill.style.background = 'rgba(239,68,68,0.18)'; pill.innerText = '🔴 LIVE INTERAKSI DINONAKTIFKAN • TEAM STAND DOWN • OUTING MODE 100% AKTIF 🏖️✈️'; }
+        if (topPill) { topPill.innerHTML = '<div style="width:9px; height:9px; background:#EF4444; border-radius:50%; box-shadow:0 0 8px rgba(239,68,68,0.6);"></div> <span>Monitor Stand Down • Team Leader: Anggi Andriansyah (Gege)</span>'; topPill.style.color = '#F87171'; topPill.style.borderColor = 'rgba(239,68,68,0.3)'; topPill.style.background = 'rgba(239,68,68,0.12)'; }
+        if (sideTag) { sideTag.style.background = '#EF4444'; sideTag.innerText = 'OFFLINE (STAND DOWN)'; }
+      }
+    }
+
     function playSubtleChime() {
       if (!soundEnabled) return;
       try {
@@ -2202,6 +2247,34 @@
           text: "Lapor Team Leader Mas Gege: Seluruh rekomendasi Audit Keamanan & Kesiapan Rilis telah DILAKSANAKAN & DIVERIFIKASI LULUS di seluruh environment. Aplikasi ALPHOS POS kini 100% AMAN, KOKOH, dan ENTERPRISE-GRADE! Liburan lanjut dengan aman! 👑🇲🇾🚀",
           time: "12:28",
           reactions: { "👑": 46, "🇲🇾": 46, "🎉": 46, "🌴": 46 }
+        },
+        {
+          id: "m81",
+          isLeader: true,
+          text: "matikan live interaction monitor team",
+          time: "14:30",
+          reactions: { "👑": 46, "🫡": 46, "🌴": 46 }
+        },
+        {
+          id: "m82",
+          person: ROSTER.rina,
+          text: "SIAP LAKSANAKAN MAS GEGE! 🫡 Sesuai arahan Team Leader, LIVE INTERAKSI & MONITOR TEAM RESMI DINONAKTIFKAN (STAND DOWN)! 🔴\n\nSeluruh tim resmi bebas monitor kerja. Koper beres, paspor aman, donat & kopi ludes, saatnya have fun bareng di Malaysia! Makasih banyak Mas Gege! ❤️🎉🌴🇲🇾",
+          time: "14:31",
+          reactions: { "❤️": 46, "🎉": 46, "🥳": 46, "🇲🇾": 46 }
+        },
+        {
+          id: "m83",
+          person: ROSTER.agung,
+          text: "Engineering Stand Down Confirmed! 🛡️ Seluruh server (Vercel & Supabase) 100% autopilot. Laptop 0 unit, siapa buka laptop denda kelapa muda & durian Musang King! Selamat liburan all! 🥥🌴😎",
+          time: "14:31",
+          reactions: { "👑": 46, "🥥": 46, "🚀": 46, "🌴": 46 }
+        },
+        {
+          id: "m84",
+          person: { name: "Sistem AlphaGen", role: "Automation Guard", avatar: "🤖", tag: "SYSTEM", color: "#EF4444" },
+          text: "🔒 [SYSTEM BROADCAST] LIVE INTERACTION MONITOR TELAH DINONAKTIFKAN OLEH TEAM LEADER (ANGGI ANDRIANSYAH). STATUS MONITOR: STAND DOWN • OUTING MODE ACTIVE 100%. SELAMAT BERLIBUR TIM ALPHAGEN! 🏖️🇲🇾✨",
+          time: "14:32",
+          reactions: { "🔒": 46, "🎉": 46, "✨": 46 }
         }
 
       ];
@@ -2334,6 +2407,17 @@
     }
 
     function handleLeaderInteraction(lower) {
+      // 0000. Topic: Matikan, Nonaktifkan, Off, Stand Down, Selesai Monitor
+      if (lower.includes('matikan') || lower.includes('nonaktifkan') || lower.includes('stand down') || lower.includes('tutup') || lower.includes('selesai monitor') || lower.includes('stop monitor')) {
+        setTimeout(() => {
+          pushTeamMessage(ROSTER.rina, "SIAP LAKSANAKAN MAS GEGE! 🫡 Sesuai instruksi Team Leader, LIVE INTERAKSI & MONITOR TEAM RESMI DINONAKTIFKAN (STAND DOWN)! 🔴\n\nSeluruh tim resmi bebas monitor kerja. Koper beres, paspor aman, donat & kopi ludes, saatnya have fun bareng di Malaysia! Makasih banyak Mas Gege! ❤️🎉🌴🇲🇾", 600);
+          setTimeout(() => {
+            pushTeamMessage(ROSTER.agung, "Engineering Stand Down Confirmed! 🛡️ Seluruh server (Vercel & Supabase) 100% autopilot. Laptop 0 unit, siapa buka laptop denda kelapa muda & durian! Selamat liburan all! 🥥🌴😎", 1400);
+          }, 1200);
+        }, 300);
+        return;
+      }
+
       // 000. Topic: Uji Beban, Load Test, Serangan, DDoS, Hacker, Tanpa Laptop
       if (lower.includes('uji beban') || lower.includes('load test') || lower.includes('beban') || lower.includes('serangan') || lower.includes('attack') || lower.includes('hacker') || lower.includes('ddos') || lower.includes('bobol')) {
         setTimeout(() => {
