@@ -104,7 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const isBrandNewAccount =
               Math.abs(createdAt - lastSignIn) < 3000 && now - createdAt < 45000;
 
-            if (isBrandNewAccount) {
+            // Jangan blokir Owner toko yang sah yang mendaftar via formulir langganan/registrasi
+            if (isBrandNewAccount && typedProfile.role !== 'owner' && typedProfile.role !== 'admin') {
               await supabase.auth.signOut();
               setSession(null);
               setUser(null);
