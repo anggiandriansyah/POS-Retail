@@ -36,6 +36,12 @@ function VerifyAccountContent() {
       if (res.success && res.registration) {
         setRegistration(res.registration);
         setSuccess(true);
+        // Trigger Resend email ucapan selamat & faktur aktivasi otomatis
+        fetch('/api/payment/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, orderId: token }),
+        }).catch((err) => console.warn('Send confirmation email warning:', err));
       } else {
         setErrorMessage('Tautan verifikasi tidak valid atau masa berlaku telah kedaluwarsa.');
       }
