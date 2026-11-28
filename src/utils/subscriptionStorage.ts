@@ -156,11 +156,13 @@ export function verifyAccountByToken(
   if (typeof window === 'undefined') return { success: false };
   try {
     const list = getLocalRegistrations();
-    const target = list.find(r => r.verification_token === token);
+    const target = list.find(r => r.verification_token === token || r.id === token);
     if (!target) return { success: false };
 
+    target.status = 'APPROVED';
     target.is_verified = true;
-    target.verified_at = new Date().toISOString();
+    target.verified_at = target.verified_at || new Date().toISOString();
+    target.approved_at = target.approved_at || new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     return { success: true, registration: target };
   } catch {

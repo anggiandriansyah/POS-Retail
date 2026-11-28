@@ -26,26 +26,29 @@ export async function POST(req: NextRequest) {
       if (supabaseUrl && supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Update status langganan di Supabase
+        // Update status pendaftaran langganan di Supabase
         await supabase
-          .from('subscriptions')
+          .from('subscription_registrations')
           .update({
-            status: 'active',
+            status: 'APPROVED',
+            is_verified: true,
+            verified_at: new Date().toISOString(),
+            approved_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
-          .eq('invoice_number', payload.order_id);
+          .eq('verification_token', payload.order_id);
 
         // Ambil info toko & kirim invoice email via Resend
         const { data: sub } = await supabase
-          .from('subscriptions')
-          .select('owner_email, store_name, owner_name')
-          .eq('invoice_number', payload.order_id)
+          .from('subscription_registrations')
+          .select('email, store_name, full_name')
+          .eq('verification_token', payload.order_id)
           .maybeSingle();
 
-        if (sub?.owner_email) {
+        if (sub?.email) {
           await sendSubscriptionApprovedEmail(
-            sub.owner_email,
-            sub.owner_name || 'Owner Toko',
+            sub.email,
+            sub.full_name || 'Owner Toko',
             sub.store_name || 'Toko ALPHOS',
             payload.order_id
           );

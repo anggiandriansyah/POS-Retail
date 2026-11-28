@@ -116,6 +116,49 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
       setSubmitting(true);
       try {
         const orderId = 'INV-' + Date.now();
+
+        // 1. Daftarkan akun Owner ke Supabase Auth agar akun bisa login
+        if (isSupabaseConfigured && supabase) {
+          try {
+            const { error: signUpErr } = await supabase.auth.signUp({
+              email: email.trim().toLowerCase(),
+              password: password,
+              options: {
+                data: {
+                  full_name: fullName.trim(),
+                  username: username.trim().toLowerCase(),
+                  store_name: storeName.trim(),
+                  role: 'owner',
+                },
+              },
+            });
+            if (signUpErr && !signUpErr.message.toLowerCase().includes('already registered')) {
+              console.warn('Supabase auth signUp warning:', signUpErr);
+            }
+          } catch (authErr) {
+            console.warn('Supabase auth error:', authErr);
+          }
+
+          // 2. Catat pendaftaran ke Supabase table subscription_registrations
+          try {
+            await supabase.from('subscription_registrations').insert({
+              full_name: fullName.trim(),
+              store_name: storeName.trim(),
+              email: email.trim().toLowerCase(),
+              phone: phone.trim(),
+              username: username.trim().toLowerCase(),
+              package_tier: tier,
+              amount: currentTierInfo.amount,
+              payment_method: 'midtrans_snap',
+              status: 'PENDING_APPROVAL',
+              verification_token: orderId,
+              is_verified: false,
+            });
+          } catch (dbErr) {
+            console.warn('Supabase insert registration warning:', dbErr);
+          }
+        }
+
         const snapRes = await fetch('/api/payment/midtrans/snap', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -125,7 +168,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             customerName: fullName.trim(),
             email: email.trim().toLowerCase(),
             phone: phone.trim(),
-            finishUrl: window.location.origin + '/verify-account?status=success',
+            finishUrl: window.location.origin + '/verify-account?token=' + orderId + '&status=success',
             itemDetails: [
               {
                 id: tier,

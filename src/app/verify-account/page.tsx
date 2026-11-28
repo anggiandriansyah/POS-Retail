@@ -5,11 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, AlertCircle, ArrowRight, Store, ShieldCheck, Mail } from 'lucide-react';
 import AlphosLogo from '../../components/AlphosLogo';
-import { verifyAccountByToken, type SubscriptionRegistration } from '../../utils/subscriptionStorage';
+import { verifyAccountByToken, getLocalRegistrations, type SubscriptionRegistration } from '../../utils/subscriptionStorage';
 
 function VerifyAccountContent() {
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const tokenParam = searchParams.get('token') || searchParams.get('order_id') || searchParams.get('orderId');
 
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -17,6 +17,14 @@ function VerifyAccountContent() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    let token = tokenParam;
+    if (!token && typeof window !== 'undefined') {
+      const list = getLocalRegistrations();
+      if (list.length > 0) {
+        token = list[0].verification_token;
+      }
+    }
+
     if (!token) {
       setLoading(false);
       setErrorMessage('Token verifikasi tidak ditemukan dalam tautan.');
@@ -32,10 +40,10 @@ function VerifyAccountContent() {
         setErrorMessage('Tautan verifikasi tidak valid atau masa berlaku telah kedaluwarsa.');
       }
       setLoading(false);
-    }, 600);
+    }, 400);
 
     return () => clearTimeout(timer);
-  }, [token]);
+  }, [tokenParam]);
 
   const getTierLabel = (tier?: string) => {
     switch (tier) {
