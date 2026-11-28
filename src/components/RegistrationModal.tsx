@@ -439,7 +439,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 <input
                   type="text"
                   required
-                  placeholder={isEn ? 'e.g. Anggi Andriansyah' : 'Contoh: Anggi Andriansyah'}
+                  placeholder={isEn ? 'e.g. Budi Santoso' : 'Contoh: Budi Santoso'}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   style={{
@@ -531,7 +531,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 <input
                   type="text"
                   required
-                  placeholder={isEn ? 'e.g. anggistore' : 'Contoh: anggitoko'}
+                  placeholder={isEn ? 'e.g. retailstore' : 'Contoh: retailjaya'}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   style={{
