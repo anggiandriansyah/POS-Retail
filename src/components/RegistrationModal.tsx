@@ -9,6 +9,8 @@ import {
   QrCode,
   Mail,
   ArrowRight,
+  CreditCard,
+  ShieldCheck,
 } from 'lucide-react';
 import type { PackageTier, SubscriptionRegistration } from '../utils/subscriptionStorage';
 import { saveLocalRegistration } from '../utils/subscriptionStorage';
@@ -110,9 +112,61 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
       return;
     }
 
-    if (!isFree && !proofPreview) {
-      setErrorMsg(isEn ? 'Please attach a screenshot or receipt photo of your QRIS payment.' : 'Mohon lampirkan foto struk/screenshot bukti transfer pembayaran QRIS Anda.');
-      return;
+    if (!isFree) {
+      setSubmitting(true);
+      try {
+        const orderId = 'INV-' + Date.now();
+        const snapRes = await fetch('/api/payment/midtrans/snap', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId,
+            grossAmount: currentTierInfo.amount,
+            customerName: fullName.trim(),
+            email: email.trim().toLowerCase(),
+            phone: phone.trim(),
+            itemDetails: [
+              {
+                id: tier,
+                price: currentTierInfo.amount,
+                quantity: 1,
+                name: `Langganan ALPHOS ${currentTierInfo.name}`,
+              },
+            ],
+          }),
+        });
+
+        const snapData = await snapRes.json();
+        if (!snapRes.ok || !snapData.success || !snapData.redirectUrl) {
+          throw new Error(snapData.error || 'Gagal membuat sesi pembayaran Midtrans.');
+        }
+
+        const newRegistration: SubscriptionRegistration = {
+          id: 'reg-' + Date.now(),
+          full_name: fullName.trim(),
+          store_name: storeName.trim(),
+          email: email.trim().toLowerCase(),
+          phone: phone.trim(),
+          username: username.trim().toLowerCase(),
+          package_tier: tier,
+          amount: currentTierInfo.amount,
+          payment_method: 'midtrans_snap',
+          status: 'PENDING_APPROVAL',
+          verification_token: orderId,
+          is_verified: false,
+          created_at: new Date().toISOString(),
+        };
+        saveLocalRegistration(newRegistration);
+
+        // Arahkan otomatis ke layar pembayaran Midtrans Snap (QRIS Dinamis / Virtual Account)
+        window.location.href = snapData.redirectUrl;
+        return;
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        setErrorMsg(isEn ? `Failed to initiate payment: ${msg}` : `Gagal memulai pembayaran Midtrans: ${msg}`);
+        setSubmitting(false);
+        return;
+      }
     }
 
     setSubmitting(true);
@@ -516,124 +570,49 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
             </div>
 
-            {/* QRIS PAYMENT SECTION (For Gen Beta & Gen Gamma) - Flat Section, No Nested Cards */}
-            {!isFree && currentTierInfo.qrisSrc && (
+            {/* MIDTRANS AUTOMATED PAYMENT SECTION (For Gen Beta & Gen Gamma) */}
+            {!isFree && (
               <div className="reg-modal-flat-section">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                  <QrCode size={18} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <CreditCard size={18} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
                   <span style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text)' }}>
-                    {isEn ? 'Official QRIS Payment: ' : 'Pembayaran QRIS Resmi: '}
-                    {isEn ? (tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
+                    {isEn ? 'Instant Online Payment (Midtrans Gateway): ' : 'Pembayaran Otomatis via Midtrans: '}
+                    {currentTierInfo.priceText}
                   </span>
                 </div>
 
                 <div
                   style={{
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '12px',
+                    padding: '16px',
                     display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    gap: '20px',
+                    flexDirection: 'column',
+                    gap: '12px',
                   }}
                 >
-                  {/* QRIS Image Container */}
-                  <div className="reg-qris-frame">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={currentTierInfo.qrisSrc}
-                      alt={`QRIS ${currentTierInfo.name}`}
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        display: 'block',
-                        borderRadius: '6px',
-                      }}
-                    />
-                    <div style={{ fontSize: '10px', color: 'var(--text)', fontWeight: 800, marginTop: '6px' }}>
-                      NMID: ID1026649384090
-                    </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
+                    {isEn
+                      ? 'Pay instantly with Dynamic QRIS (GoPay, ShopeePay, DANA) or Bank Virtual Account (BCA, Mandiri, BRI, BNI). Store license activates in real-time right after payment without manual verification.'
+                      : 'Bayar instan via QRIS Dinamis (GoPay, ShopeePay, DANA) atau Virtual Account (BCA, Mandiri, BRI, BNI). Lisensi toko langsung aktif otomatis detik itu juga tanpa perlu antre verifikasi manual.'}
+                  </p>
+
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <span style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '6px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontWeight: 700, border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      QRIS Dinamis
+                    </span>
+                    <span style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '6px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontWeight: 700, border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                      Virtual Account Bank
+                    </span>
+                    <span style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '6px', background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7', fontWeight: 700, border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+                      Faktur Resmi PDF
+                    </span>
                   </div>
 
-                  {/* QRIS Instruction & File Upload */}
-                  <div style={{ flex: 1, minWidth: 'min(100%, 240px)' }}>
-                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 14px', lineHeight: 1.55 }}>
-                      {isEn
-                        ? 'Open your mobile banking or e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan the official QRIS on the left and pay the exact amount.'
-                        : 'Silakan buka mobile banking atau e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan QRIS di samping dan selesaikan pembayaran sesuai tagihan.'}
-                    </p>
-
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        color: 'var(--text)',
-                        marginBottom: '6px',
-                      }}
-                    >
-                      {isEn ? 'Upload Proof of QRIS Payment (Screenshot / Receipt Image):' : 'Unggah Bukti Transfer QRIS (Screenshot / Foto Struk):'}
-                    </label>
-
-                    <div
-                      style={{
-                        border: '2px dashed var(--border-strong)',
-                        borderRadius: '10px',
-                        padding: '16px',
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                        background: 'var(--surface)',
-                      }}
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        id="proofUploadInput"
-                        style={{ display: 'none' }}
-                      />
-                      <label
-                        htmlFor="proofUploadInput"
-                        style={{
-                          cursor: 'pointer',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: '6px',
-                        }}
-                      >
-                        <Upload size={22} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
-                        <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--primary)' }}>
-                          {isEn ? 'Click to select receipt / screenshot' : 'Klik untuk pilih foto struk / screenshot'}
-                        </span>
-                        <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
-                          {isEn ? 'JPG/PNG/WebP, max 5 MB' : 'Format JPG/PNG/WebP, maksimal 5 MB'}
-                        </span>
-                      </label>
-                    </div>
-
-                    {proofPreview && (
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                          marginTop: '10px',
-                          padding: '8px 12px',
-                          borderRadius: '8px',
-                          background: 'var(--primary-soft)',
-                          border: '1px solid var(--primary-border)',
-                        }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={proofPreview}
-                          alt="Preview bukti bayar"
-                          style={{ width: '42px', height: '42px', objectFit: 'cover', borderRadius: '4px' }}
-                        />
-                        <span style={{ fontSize: '12px', color: 'var(--primary-text)', fontWeight: 600 }}>
-                          {isEn ? 'Proof of payment attached' : 'Bukti pembayaran terlampir'}
-                        </span>
-                      </div>
-                    )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
+                    <ShieldCheck size={14} style={{ color: '#10b981' }} />
+                    <span>Diproses resmi & aman oleh Midtrans (Bank Indonesia Licensed).</span>
                   </div>
                 </div>
               </div>
@@ -700,8 +679,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   <>
                     <span>
                       {isEn
-                        ? (isFree ? 'Register Store Now (Free)' : 'Submit Proof & Complete')
-                        : (isFree ? 'Daftarkan Toko Sekarang (Gratis)' : 'Kirim Bukti & Selesaikan Pembayaran')}
+                        ? (isFree ? 'Register Store Now (Free)' : `Pay with Midtrans (${currentTierInfo.priceText})`)
+                        : (isFree ? 'Daftarkan Toko Sekarang (Gratis)' : `Bayar via Midtrans (${currentTierInfo.priceText})`)}
                     </span>
                     <ArrowRight size={16} />
                   </>

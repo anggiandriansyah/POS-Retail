@@ -12,7 +12,7 @@ export interface SubscriptionRegistration {
   username: string;
   package_tier: PackageTier;
   amount: number;
-  payment_method: 'qris' | 'free';
+  payment_method: 'qris' | 'free' | 'midtrans_snap';
   payment_proof_url?: string | null;
   status: RegistrationStatus;
   rejection_reason?: string | null;
