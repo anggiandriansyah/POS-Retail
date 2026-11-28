@@ -1343,7 +1343,7 @@
                     Pantau kondisi riil 46 personel PT AlphaGen: status pekerjaan, waktu istirahat (dengan countdown otomatis), level energi baterai, serta suasana hati & emosi manusiawi yang dipengaruhi aktivitas kantor.
                   </p>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; max-width:100%;">
                   <button type="button" class="control-chip active" id="btnViewEmployees" onclick="toggleStaffView('staff')">
                     👤 Status Karyawan (46)
                   </button>
@@ -1383,7 +1383,7 @@
         <div style="background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(13, 27, 42, 0.95) 100%); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 16px; padding: 22px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
             <div>
-              <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; max-width: 100%; min-width: 0;">
                 <span style="font-size: 22px;">🔬</span>
                 <h3 style="font-size: 17px; font-weight: 800; color: #F8FAFC; letter-spacing: -0.3px;">
                   SPRINT 6 SPECIAL MISSION: Research Model Langganan Alphos POS Web
@@ -1398,7 +1398,7 @@
             </div>
             
             <!-- Live Research Countdown -->
-            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 12px 18px; text-align: right; min-width: min(100%, 220px);">
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 12px 18px; text-align: right; min-width: min(100%, 220px); max-width: 100%;">
               <div style="font-size: 10.5px; font-weight: 700; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.5px;">
                 ⏱️ SLA Riset & Sintesis Sprint 6
               </div>
@@ -1465,17 +1465,17 @@
           </div>
 
           <!-- Research Status Pill / Squad Progress -->
-          <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; max-width: 100%; min-width: 0;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px; max-width: 100%; min-width: 0;">
               <span style="font-size: 12px; font-weight: 700; color: #F1F5F9;">Squad Kolaborasi:</span>
               <span style="background: rgba(59, 130, 246, 0.15); color: #60A5FA; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">💼 Bisnis & PO</span>
               <span style="background: rgba(244, 114, 182, 0.15); color: #F472B6; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">📢 MarComm</span>
               <span style="background: rgba(192, 132, 252, 0.15); color: #C084FC; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">🎨 UI/UX</span>
               <span style="background: rgba(52, 211, 153, 0.15); color: #34D399; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">💻 FE Web</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; max-width: 100%; min-width: 0;">
               <span style="font-size: 11px; color: #94A3B8;">Progress Riset ATM:</span>
-              <div style="width: 140px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+              <div style="width: 140px; max-width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
                 <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #3B82F6, #10B981); border-radius: 999px;"></div>
               </div>
               <span style="font-size: 11.5px; font-weight: 800; color: #34D399;">100% Selesai (Dokumen Sah)</span>
@@ -3497,14 +3497,14 @@
         return `
           <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; transition:border-color 200ms ease, transform 200ms ease;">
             <div>
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <div style="width:40px; height:40px; border-radius:10px; background:#1E293B; border:1px solid #334155; display:flex; align-items:center; justify-content:center; font-size:22px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1 1 150px;">
+                  <div style="width:40px; height:40px; flex-shrink:0; border-radius:10px; background:#1E293B; border:1px solid #334155; display:flex; align-items:center; justify-content:center; font-size:22px;">
                     ${s.avatar}
                   </div>
-                  <div>
-                    <div style="font-size:14.5px; font-weight:800; color:#F8FAFC;">${s.name}</div>
-                    <div style="font-size:11px; color:var(--muted); font-weight:600;">${s.role}</div>
+                  <div style="min-width:0;">
+                    <div style="font-size:14.5px; font-weight:800; color:#F8FAFC; overflow-wrap:break-word;">${s.name}</div>
+                    <div style="font-size:11px; color:var(--muted); font-weight:600; overflow-wrap:break-word;">${s.role}</div>
                   </div>
                 </div>
                 ${badgeHtml}
@@ -3597,10 +3597,10 @@
       if (!box) return;
       box.innerHTML = divisionsList.map(d => `
         <div class="div-card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0;">
               <span style="font-size:24px;">${d.icon}</span>
-              <span style="font-size:15px; font-weight:800; color:#F1F5F9;">${d.name}</span>
+              <span style="font-size:15px; font-weight:800; color:#F1F5F9; overflow-wrap:break-word;">${d.name}</span>
             </div>
             <span style="font-size:11px; font-weight:700; color:#60A5FA; background:rgba(59,130,246,0.15); padding:3px 8px; border-radius:6px;">${d.staff}</span>
           </div>

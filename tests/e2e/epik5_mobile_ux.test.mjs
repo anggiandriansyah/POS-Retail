@@ -105,6 +105,9 @@ describe('Epik 5: Safe Area, Anti-Slop & Hallmark Compliance', () => {
     assert.match(css, /@media \(min-width:\s*640px\)/);
     assert.match(css, /minmax\(min\(100%,\s*420px\),\s*1fr\)/);
     assert.doesNotMatch(css, /#a855f7 50%, #ec4899/);
+    assert.match(css, /\.login-split-shell\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+    assert.match(css, /\.login-brand\s*\{[^}]*flex-wrap:\s*wrap/s);
+    assert.match(css, /@media \(max-width:\s*400px\)[\s\S]*?\.landing-brand svg/);
   });
 
   it('keeps SmartNotificationCenter free of hardcoded hex colors, Sparkles, and v1.5.1, and portals mobile sheet', () => {
@@ -159,6 +162,7 @@ describe('Epik 5: Safe Area, Anti-Slop & Hallmark Compliance', () => {
     assert.match(monitorHtml, /prefers-reduced-motion:\s*reduce/);
     assert.match(monitorHtml, /:focus-visible/);
     assert.doesNotMatch(monitorHtml, /—/);
+    assert.match(monitorHtml, /flex-wrap:\s*wrap;[^"]*">\s*<span[^>]*>Squad Kolaborasi:<\/span>/);
   });
 
   it('keeps audited UI components free of em-dashes', () => {
