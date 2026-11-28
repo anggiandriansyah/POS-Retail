@@ -5,7 +5,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 import type { Profile, Shift } from '../types/pos';
 import { AuthContext, type AuthContextValue } from './useAuth';
-import { registerLocalSession, clearActiveSession, getActiveSession, getLocalDeviceId } from '../utils/session';
+import { registerLocalSession, clearActiveSession, getActiveSession, getLocalDeviceId, setupInactivityTracker, ERROR_CONCURRENT_LOGIN, ERROR_SESSION_EXPIRED } from '../utils/session';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -160,6 +160,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [checkHasOwner, loadUserContext]);
 
+  // Idle Inactivity Tracker (30 Menit Auto-Logout - Sprint 8 Epik 4)
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const cleanupTracker = setupInactivityTracker(async () => {
+      clearActiveSession();
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      setActiveShift(null);
+      setAuthError(ERROR_SESSION_EXPIRED);
+    });
+
+    return () => {
+      cleanupTracker();
+    };
+  }, [session?.user]);
+
   const signIn = useCallback(
     async (identifier: string, password: string) => {
       setAuthError('');
@@ -180,11 +201,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Dual-Device Session Guard (Hotfix v1.5.1)
+      // Dual-Device Session Guard (Hotfix v1.5.1 / Sprint 8 Epik 4)
       const existingSession = getActiveSession();
       const currentDeviceId = getLocalDeviceId();
       if (existingSession && existingSession.userId && existingSession.deviceId !== currentDeviceId && (existingSession.userId === cleanId || existingSession.userId === trimmed)) {
-        throw new Error('User Sedang Aktif Digunakan di perangkat lain.');
+        throw new Error(ERROR_CONCURRENT_LOGIN);
       }
 
       if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
