@@ -637,7 +637,7 @@ export default function LandingPage() {
                     <tbody>
                       <tr>
                         <td>
-                          <strong>BRS-005</strong> — Beras Premium Pandan 5kg
+                          <strong>BRS-005</strong>: Beras Premium Pandan 5kg
                         </td>
                         <td>Sembako</td>
                         <td><strong>3 Sak</strong></td>
@@ -654,7 +654,7 @@ export default function LandingPage() {
                       </tr>
                       <tr>
                         <td>
-                          <strong>MYK-002</strong> — Minyak Goreng 2L Pouch
+                          <strong>MYK-002</strong>: Minyak Goreng 2L Pouch
                         </td>
                         <td>Sembako</td>
                         <td><strong>48 Pouch</strong></td>
@@ -671,7 +671,7 @@ export default function LandingPage() {
                       </tr>
                       <tr>
                         <td>
-                          <strong>SSU-100</strong> — Susu UHT Cokelat 1 Liter
+                          <strong>SSU-100</strong>: Susu UHT Cokelat 1 Liter
                         </td>
                         <td>Minuman</td>
                         <td><strong>0 Kotak</strong></td>

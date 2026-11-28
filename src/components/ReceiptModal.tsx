@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, Copy, ExternalLink, MessageCircle, Printer, X } from 'lucide-react';
 import { useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
@@ -24,6 +24,17 @@ export default function ReceiptModal({
   const { settings } = useStoreSettings();
   const { dict, lang } = useThemeLang();
   const r = dict.receipt;
+
+  useEffect(() => {
+    if (!receiptData?.transaction) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [receiptData, onClose]);
 
   if (!receiptData?.transaction) return null;
 
@@ -106,8 +117,8 @@ export default function ReceiptModal({
   }
 
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true">
-      <div className="modal-card">
+    <div className="modal-backdrop" role="dialog" aria-modal="true" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header no-print">
           <h3>{r.viewDigitalReceipt}</h3>
           <button type="button" className="icon-btn" onClick={onClose} aria-label={lang === 'en' ? 'Close' : 'Tutup'}>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
-import { RefreshCw, RotateCcw, Save, Settings, Volume2, ShieldCheck } from 'lucide-react';
+import { Bell, RefreshCw, RotateCcw, Save, Settings, Volume2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 import { DEFAULT_STORE_SETTINGS, useStoreSettings } from '../contexts/useStoreSettings';
 import { useThemeLang } from '../contexts/useThemeLang';
@@ -29,8 +29,8 @@ function formatMissingTableMessage(err: SupabaseErrorLike, lang: 'id' | 'en'): s
   const rawMsg = typeof err.message === 'string' ? err.message.trim() : '';
   const friendly =
     lang === 'en'
-      ? 'Store settings table (store_settings) is not available yet — please apply database migration v1.3.0.'
-      : 'Tabel pengaturan toko (store_settings) belum tersedia — silakan terapkan migrasi database v1.3.0.';
+      ? 'Store settings table (store_settings) is not available yet. Please apply database migration v1.3.0.'
+      : 'Tabel pengaturan toko (store_settings) belum tersedia. Silakan terapkan migrasi database v1.3.0.';
   return rawMsg ? `${friendly} (${rawMsg})` : friendly;
 }
 
@@ -359,7 +359,8 @@ export default function StoreSettingsForm() {
                   audio.play().catch(console.error);
                 }}
               >
-                🔔 Uji Coba Suara Jingle Resmi
+                <Bell size={16} aria-hidden="true" />
+                <span>Uji Coba Suara Jingle Resmi</span>
               </button>
             </div>
           </div>

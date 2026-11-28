@@ -49,8 +49,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 describe('Unit Tests - src/utils/format.ts', () => {
-  it('APP_VERSION should be 1.6.2 (Hotfix Release v1.6.2)', () => {
-    assert.equal(APP_VERSION, '1.6.2');
+  it('APP_VERSION should be 1.7.0 (Epik 5 Release v1.7.0)', () => {
+    assert.equal(APP_VERSION, '1.7.0');
   });
 
   it('STORE_INFO provides non-placeholder ALPHOS defaults', () => {

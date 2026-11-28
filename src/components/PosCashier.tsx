@@ -2,15 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  AlertTriangle,
   CheckCircle2,
-  Clock,
   Lock,
   Minus,
   Plus,
   Search,
   ShoppingCart,
   Trash2,
+  WifiOff,
 } from 'lucide-react';
 import { useAuth } from '../contexts/useAuth';
 import { useStoreSettings } from '../contexts/useStoreSettings';
@@ -35,6 +34,7 @@ import {
   syncOfflineQueue,
 } from '../utils/offlineQueue';
 import BarcodeScanner from './BarcodeScanner';
+import PosShiftBanner from './PosShiftBanner';
 
 export interface PosCashierProps {
   products: Product[];
@@ -382,7 +382,7 @@ export default function PosCashier({
         setApplyTaxOverride(null);
         setFeedback({
           type: 'success',
-          text: `📶 Mode Offline-First: Transaksi ${invoiceNumber} tersimpan di antrean lokal. Struk belanja siap dicetak!`,
+          text: `Mode Offline-First: Transaksi ${invoiceNumber} tersimpan di antrean lokal. Struk belanja siap dicetak!`,
         });
 
         onCheckoutSuccess({
@@ -404,55 +404,24 @@ export default function PosCashier({
   return (
     <div className="pos-wrapper">
       {offlineQueueCount > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px 16px',
-            background: 'rgba(245, 158, 11, 0.12)',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
-            borderRadius: '10px',
-            marginBottom: '14px',
-            color: '#F59E0B',
-            fontSize: '13px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>📶</span>
+        <div className="pos-offline-banner">
+          <div className="pos-offline-banner-text">
+            <WifiOff size={16} aria-hidden="true" />
             <span>
-              <strong>Mode Offline-First Aktif:</strong> Terdapat {offlineQueueCount} transaksi dalam antrean lokal yang belum disinkronkan ke server cloud.
+              {pDict.offlineQueueBanner.replace('{count}', String(offlineQueueCount))}
             </span>
           </div>
           <button
             type="button"
-            className="btn btn-secondary"
-            style={{ padding: '4px 12px', fontSize: '12px' }}
+            className="btn btn-outline btn-sm"
             onClick={handleManualSync}
             disabled={isSyncing}
           >
-            {isSyncing ? 'Menyinkronkan...' : 'Sinkronkan Sekarang'}
+            {isSyncing ? pDict.syncingBtn : pDict.syncNowBtn}
           </button>
         </div>
       )}
-      {!activeShift && (
-        <div className="shift-warning-banner">
-          <div className="shift-warning-text">
-            <AlertTriangle size={20} />
-            <div>
-              <strong>Shift Kasir Belum Dibuka</strong>
-              <p className="muted-text" style={{ margin: 0 }}>
-                Anda harus membuka shift (input modal awal laci) sebelum dapat memproses pembayaran.
-              </p>
-            </div>
-          </div>
-          {onGoToShift && (
-            <button type="button" className="btn btn-primary" onClick={onGoToShift}>
-              <Clock size={16} /> Buka Shift Sekarang
-            </button>
-          )}
-        </div>
-      )}
+      <PosShiftBanner onGoToShift={onGoToShift} onFeedback={setFeedback} />
 
       <div className="pos-layout">
         <div className="pos-left card">
@@ -582,8 +551,8 @@ export default function PosCashier({
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                       <span className="muted-text" style={{ fontSize: '0.78rem', minWidth: 80, display: 'flex', alignItems: 'center', gap: 4 }}>
                         {!isOwner && (
-                          <span title="Anti-Fraud: Diskon manual dikunci untuk kasir" style={{ display: 'inline-flex' }}>
-                            <Lock size={11} className="text-amber-400" />
+                          <span title={pDict.cashierDiscountLockedTitle} style={{ display: 'inline-flex' }}>
+                            <Lock size={11} className="pos-lock-icon" aria-hidden="true" />
                           </span>
                         )}
                         {pDict.itemDiscount}:
@@ -646,8 +615,8 @@ export default function PosCashier({
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                   <span className="muted-text" style={{ fontSize: '0.82rem', minWidth: 96, display: 'flex', alignItems: 'center', gap: 4 }}>
                     {!isOwner && (
-                      <span title="Anti-Fraud: Diskon nota manual dikunci untuk kasir" style={{ display: 'inline-flex' }}>
-                        <Lock size={12} className="text-amber-400" />
+                      <span title={pDict.orderDiscountLockedTitle} style={{ display: 'inline-flex' }}>
+                        <Lock size={12} className="pos-lock-icon" aria-hidden="true" />
                       </span>
                     )}
                     {pDict.orderDiscount}:
@@ -794,10 +763,10 @@ export default function PosCashier({
               <CheckCircle2 size={18} />
               <span>
                 {!activeShift
-                  ? 'Buka Shift Dulu untuk Bayar'
+                  ? pDict.openShiftToPayBtn
                   : submitting
-                    ? 'Memproses...'
-                    : 'Bayar & Buat Struk'}
+                    ? pDict.processingBtn
+                    : pDict.checkoutBtn}
               </span>
             </button>
           </div>

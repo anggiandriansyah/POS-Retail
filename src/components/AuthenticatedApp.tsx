@@ -1,20 +1,23 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   BarChart3,
   Boxes,
   Clock,
   ClipboardList,
   LogOut,
+  Menu,
   PackagePlus,
   Radio,
   Settings,
+  Shield,
   ShoppingBag,
   Tag,
   TrendingUp,
   Users,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -76,6 +79,29 @@ export function AuthenticatedAppContent() {
   const [error, setError] = useState('');
   const [receiptData, setReceiptData] = useState<ReceiptModalData | null>(null);
   const [forcePosView, setForcePosView] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuBtnRef = useRef<HTMLButtonElement>(null);
+
+  const closeMobileMenu = useCallback((restoreFocus = true) => {
+    setMobileMenuOpen(false);
+    if (restoreFocus) {
+      requestAnimationFrame(() => {
+        mobileMenuBtnRef.current?.focus();
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMobileMenu(true);
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   const isOwner = isAdminRole(profile?.role);
 
@@ -89,7 +115,7 @@ export function AuthenticatedAppContent() {
 
   const ownerTabs: TabItem[] = [
     { id: 'live', label: dict.tabs.live, icon: Radio, isLive: true },
-    { id: 'analytics', label: 'Grafik Analitik', icon: TrendingUp },
+    { id: 'analytics', label: dict.tabs.analytics, icon: TrendingUp },
     { id: 'reports', label: dict.tabs.ownerReports, icon: BarChart3 },
     { id: 'inventory', label: dict.tabs.inventory, icon: Boxes },
     { id: 'owner_shifts', label: dict.tabs.ownerShifts, icon: ClipboardList },
@@ -163,53 +189,80 @@ export function AuthenticatedAppContent() {
       <header className="topbar no-print">
         <div className="topbar-row">
           <div className="brand">
-            <AlphosLogo variant={theme === 'dark' ? 'horizontal' : 'light'} width={170} height={40} />
-            <div>
-              <h1>
-                {settings.store_name || STORE_INFO.name}{' '}
+            <AlphosLogo
+              variant={theme === 'dark' ? 'horizontal' : 'light'}
+              width={170}
+              height={40}
+              className="alphos-logo topbar-logo"
+            />
+            <div className="brand-copy">
+              <h1 className="brand-title">
+                <span className="brand-store-name">{settings.store_name || STORE_INFO.name}</span>
                 {isDevEnv && <span className="env-badge">DEV</span>}
               </h1>
-              <span className="muted-text">
+              <span className="muted-text brand-subtitle">
                 {dict.appSubtitle} • <code>v{APP_VERSION}</code>
               </span>
             </div>
           </div>
 
-          <div className="user-bar">
+          <div className="topbar-right">
             <SmartNotificationCenter products={products} isOwner={isOwner} />
-            <ThemeLangToggles compact />
-            <div className="user-meta">
-              <span className="user-name">{profile.full_name}</span>
-              <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>{roleLabel}</span>
-              <span
-                className={`status-pill ${activeShift ? 'status-open' : 'status-closed'}`}
-              >
-                {dict.shiftLabel}: {activeShift ? dict.openStatus : dict.closedStatus}
-              </span>
-            </div>
-            {profile.role === 'superadmin' && forcePosView && (
+
+            <button
+              ref={mobileMenuBtnRef}
+              type="button"
+              className="mobile-menu-btn"
+              aria-label={
+                mobileMenuOpen ? dict.mobileNav.closeMenuAria : dict.mobileNav.openMenuAria
+              }
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-drawer"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+            >
+              {mobileMenuOpen ? (
+                <X size={20} aria-hidden="true" />
+              ) : (
+                <Menu size={20} aria-hidden="true" />
+              )}
+            </button>
+
+            <div className="user-bar desktop-only-flex">
+              <ThemeLangToggles compact />
+              <div className="user-meta">
+                <span className="user-name">{profile.full_name}</span>
+                <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>{roleLabel}</span>
+                <span
+                  className={`status-pill ${activeShift ? 'status-open' : 'status-closed'}`}
+                >
+                  {dict.shiftLabel}: {activeShift ? dict.openStatus : dict.closedStatus}
+                </span>
+              </div>
+              {profile.role === 'superadmin' && forcePosView && (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setForcePosView(false)}
+                  title="Kembali ke Superadmin Hub"
+                >
+                  <Shield size={14} aria-hidden="true" />
+                  <span>{dict.mobileNav.backToSuperadmin}</span>
+                </button>
+              )}
               <button
                 type="button"
-                className="btn btn-primary btn-sm"
-                onClick={() => setForcePosView(false)}
-                title="Kembali ke Superadmin Hub"
+                className="btn btn-outline btn-sm"
+                onClick={signOut}
+                title={dict.logout}
               >
-                <span>🛡️ Superadmin Hub</span>
+                <LogOut size={15} aria-hidden="true" />
+                <span>{dict.logout}</span>
               </button>
-            )}
-            <button
-              type="button"
-              className="btn btn-outline btn-sm"
-              onClick={signOut}
-              title={dict.logout}
-            >
-              <LogOut size={15} />
-              <span>{dict.logout}</span>
-            </button>
+            </div>
           </div>
         </div>
 
-        <nav className="nav-tabs" aria-label="Menu utama">
+        <nav className="nav-tabs" aria-label={dict.navAriaLabel}>
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -219,7 +272,7 @@ export function AuthenticatedAppContent() {
                 className={`nav-tab ${currentTab === tab.id ? 'active' : ''}`}
                 onClick={() => setActiveTab(tab.id)}
               >
-                <Icon size={17} />
+                <Icon size={17} aria-hidden="true" />
                 <span>{tab.label}</span>
                 {tab.isLive && <span className="live-dot" aria-hidden="true" />}
                 {tab.id === 'inventory' && lowStockCount > 0 && (
@@ -230,6 +283,113 @@ export function AuthenticatedAppContent() {
           })}
         </nav>
       </header>
+
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="mobile-drawer-backdrop no-print"
+            aria-hidden="true"
+            onClick={() => closeMobileMenu(true)}
+          />
+          <aside
+            id="mobile-nav-drawer"
+            className="mobile-drawer no-print"
+            role="dialog"
+            aria-modal="true"
+            aria-label={dict.mobileNav.menuTitle}
+          >
+            <div className="mobile-drawer-header">
+              <h2 className="mobile-drawer-title">{dict.mobileNav.menuTitle}</h2>
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => closeMobileMenu(true)}
+                aria-label={dict.mobileNav.closeMenuAria}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="mobile-drawer-user">
+              <span className="mobile-drawer-section-label">{dict.mobileNav.accountLabel}</span>
+              <div className="mobile-drawer-user-row">
+                <span className="user-name">{profile.full_name}</span>
+                <span className={`badge ${isOwner ? 'badge-owner' : ''}`}>{roleLabel}</span>
+              </div>
+              <div className="mobile-drawer-user-row">
+                <span
+                  className={`status-pill ${activeShift ? 'status-open' : 'status-closed'}`}
+                >
+                  {dict.shiftLabel}: {activeShift ? dict.openStatus : dict.closedStatus}
+                </span>
+              </div>
+            </div>
+
+            <nav className="mobile-drawer-nav" aria-label={dict.navAriaLabel}>
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = currentTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={`mobile-drawer-tab ${isActive ? 'active' : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      closeMobileMenu(false);
+                    }}
+                  >
+                    <span className="mobile-drawer-tab-main">
+                      <Icon size={18} aria-hidden="true" />
+                      <span>{tab.label}</span>
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      {tab.isLive && <span className="live-dot" aria-hidden="true" />}
+                      {tab.id === 'inventory' && lowStockCount > 0 && (
+                        <span className="nav-badge">{lowStockCount}</span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="mobile-drawer-prefs">
+              <span className="mobile-drawer-section-label">{dict.mobileNav.appearanceLabel}</span>
+              <ThemeLangToggles />
+            </div>
+
+            <div className="mobile-drawer-footer">
+              {profile.role === 'superadmin' && forcePosView && (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    closeMobileMenu(false);
+                    setForcePosView(false);
+                  }}
+                >
+                  <Shield size={15} aria-hidden="true" />
+                  <span>{dict.mobileNav.backToSuperadmin}</span>
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => {
+                  closeMobileMenu(false);
+                  signOut();
+                }}
+              >
+                <LogOut size={15} aria-hidden="true" />
+                <span>{dict.logout}</span>
+              </button>
+              <div className="mobile-drawer-version">ALPHOS v{APP_VERSION}</div>
+            </div>
+          </aside>
+        </>
+      )}
 
       <main className={`main-content ${receiptData ? 'no-print' : ''}`}>
         {error && <div className="alert alert-error">{error}</div>}

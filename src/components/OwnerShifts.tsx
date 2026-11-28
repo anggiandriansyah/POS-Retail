@@ -65,6 +65,17 @@ export default function OwnerShifts() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!forceShift) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !submitting) {
+        setForceShift(null);
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [forceShift, submitting]);
+
   async function handleForceClose(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!forceShift || !supabase) return;
@@ -216,17 +227,26 @@ export default function OwnerShifts() {
       </section>
 
       {forceShift && (
-        <div className="modal-backdrop">
-          <div className="modal-card">
+        <div
+          className="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="owner-force-close-title"
+          onClick={() => {
+            if (!submitting) setForceShift(null);
+          }}
+        >
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Force Close Shift</h3>
+              <h3 id="owner-force-close-title">Force Close Shift</h3>
               <button
                 type="button"
                 className="icon-btn"
                 onClick={() => setForceShift(null)}
+                disabled={submitting}
                 aria-label="Tutup modal"
               >
-                <X size={16} />
+                <X size={16} aria-hidden="true" />
               </button>
             </div>
             <p className="muted-text">

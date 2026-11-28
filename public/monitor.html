@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PT AlphaGen — Live Command Center (Sprint 6 ALPHOS Selesai 100% & Outing Preparation)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>PT AlphaGen: Live Command Center (ALPHOS v1.7.0)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -23,17 +23,21 @@
       --muted: #94A3B8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-    
+    html, body { background: var(--bg); color: var(--text); min-height: 100%; overflow-x: clip; max-width: 100%; }
+    body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+    h1, h2, h3, h4, .step-name, .doc-title { overflow-wrap: break-word; min-width: 0; }
+    code { overflow-wrap: anywhere; word-break: break-word; }
+    :focus-visible { outline: 2px solid #3B82F6; outline-offset: 2px; }
+
     /* Layout */
-    .app-layout { display: flex; min-height: 100vh; }
+    .app-layout { display: flex; min-height: 100vh; min-height: 100dvh; width: 100%; }
     
     /* Sidebar */
     .sidebar {
       width: 280px;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--border);
-      padding: 24px 16px;
+      padding: calc(24px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -53,20 +57,23 @@
     .nav-item {
       display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px;
       color: var(--muted); font-size: 13.5px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
     }
     .nav-item:hover { background: rgba(59, 130, 246, 0.1); color: #60A5FA; }
     .nav-item.active { background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3); }
 
     /* Main Area */
-    .main-area { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+    .main-area { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; max-width: 100%; }
     
     /* Topbar */
     .topbar {
-      height: 76px;
+      min-height: 76px;
+      height: auto;
       border-bottom: 1px solid var(--border);
-      padding: 0 28px;
+      padding: calc(12px + env(safe-area-inset-top, 0px)) calc(28px + env(safe-area-inset-right, 0px)) 12px calc(28px + env(safe-area-inset-left, 0px));
       display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
       align-items: center;
       justify-content: space-between;
       background: rgba(13, 19, 34, 0.85);
@@ -78,13 +85,15 @@
     .mobile-burger {
       display: none;
       background: none; border: 1px solid var(--border); color: white;
+      min-width: 44px; min-height: 44px;
       padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 18px;
+      flex-shrink: 0;
     }
-    .top-actions { display: flex; align-items: center; gap: 14px; }
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; max-width: 100%; }
     .leader-pill {
       background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 8px 16px; border-radius: 9999px; display: flex; align-items: center; gap: 10px;
-      font-size: 13px; font-weight: 700; color: #34D399;
+      padding: 8px 14px; border-radius: 9999px; display: flex; align-items: center; gap: 8px;
+      font-size: 12.5px; font-weight: 700; color: #34D399; max-width: 100%; flex-wrap: wrap;
     }
     .live-pulse {
       width: 9px; height: 9px; background: #10B981; border-radius: 50%;
@@ -104,7 +113,11 @@
     .audio-btn:hover { opacity: 0.9; }
 
     /* Content Views */
-    .content-body { padding: 28px; flex-grow: 1; }
+    .content-body {
+      padding: 28px calc(28px + env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) calc(28px + env(safe-area-inset-left, 0px));
+      flex-grow: 1;
+      min-width: 0;
+    }
     .tab-section { display: none; }
     .tab-section.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -117,7 +130,7 @@
     .flow-title { font-size: 16px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #60A5FA; }
     .pipeline-track {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
       gap: 16px;
       position: relative;
     }
@@ -201,7 +214,8 @@
     .control-chip {
       background: var(--card-sub); border: 1px solid var(--border); color: var(--muted);
       padding: 5px 11px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+      transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
     }
     .control-chip:hover, .control-chip.active { color: white; border-color: #3B82F6; background: rgba(59,130,246,0.15); }
     
@@ -245,7 +259,7 @@
     .reaction-btn {
       background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: 6px;
       padding: 2px 6px; font-size: 11px; color: #CBD5E1; cursor: pointer; display: flex; align-items: center; gap: 4px;
-      transition: all 0.15s ease;
+      transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
     }
     .reaction-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: #3B82F6; transform: scale(1.05); }
 
@@ -273,13 +287,14 @@
     .quick-tag {
       background: var(--card-sub); border: 1px solid var(--border); color: #94A3B8;
       padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700;
-      cursor: pointer; white-space: nowrap; transition: all 0.2s;
+      cursor: pointer; white-space: nowrap;
+      transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
     }
     .quick-tag:hover { color: #60A5FA; border-color: #3B82F6; background: rgba(59,130,246,0.1); }
-    .chat-input-bar { display: flex; gap: 12px; align-items: center; }
+    .chat-input-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     .chat-input {
-      flex-grow: 1; background: #0A0E17; border: 1px solid var(--border);
-      border-radius: 12px; padding: 14px 18px; color: white; font-size: 13.5px; outline: none;
+      flex-grow: 1; min-width: 0; background: #0A0E17; border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px; color: white; font-size: 13.5px;
       transition: border-color 0.2s;
     }
     .chat-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
@@ -320,7 +335,7 @@
 
     /* SECTION 4: 17 DIVISIONS GRID */
     .grid-divisions {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 20px;
     }
     .div-card {
       background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px;
@@ -329,12 +344,12 @@
 
     /* SECTION 5: APPROVAL & DOCUMENT VERIFICATION PORTAL */
     .doc-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px; margin-bottom: 24px;
     }
     .doc-card {
       background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
       padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
-      transition: all 0.2s ease;
+      transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
     }
     .doc-card:hover { border-color: #3B82F6; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     .doc-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
@@ -351,7 +366,8 @@
     .doc-btn {
       background: var(--card-sub); border: 1px solid var(--border); color: #93C5FD;
       padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
     }
     .doc-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: #3B82F6; color: white; }
 
@@ -378,7 +394,8 @@
       background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; border: none;
       padding: 16px 28px; border-radius: 14px; font-weight: 800; font-size: 15px; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); transition: all 0.2s;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      transition: transform 200ms ease, box-shadow 200ms ease;
     }
     .btn-signoff:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(16, 185, 129, 0.5); }
     .btn-signoff:active { transform: translateY(0); }
@@ -386,12 +403,14 @@
     /* Modal Reader */
     .doc-modal-overlay {
       position: fixed; inset: 0; background: rgba(10, 14, 23, 0.85); backdrop-filter: blur(6px);
-      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+      padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
     }
     .doc-modal-overlay.open { display: flex; }
     .doc-modal-card {
       background: #0F172A; border: 1px solid #334155; border-radius: 18px; max-width: 820px; width: 100%;
-      max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6);
       animation: modalSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes modalSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -411,9 +430,38 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; z-index: 100; }
-      .sidebar.open { left: 0; }
-      .mobile-burger { display: block; }
+      .sidebar {
+        position: fixed;
+        width: min(280px, 85vw);
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 100;
+        transform: translateX(-100%);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-burger { display: inline-flex; align-items: center; justify-content: center; }
+      .topbar {
+        padding: calc(10px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) 10px calc(16px + env(safe-area-inset-left, 0px));
+      }
+      .content-body {
+        padding: 16px calc(16px + env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+      }
+    }
+
+    @media (max-width: 639px) {
+      .flow-wrapper, .sprint-card, .chat-card, .checklist-card, .signoff-box { padding: 16px; }
+      .msg-bubble { max-width: 100%; }
+      .sprint-card-header { flex-wrap: wrap; gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
@@ -466,11 +514,11 @@
       
       <!-- TOPBAR -->
       <header class="topbar">
-        <div style="display:flex; align-items:center; gap:14px;">
-          <button class="mobile-burger" onclick="toggleSidebar()">☰</button>
-          <div>
-            <h2 style="font-size:17px; font-weight:800;" id="pageTitle">Sprint 6 Selesai 100% (Hotfix v2.0.0 Live & PRD Subscription Approved)</h2>
-            <p style="font-size:12px; color:var(--muted);">Siklus Eksekusi Sprint 6 Tuntas: Hotfix v2.0.0 Live di Production, PRD Subscription Terverifikasi & Persiapan Outing Tim</p>
+        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1 1 200px;">
+          <button type="button" class="mobile-burger" onclick="toggleSidebar()" aria-label="Buka menu navigasi">☰</button>
+          <div style="min-width:0;">
+            <h2 style="font-size:17px; font-weight:800;" id="pageTitle">ALPHOS v1.7.0 Live Command Center (Epik 5 Mobile UX & Safe Area Hardening)</h2>
+            <p style="font-size:12px; color:var(--muted);">Monitoring Siklus Rilis ALPHOS v1.7.0: Mobile UX, Universal Safe Area Insets, & Anti-Slop Compliance</p>
           </div>
         </div>
 
@@ -518,8 +566,8 @@
               <div class="kpi-item">
                 <span>🎯</span>
                 <div>
-                  <div style="font-size:11px; color:var(--muted);">Target Rilis Hotfix:</div>
-                  <div class="kpi-val" style="color:#34D399;">v1.6.0 100% Live Production 🚀</div>
+                  <div style="font-size:11px; color:var(--muted);">Target Rilis Aktif:</div>
+                  <div class="kpi-val" style="color:#34D399;">v1.7.0 100% Live DEV & Ready</div>
                 </div>
               </div>
 
@@ -619,18 +667,18 @@
               <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="const el=document.getElementById('sprint5ArchiveContent'); el.style.display = el.style.display === 'none' ? 'block' : 'none';">
                 <div style="display:flex; align-items:center; gap:8px;">
                   <span style="font-size:18px;">📦</span>
-                  <span style="font-size:13px; font-weight:800; color:#34D399;">Arsip Pipeline: Sprint 5 (v1.5.0) — 100% Lulus & Live di Production</span>
+                  <span style="font-size:13px; font-weight:800; color:#34D399;">Arsip Pipeline: Sprint 5 (v1.5.0) - 100% Lulus & Live di Production</span>
                 </div>
                 <span style="font-size:11px; color:#94A3B8; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px;">Klik untuk Lihat / Tutup Riwayat ▼</span>
               </div>
               <div id="sprint5ArchiveContent" style="display:none; margin-top:14px; font-size:12px; color:#94A3B8; line-height:1.6; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
-                  <div>✔ <strong>Step 1:</strong> Grooming & Scope (Superadmin, Analytics) — Lulus</div>
-                  <div>✔ <strong>Step 2:</strong> Jingle Branding Resmi ALPHOS — Lulus</div>
-                  <div>✔ <strong>Step 3:</strong> Construction Phase (FE & BE) — Lulus</div>
-                  <div>✔ <strong>Step 4:</strong> Quality Gate 24/24 Test Pass — Lulus</div>
-                  <div>✔ <strong>Step 5:</strong> Cloud DEV Sign-off Mas Gege — Disetujui</div>
-                  <div>✔ <strong>Step 6:</strong> Production Release v1.5.0 — Live</div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:10px;">
+                  <div>✔ <strong>Step 1:</strong> Grooming & Scope (Superadmin, Analytics) - Lulus</div>
+                  <div>✔ <strong>Step 2:</strong> Jingle Branding Resmi ALPHOS - Lulus</div>
+                  <div>✔ <strong>Step 3:</strong> Construction Phase (FE & BE) - Lulus</div>
+                  <div>✔ <strong>Step 4:</strong> Quality Gate 24/24 Test Pass - Lulus</div>
+                  <div>✔ <strong>Step 5:</strong> Cloud DEV Sign-off Mas Gege - Disetujui</div>
+                  <div>✔ <strong>Step 6:</strong> Production Release v1.5.0 - Live</div>
                 </div>
                 <div style="margin-top:8px; color:#34D399; font-weight:700;">Digital Token: SIG-GEGE-20261125-PROD-RELEASE • Email terkirim ke anggiandriansyah17@gmail.com</div>
               </div>
@@ -655,7 +703,7 @@
                     <span style="color: #94A3B8; font-size: 11px;">Mulai: 26 November 2026 • Selesai: 26 November 2026</span>
                   </div>
                   <h3 style="font-size: 16.5px; font-weight: 800; color: #34D399; margin-top: 4px;">
-                    ✅ Sprint 6 — Hotfix v2.0.0 Live & Research Model Langganan Alphos POS
+                    ✅ Sprint 6: Hotfix v2.0.0 Live & Research Model Langganan Alphos POS
                   </h3>
                   <p style="font-size: 12px; color: var(--muted); margin-top: 2px;">
                     Hasil Akhir: Hotfix v2.0.0 100% Live di Production + PRD Riset Langganan 3 Tiers (Gen Alpha, Beta, Gamma) Resmi Disahkan Mas Gege + Retrospektif Selesai
@@ -723,7 +771,7 @@
             <div class="sprint-card" style="border-color:#10B981;">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:16px; font-weight:800; color:#34D399;">✅ Sprint 5 (v1.5.0) — Generation 2.0 B2B Multi-Tenant Ecosystem</h3>
+                  <h3 style="font-size:16px; font-weight:800; color:#34D399;">✅ Sprint 5 (v1.5.0): Generation 2.0 B2B Multi-Tenant Ecosystem</h3>
                   <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 25 November 2026 • Status: 100% Selesai & Sukses Live di Production</p>
                 </div>
                 <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
@@ -744,7 +792,7 @@
             <div class="sprint-card">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 4 (v1.4.0) — Mobile App Android & Quality Gates M1-M6</h3>
+                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 4 (v1.4.0): Mobile App Android & Quality Gates M1-M6</h3>
                   <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 25 November 2026 • Status: 100% Sukses Live di Production</p>
                 </div>
                 <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
@@ -762,7 +810,7 @@
             <div class="sprint-card">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 3 (v1.3.0) — Store Settings, Diskon/Tax & Export CSV</h3>
+                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 3 (v1.3.0): Store Settings, Diskon/Tax & Export CSV</h3>
                   <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 24 November 2026 • Status: Sukses Deployed</p>
                 </div>
                 <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
@@ -778,7 +826,7 @@
             <div class="sprint-card">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 2 (v1.2.0) — Manajemen Shift Kasir & Petty Cash</h3>
+                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 2 (v1.2.0): Manajemen Shift Kasir & Petty Cash</h3>
                   <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 23 November 2026 • Status: Sukses Deployed</p>
                 </div>
                 <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
@@ -793,7 +841,7 @@
             <div class="sprint-card">
               <div class="sprint-card-header">
                 <div>
-                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 1 (v1.0.0 & v1.1.0) — Core POS & Inventory Foundation</h3>
+                  <h3 style="font-size:15px; font-weight:800; color:#34D399;">✅ Sprint 1 (v1.0.0 & v1.1.0): Core POS & Inventory Foundation</h3>
                   <p style="font-size:12px; color:var(--muted); margin-top:2px;">Rilis: 22 November 2026 • Status: Sukses Deployed</p>
                 </div>
                 <span class="sprint-tag tag-completed">✔ SELESAI (DONE)</span>
@@ -1074,7 +1122,7 @@
                 <h3 style="font-size:17px; font-weight:800; color:#34D399; margin:0;">1. What Went Well (Keberhasilan & Kekuatan Tim)</h3>
                 <span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(16,185,129,0.15); color:#34D399; font-weight:700;">6 Divisi Berkontribusi</span>
               </div>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:16px;">
                 
                 <div style="background:var(--card-sub); border:1px solid #23314F; border-left:4px solid #10B981; border-radius:14px; padding:18px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -1194,7 +1242,7 @@
                 <h3 style="font-size:17px; font-weight:800; color:#38BDF8; margin:0;">3. Action Items & Komitmen Sprint 6 (Kaizen / Perbaikan Berkelanjutan)</h3>
                 <span style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(56,189,248,0.15); color:#38BDF8; font-weight:700;">Rencana Aksi Konkret</span>
               </div>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap:14px;">
                 <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:12px; padding:16px;">
                   <div style="font-size:13px; font-weight:800; color:#38BDF8; margin-bottom:6px;">⚙️ 1. Otomasi Single-Command Versioning</div>
                   <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4;">
@@ -1350,7 +1398,7 @@
             </div>
             
             <!-- Live Research Countdown -->
-            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 12px 18px; text-align: right; min-width: 220px;">
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 12px 18px; text-align: right; min-width: min(100%, 220px);">
               <div style="font-size: 10.5px; font-weight: 700; color: #60A5FA; text-transform: uppercase; letter-spacing: 0.5px;">
                 ⏱️ SLA Riset & Sintesis Sprint 6
               </div>
@@ -1362,7 +1410,7 @@
           </div>
 
           <!-- 3 Plans Cards -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-top: 20px;">
             <!-- Gen Alpha -->
             <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 12px; padding: 16px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1435,7 +1483,7 @@
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:16px;" id="employeesGridContainer">
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap:16px;" id="employeesGridContainer">
                 <!-- Injected via JS -->
               </div>
             </div>
@@ -1552,7 +1600,7 @@
       } else {
         if (chip) { chip.style.borderColor = '#EF4444'; chip.style.color = '#F87171'; chip.style.background = 'rgba(239,68,68,0.15)'; }
         if (text) text.innerText = 'Status: Stand Down';
-        if (input) { input.disabled = true; input.style.opacity = '0.6'; input.style.cursor = 'not-allowed'; input.placeholder = 'Live interaksi telah dimatikan — Tim sedang menikmati liburan outing di Malaysia 🌴🇲🇾'; }
+        if (input) { input.disabled = true; input.style.opacity = '0.6'; input.style.cursor = 'not-allowed'; input.placeholder = 'Live interaksi telah dimatikan - Tim sedang menikmati liburan outing di Malaysia 🌴🇲🇾'; }
         if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; btn.style.cursor = 'not-allowed'; }
         if (banner) banner.style.display = 'flex';
         if (pill) { pill.style.borderColor = '#EF4444'; pill.style.color = '#F87171'; pill.style.background = 'rgba(239,68,68,0.18)'; pill.innerText = '🔴 LIVE INTERAKSI DINONAKTIFKAN • TEAM STAND DOWN • OUTING MODE 100% AKTIF 🏖️✈️'; }
@@ -1761,7 +1809,7 @@
         {
           id: "m21",
           person: ROSTER.fajar,
-          text: "Dari QA Engineering: Action item nomor 1 langsung kami jadwalkan di awal Sprint 5 — automated component smoke test per menu navigasi untuk menjamin zero unhandled runtime error di setiap tab!",
+          text: "Dari QA Engineering: Action item nomor 1 langsung kami jadwalkan di awal Sprint 5: automated component smoke test per menu navigasi untuk menjamin zero unhandled runtime error di setiap tab!",
           time: "21:03",
           reactions: { "✅": 18, "🧪": 16 }
         },
@@ -2664,7 +2712,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2679,7 +2727,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2773,7 +2821,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2788,7 +2836,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2820,7 +2868,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2835,7 +2883,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2867,7 +2915,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2882,7 +2930,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2914,7 +2962,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2929,7 +2977,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2946,7 +2994,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2961,7 +3009,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2976,7 +3024,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -2993,7 +3041,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3008,7 +3056,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3025,7 +3073,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3040,7 +3088,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3057,7 +3105,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3072,7 +3120,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3089,7 +3137,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3104,7 +3152,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3121,7 +3169,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3136,7 +3184,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3153,7 +3201,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3168,7 +3216,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3185,7 +3233,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3200,7 +3248,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3217,7 +3265,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3232,7 +3280,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Sprint 6 resmi dimulai! Mematangkan Hotfix v2.0.0 dan arsitektur subscription.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3249,7 +3297,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menyiapkan test suite Hotfix dan benchmark fitur POS retail Indonesia.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3264,7 +3312,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Menemukan pola ATM (Amati Tiru Modifikasi) terbaik dari studi kasus POS viral di TikTok.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3281,7 +3329,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Tidur nyenyak 8 jam, siap mengawal riset model langganan Gen Alpha, Beta, Gamma!",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3296,7 +3344,7 @@
         moodText: "Segar & Siap Riset",
         moodReason: "Ngopi latte hangat di pantry sambil membedah perbandingan harga Moka vs Majoo vs Qasir.",
         status: "working",
-        task: "Tidak ada tugas aktif — seluruh tim sedang beristirahat malam ini.",
+        task: "Tidak ada tugas aktif, seluruh tim sedang beristirahat malam ini.",
         breakReason: "",
         breakSeconds: 0
       },
@@ -3447,7 +3495,7 @@
         if (s.energy < 50) energyGrad = 'linear-gradient(90deg, #EF4444, #F87171)';
 
         return `
-          <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.2s ease;">
+          <div style="background:var(--card-sub); border:1px solid #23314F; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; transition:border-color 200ms ease, transform 200ms ease;">
             <div>
               <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
                 <div style="display:flex; align-items:center; gap:10px;">
@@ -3583,7 +3631,7 @@
 
           <h4>2. Formulasi Resmi 3 Tiers Subscription ALPHOS</h4>
           <ul>
-            <li><strong>🟢 1. GEN ALPHA — Freemium Entry-Point (Rp 0 / Selamanya):</strong>
+            <li><strong>🟢 1. GEN ALPHA: Freemium Entry-Point (Rp 0 / Selamanya):</strong>
               <ul>
                 <li>Bebas transaksi kasir POS Web tanpa batas transaksi harian.</li>
                 <li>1 Outlet mandiri & 1 Akun kasir aktif, maksimal 50 Item Produk.</li>
@@ -3591,14 +3639,14 @@
                 <li><em>Fitur Terkunci (Gembok):</em> Visual Analytics 3-in-1, Multi-Warehouse Transfer, dan Single-Device Session.</li>
               </ul>
             </li>
-            <li><strong>🔵 2. GEN BETA — Growth Retail Store (Rp 20.000 / Bulan):</strong>
+            <li><strong>🔵 2. GEN BETA: Growth Retail Store (Rp 20.000 / Bulan):</strong>
               <ul>
                 <li>Hingga 3 Outlet & 5 Akun Kasir, Unlimited Produk & Kategori.</li>
                 <li>Smart Stock Alert, Multi-Metode Pembayaran (Cash, QRIS, Transfer), Ekspor CSV/Excel.</li>
                 <li>Manajemen Shift Kasir & Rekonsiliasi Kas.</li>
               </ul>
             </li>
-            <li><strong>🟣 3. GEN GAMMA — Ultimate Enterprise Pro (Rp 30.000 / Bulan - Rekomendasi):</strong>
+            <li><strong>🟣 3. GEN GAMMA: Ultimate Enterprise Pro (Rp 30.000 / Bulan - Rekomendasi):</strong>
               <ul>
                 <li><strong>UNLIMITED Outlet & UNLIMITED Akun Kasir</strong>.</li>
                 <li><strong>Interactive Visual Analytics 3-in-1:</strong> Selector grafik garis (tren omzet harian), bar chart (produk terlaris), dan donut chart (kanal pembayaran) dengan tombol cetak laporan resmi.</li>

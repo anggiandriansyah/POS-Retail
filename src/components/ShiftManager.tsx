@@ -14,6 +14,7 @@ import { useThemeLang } from '../contexts/useThemeLang';
 import { supabase } from '../lib/supabaseClient';
 import type { FeedbackMessage, PettyCashLog, PettyCashType } from '../types/pos';
 import { formatClockTime, formatDateTime, formatRupiah, formatErrorMessage } from '../utils/format';
+import { computeShiftSummary, fetchShiftDetails } from '../utils/shiftHelpers';
 import DigitalClock from './DigitalClock';
 
 const PETTY_CATEGORIES = [
@@ -28,38 +29,6 @@ interface ClosedShiftSummary {
   opened_at: string;
   closed_at: string;
   discrepancy: number;
-}
-
-async function fetchShiftDetails(shiftId: string): Promise<{
-  cashSales: number;
-  pettyLogs: PettyCashLog[];
-}> {
-  if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
-
-  const [{ data: cashTxData, error: txErr }, { data: pettyData, error: pettyErr }] =
-    await Promise.all([
-      supabase
-        .from('transactions')
-        .select('total_amount, payment_method')
-        .eq('shift_id', shiftId),
-      supabase
-        .from('petty_cash_logs')
-        .select('*')
-        .eq('shift_id', shiftId)
-        .order('created_at', { ascending: false }),
-    ]);
-
-  if (txErr) throw txErr;
-  if (pettyErr) throw pettyErr;
-
-  const cashSales = (cashTxData || [])
-    .filter((t) => (t.payment_method || '').toLowerCase() === 'cash')
-    .reduce((sum, t) => sum + Number(t.total_amount || 0), 0);
-
-  return {
-    cashSales,
-    pettyLogs: (pettyData as PettyCashLog[]) || [],
-  };
 }
 
 export interface ShiftManagerProps {
@@ -100,7 +69,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     }
     setLoadingDetails(true);
     try {
-      const result = await fetchShiftDetails(activeShiftId);
+      const result = await fetchShiftDetails(supabase, activeShiftId);
       setCashSales(result.cashSales);
       setPettyLogs(result.pettyLogs);
     } catch (err) {
@@ -114,7 +83,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
   useEffect(() => {
     if (!activeShiftId) return;
     let cancelled = false;
-    fetchShiftDetails(activeShiftId)
+    fetchShiftDetails(supabase, activeShiftId)
       .then((result) => {
         if (cancelled) return;
         setCashSales(result.cashSales);
@@ -133,17 +102,10 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
     };
   }, [activeShiftId]);
 
-  const summary = useMemo(() => {
-    const opening = Number(activeShift?.opening_cash || 0);
-    const pettyIn = pettyLogs
-      .filter((l) => l.type === 'IN')
-      .reduce((s, l) => s + Number(l.amount || 0), 0);
-    const pettyOut = pettyLogs
-      .filter((l) => l.type === 'OUT')
-      .reduce((s, l) => s + Number(l.amount || 0), 0);
-    const expectedCash = opening + cashSales + pettyIn - pettyOut;
-    return { opening, pettyIn, pettyOut, expectedCash };
-  }, [activeShift?.opening_cash, cashSales, pettyLogs]);
+  const summary = useMemo(
+    () => computeShiftSummary(activeShift, cashSales, pettyLogs),
+    [activeShift, cashSales, pettyLogs]
+  );
 
   const hasActualInput = actualCash !== '';
   const numericActual = hasActualInput ? Number(actualCash) : NaN;
@@ -308,7 +270,7 @@ export default function ShiftManager({ onShiftOpened }: ShiftManagerProps) {
                 <Clock size={20} /> {t.openTitle}
               </h2>
               <p className="muted-text">
-                {t.cashierLabel}: <strong>{profile?.full_name}</strong> — {t.openDesc}
+                {t.cashierLabel}: <strong>{profile?.full_name}</strong>. {t.openDesc}
               </p>
             </div>
           </div>

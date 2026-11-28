@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   X,
   Upload,
@@ -23,30 +23,30 @@ interface RegistrationModalProps {
 
 const TIER_DETAILS: Record<
   PackageTier,
-  { name: string; priceText: string; amount: number; qrisSrc?: string; badge: string; color: string }
+  { name: string; priceText: string; amount: number; qrisSrc?: string; badge: string; variant: 'alpha' | 'beta' | 'gamma' }
 > = {
   gen_alpha: {
-    name: 'GEN ALPHA — Freemium Entry',
+    name: 'GEN ALPHA (Freemium Entry)',
     priceText: 'Rp 0 / Selamanya',
     amount: 0,
     badge: 'Gratis Selamanya',
-    color: '#059669',
+    variant: 'alpha',
   },
   gen_beta: {
-    name: 'GEN BETA — Growth Retail Store',
+    name: 'GEN BETA (Growth Retail Store)',
     priceText: 'Rp 20.000 / Bulan',
     amount: 20000,
     qrisSrc: '/qris-gen-beta-20k.jpg',
     badge: 'Paket Populer',
-    color: '#2563EB',
+    variant: 'beta',
   },
   gen_gamma: {
-    name: 'GEN GAMMA — Ultimate Enterprise Pro',
+    name: 'GEN GAMMA (Ultimate Enterprise Pro)',
     priceText: 'Rp 30.000 / Bulan',
     amount: 30000,
     qrisSrc: '/qris-gen-gamma-30k.jpg',
     badge: 'Rekomendasi Terbaik',
-    color: '#7C3AED',
+    variant: 'gamma',
   },
 };
 
@@ -68,6 +68,16 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
   const currentTierInfo = TIER_DETAILS[tier];
   const isFree = tier === 'gen_alpha';
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !submitting) {
+        onClose();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose, submitting]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -162,55 +172,35 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 100,
-        backgroundColor: 'rgba(15, 23, 42, 0.65)',
-        backdropFilter: 'blur(6px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-        overflowY: 'auto',
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reg-modal-title"
+      onClick={() => {
+        if (!submitting) onClose();
       }}
     >
       <div
-        style={{
-          width: '100%',
-          maxWidth: '680px',
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: '16px',
-          padding: '28px',
-          boxShadow: 'var(--shadow-lg)',
-          position: 'relative',
-          color: 'var(--text)',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-        }}
+        className="modal-card modal-card-wide"
+        style={{ padding: '24px', color: 'var(--text)' }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
+          disabled={submitting}
+          className="icon-btn"
           style={{
             position: 'absolute',
-            top: '20px',
-            right: '20px',
-            background: 'none',
-            border: 'none',
-            color: 'var(--muted)',
-            cursor: 'pointer',
-            padding: '6px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            top: '14px',
+            right: '14px',
+            width: '44px',
+            height: '44px',
           }}
           aria-label={isEn ? 'Close dialog' : 'Tutup dialog'}
         >
-          <X size={20} />
+          <X size={20} aria-hidden="true" />
         </button>
 
         {successReg ? (
@@ -232,7 +222,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               <CheckCircle2 size={36} />
             </div>
 
-            <h3 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
+            <h3 id="reg-modal-title" style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
               {successReg.status === 'APPROVED'
                 ? (isEn ? 'Store Registration Successfully Activated!' : 'Pendaftaran Toko Berhasil Aktif!')
                 : (isEn ? 'Payment Proof & Registration Successfully Submitted!' : 'Bukti Pembayaran & Pendaftaran Berhasil Dikirim!')}
@@ -243,12 +233,12 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 isEn ? (
                   <>
                     Congratulations, <strong>{successReg.store_name}</strong> is registered on{' '}
-                    <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.name}</strong>. Official confirmation email and activation button dispatched from:
+                    <strong className={`reg-tier-accent--${currentTierInfo.variant}`}>{currentTierInfo.name}</strong>. Official confirmation email and activation button dispatched from:
                   </>
                 ) : (
                   <>
                     Selamat, toko <strong>{successReg.store_name}</strong> telah terdaftar pada paket{' '}
-                    <strong style={{ color: currentTierInfo.color }}>{currentTierInfo.name}</strong>. Email notifikasi
+                    <strong className={`reg-tier-accent--${currentTierInfo.variant}`}>{currentTierInfo.name}</strong>. Email notifikasi
                     dan tautan verifikasi resmi telah dikirimkan dari:
                   </>
                 )
@@ -343,28 +333,16 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
         ) : (
           /* REGISTRATION & CHECKOUT FORM */
           <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '20px' }}>
-              <div
-                style={{
-                  display: 'inline-block',
-                  padding: '4px 12px',
-                  borderRadius: '999px',
-                  background: `${currentTierInfo.color}15`,
-                  color: currentTierInfo.color,
-                  border: `1px solid ${currentTierInfo.color}35`,
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  marginBottom: '8px',
-                }}
-              >
+            <div style={{ marginBottom: '20px', paddingRight: '44px' }}>
+              <div className={`reg-tier-pill reg-tier-pill--${currentTierInfo.variant}`}>
                 {isEn ? (tier === 'gen_alpha' ? 'Free Forever' : tier === 'gen_beta' ? 'Popular Tier' : 'Best Recommendation') : currentTierInfo.badge}
               </div>
-              <h2 style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px', color: 'var(--text)' }}>
-                {isEn ? `Store Registration — ${currentTierInfo.name}` : `Formulir Pendaftaran Toko — ${currentTierInfo.name}`}
+              <h2 id="reg-modal-title" style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 4px', color: 'var(--text)' }}>
+                {isEn ? `Store Registration: ${currentTierInfo.name}` : `Formulir Pendaftaran Toko: ${currentTierInfo.name}`}
               </h2>
               <p style={{ color: 'var(--muted)', fontSize: '13px', margin: 0 }}>
                 {isEn ? 'Plan Fee: ' : 'Biaya Paket: '}
-                <strong style={{ color: currentTierInfo.color }}>
+                <strong className={`reg-tier-accent--${currentTierInfo.variant}`}>
                   {isEn ? (tier === 'gen_alpha' ? 'IDR 0 / Forever' : tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
                 </strong>
               </p>
@@ -394,7 +372,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
                 gap: '14px',
                 marginBottom: '20px',
               }}
@@ -538,19 +516,11 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
             </div>
 
-            {/* QRIS PAYMENT SECTION (For Gen Beta & Gen Gamma) */}
+            {/* QRIS PAYMENT SECTION (For Gen Beta & Gen Gamma) - Flat Section, No Nested Cards */}
             {!isFree && currentTierInfo.qrisSrc && (
-              <div
-                style={{
-                  background: 'var(--bg)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '14px',
-                  padding: '20px',
-                  marginBottom: '20px',
-                }}
-              >
+              <div className="reg-modal-flat-section">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                  <QrCode size={18} style={{ color: currentTierInfo.color }} />
+                  <QrCode size={18} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
                   <span style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text)' }}>
                     {isEn ? 'Official QRIS Payment: ' : 'Pembayaran QRIS Resmi: '}
                     {isEn ? (tier === 'gen_beta' ? 'IDR 20,000 / Month' : 'IDR 30,000 / Month') : currentTierInfo.priceText}
@@ -566,17 +536,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   }}
                 >
                   {/* QRIS Image Container */}
-                  <div
-                    style={{
-                      background: '#FFFFFF',
-                      padding: '12px',
-                      borderRadius: '12px',
-                      border: '1px solid var(--border)',
-                      boxShadow: 'var(--shadow-sm)',
-                      maxWidth: '200px',
-                      textAlign: 'center',
-                    }}
-                  >
+                  <div className="reg-qris-frame">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={currentTierInfo.qrisSrc}
@@ -588,13 +548,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                         borderRadius: '6px',
                       }}
                     />
-                    <div style={{ fontSize: '10px', color: '#0F172A', fontWeight: 800, marginTop: '6px' }}>
+                    <div style={{ fontSize: '10px', color: 'var(--text)', fontWeight: 800, marginTop: '6px' }}>
                       NMID: ID1026649384090
                     </div>
                   </div>
 
                   {/* QRIS Instruction & File Upload */}
-                  <div style={{ flex: 1, minWidth: '240px' }}>
+                  <div style={{ flex: 1, minWidth: 'min(100%, 240px)' }}>
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 14px', lineHeight: 1.55 }}>
                       {isEn
                         ? 'Open your mobile banking or e-wallet (BCA, Mandiri, BRI, GoPay, OVO, ShopeePay). Scan the official QRIS on the left and pay the exact amount.'
@@ -640,7 +600,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                           gap: '6px',
                         }}
                       >
-                        <Upload size={22} style={{ color: currentTierInfo.color }} />
+                        <Upload size={22} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
                         <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--primary)' }}>
                           {isEn ? 'Click to select receipt / screenshot' : 'Klik untuk pilih foto struk / screenshot'}
                         </span>
@@ -693,7 +653,10 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   lineHeight: 1.5,
                 }}
               >
-                🎉 <strong>{isEn ? 'Free Plan Forever:' : 'Paket Gratis Selamanya:'}</strong>{' '}
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', verticalAlign: 'middle' }}>
+                  <CheckCircle2 size={16} aria-hidden="true" />
+                  <strong>{isEn ? 'Free Plan Forever:' : 'Paket Gratis Selamanya:'}</strong>
+                </span>{' '}
                 {isEn
                   ? 'No charges apply. Upon registering, your store account activates immediately.'
                   : 'Anda tidak dikenakan biaya apa pun. Setelah mendaftar, akun toko Anda langsung aktif secara instan dan dapat langsung melayani transaksi kasir.'}

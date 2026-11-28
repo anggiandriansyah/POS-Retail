@@ -138,7 +138,7 @@ export default function StaffManager() {
       setFeedback({
         type: 'success',
         text: data.session
-          ? `${createdName} (@${cleanUsername}) — ${dict.activeStatus}`
+          ? `${createdName} (@${cleanUsername}): ${dict.activeStatus}`
           : `${createdName} (@${cleanUsername})`,
       });
       await loadProfiles();

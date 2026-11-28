@@ -19,14 +19,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: 'cover',
   themeColor: '#10B981',
 };
 
 export const metadata: Metadata = {
   title: 'ALPHOS • Smart Retail OS',
-  description: 'ALPHOS • Smart Retail OS by PT AlphaGen Ecosystem — Barcode POS & Multi-Tenant Retail Platform',
+  description: 'ALPHOS Smart Retail OS by PT AlphaGen Ecosystem: Barcode POS and Multi-Tenant Retail Platform',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.svg',

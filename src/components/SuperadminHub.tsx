@@ -6,7 +6,27 @@ import { formatRupiah } from '../utils/format';
 import ThemeLangToggles from './ThemeLangToggles';
 import { AlphosLogo } from './AlphosLogo';
 import { useThemeLang } from '../contexts/useThemeLang';
-import { Store, ShieldCheck, LogOut, ExternalLink, Search, CheckCircle, AlertTriangle, XCircle, Info, CreditCard, Eye, Mail, Check, X, QrCode } from 'lucide-react';
+import {
+  Store,
+  ShieldCheck,
+  LogOut,
+  ExternalLink,
+  Search,
+  CheckCircle,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Info,
+  CreditCard,
+  Eye,
+  Mail,
+  Check,
+  X,
+  Building2,
+  Wallet,
+  TrendingUp,
+  Zap,
+} from 'lucide-react';
 import {
   getLocalRegistrations,
   approveLocalRegistration,
@@ -249,6 +269,18 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
     });
   }, [merchants, searchQuery, statusFilter]);
 
+  useEffect(() => {
+    if (!selectedMerchant && !previewProof) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        if (previewProof) setPreviewProof(null);
+        else if (selectedMerchant) setSelectedMerchant(null);
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMerchant, previewProof]);
+
   const handleToggleStatus = (merchantId: string) => {
     setMerchants(prev =>
       prev.map(m => {
@@ -334,9 +366,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
       <main className="main-content" style={{ marginTop: '16px' }}>
         {/* Sprint 5 Sign-off Status Banner */}
         {isSprint5SignedOff && (
-          <div className="alert alert-success" style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '4px solid #10b981' }}>
+          <div className="alert alert-success" style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '4px solid var(--primary)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '1.2rem' }}>🎉</span>
+              <CheckCircle2 size={20} style={{ color: 'var(--primary)', flexShrink: 0 }} aria-hidden="true" />
               <div>
                 <strong style={{ display: 'block', fontSize: '0.88rem' }}>
                   {isEn ? 'Sprint 5 Cloud DEV Sign-Off Successfully Approved!' : 'Sprint 5 Cloud DEV Sign-Off Telah Disahkan!'}
@@ -357,7 +389,7 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
         {actionSuccessMessage && (
           <div className="alert alert-success" style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CheckCircle size={16} />
+              <CheckCircle size={16} aria-hidden="true" />
               {actionSuccessMessage}
             </span>
             <button
@@ -365,8 +397,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
               onClick={() => setActionSuccessMessage('')}
               className="icon-btn"
               style={{ width: '24px', height: '24px', border: 'none', background: 'transparent' }}
+              aria-label="Tutup pemberitahuan"
             >
-              ✕
+              <X size={14} aria-hidden="true" />
             </button>
           </div>
         )}
@@ -376,7 +409,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
               <span className="superadmin-metric-label">{s.totalTenants}</span>
-              <span className="superadmin-metric-icon" title="Merchants">🏢</span>
+              <span className="superadmin-metric-icon" title="Merchants" aria-hidden="true">
+                <Building2 size={18} aria-hidden="true" />
+              </span>
             </div>
             <div className="superadmin-metric-val">{metrics.total} {isEn ? 'Stores' : 'Toko'}</div>
             <div className="superadmin-metric-sub">
@@ -389,7 +424,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
               <span className="superadmin-metric-label">{s.saasMrr}</span>
-              <span className="superadmin-metric-icon" title="Revenue">💰</span>
+              <span className="superadmin-metric-icon" title="Revenue" aria-hidden="true">
+                <Wallet size={18} aria-hidden="true" />
+              </span>
             </div>
             <div className="superadmin-metric-val text-success">
               {formatRupiah(metrics.platformMrr)}
@@ -402,7 +439,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
               <span className="superadmin-metric-label">{s.totalGmv}</span>
-              <span className="superadmin-metric-icon" title="GMV">📈</span>
+              <span className="superadmin-metric-icon" title="GMV" aria-hidden="true">
+                <TrendingUp size={18} aria-hidden="true" />
+              </span>
             </div>
             <div className="superadmin-metric-val">
               {formatRupiah(metrics.totalGmv)}
@@ -415,9 +454,11 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
           <div className="superadmin-metric-card">
             <div className="superadmin-metric-top">
               <span className="superadmin-metric-label">{isEn ? 'Platform Health & SLA' : 'Kesehatan & SLA Platform'}</span>
-              <span className="superadmin-metric-icon" title="System SLA">⚡</span>
+              <span className="superadmin-metric-icon" title="System SLA" aria-hidden="true">
+                <Zap size={18} aria-hidden="true" />
+              </span>
             </div>
-            <div className="superadmin-metric-val" style={{ color: '#3b82f6' }}>
+            <div className="superadmin-metric-val" style={{ color: 'var(--price-blue)' }}>
               99.98%
             </div>
             <div className="superadmin-metric-sub">
@@ -469,8 +510,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                 className="icon-btn"
                 style={{ border: 'none', background: 'transparent' }}
                 title="Tutup pemberitahuan"
+                aria-label="Tutup pemberitahuan"
               >
-                ✕
+                <X size={14} aria-hidden="true" />
               </button>
             </div>
             <div style={{ fontSize: '0.86rem', color: 'var(--text)' }}>
@@ -685,10 +727,10 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                       {st === 'all'
                         ? 'Semua Status'
                         : st === 'PENDING_APPROVAL'
-                        ? '⏳ Menunggu Approval'
+                        ? 'Menunggu Approval'
                         : st === 'APPROVED'
-                        ? '✓ Disetujui'
-                        : '✕ Ditolak'}
+                        ? 'Disetujui'
+                        : 'Ditolak'}
                     </button>
                   ))}
                 </div>
@@ -835,13 +877,19 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
 
         {/* Merchant Detail Modal */}
         {selectedMerchant && (
-          <div className="modal-backdrop" onClick={() => setSelectedMerchant(null)}>
+          <div
+            className="modal-backdrop"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="superadmin-merchant-modal-title"
+            onClick={() => setSelectedMerchant(null)}
+          >
             <div className="modal-card" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '1.4rem' }}>🏢</span>
+                  <Store size={20} aria-hidden="true" />
                   <div>
-                    <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800 }}>
+                    <h3 id="superadmin-merchant-modal-title" style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800 }}>
                       {selectedMerchant.name}
                     </h3>
                     <span className="muted-text" style={{ fontSize: '0.74rem' }}>
@@ -854,8 +902,9 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
                   onClick={() => setSelectedMerchant(null)}
                   className="icon-btn"
                   title="Tutup dialog"
+                  aria-label="Tutup dialog"
                 >
-                  ✕
+                  <X size={16} aria-hidden="true" />
                 </button>
               </div>
 
@@ -921,11 +970,19 @@ export function SuperadminHub({ profile, onSignOut, onSwitchToMerchantView }: Su
 
         {/* Payment Proof Lightbox Modal */}
         {previewProof && (
-          <div className="modal-backdrop" onClick={() => setPreviewProof(null)}>
+          <div
+            className="modal-backdrop"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="superadmin-proof-modal-title"
+            onClick={() => setPreviewProof(null)}
+          >
             <div className="modal-card" style={{ maxWidth: '480px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Pratinjau Bukti Pembayaran QRIS</h3>
-                <button type="button" onClick={() => setPreviewProof(null)} className="icon-btn">✕</button>
+                <h3 id="superadmin-proof-modal-title" style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Pratinjau Bukti Pembayaran QRIS</h3>
+                <button type="button" onClick={() => setPreviewProof(null)} className="icon-btn" aria-label="Tutup pratinjau">
+                  <X size={16} aria-hidden="true" />
+                </button>
               </div>
               <div style={{ margin: '16px 0', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}

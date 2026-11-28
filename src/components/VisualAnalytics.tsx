@@ -15,7 +15,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import type { Product } from '../types/pos';
-import { formatRupiah, formatDateTime } from '../utils/format';
+import { APP_VERSION, formatRupiah, formatDateTime } from '../utils/format';
 
 export type Timeframe = 'today' | '7d' | '30d' | 'month';
 export type ChartType = 'line' | 'bar' | 'pie';
@@ -50,9 +50,9 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           { name: 'Croissant Butter', qty: 16, revenue: 480000, category: 'Bakery' },
         ],
         payments: [
-          { method: 'QRIS', count: 78, total: 6680000, color: '#3B82F6', percent: 60 },
-          { method: 'CASH', count: 44, total: 3450000, color: '#10B981', percent: 31 },
-          { method: 'TRANSFER', count: 16, total: 1070000, color: '#8B5CF6', percent: 9 },
+          { method: 'QRIS', count: 78, total: 6680000, color: 'var(--price-blue)', percent: 60 },
+          { method: 'CASH', count: 44, total: 3450000, color: 'var(--price-emerald)', percent: 31 },
+          { method: 'TRANSFER', count: 16, total: 1070000, color: 'var(--owner-text)', percent: 9 },
         ],
         grossRevenue: 11200000,
         totalOrders: 138,
@@ -77,9 +77,9 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           { name: 'Espresso Double Shot', qty: 420, revenue: 8400000, category: 'Minuman' },
         ],
         payments: [
-          { method: 'QRIS', count: 1620, total: 127200000, color: '#3B82F6', percent: 60 },
-          { method: 'CASH', count: 810, total: 63600000, color: '#10B981', percent: 30 },
-          { method: 'TRANSFER', count: 240, total: 21200000, color: '#8B5CF6', percent: 10 },
+          { method: 'QRIS', count: 1620, total: 127200000, color: 'var(--price-blue)', percent: 60 },
+          { method: 'CASH', count: 810, total: 63600000, color: 'var(--price-emerald)', percent: 30 },
+          { method: 'TRANSFER', count: 240, total: 21200000, color: 'var(--owner-text)', percent: 10 },
         ],
         grossRevenue: 212000000,
         totalOrders: 2670,
@@ -107,9 +107,9 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         { name: 'French Fries Crispy', qty: 88, revenue: 1760000, category: 'Snack' },
       ],
       payments: [
-        { method: 'QRIS', count: 462, total: 39520000, color: '#3B82F6', percent: 59 },
-        { method: 'CASH', count: 226, total: 20640000, color: '#10B981', percent: 31 },
-        { method: 'TRANSFER', count: 62, total: 6640000, color: '#8B5CF6', percent: 10 },
+        { method: 'QRIS', count: 462, total: 39520000, color: 'var(--price-blue)', percent: 59 },
+        { method: 'CASH', count: 226, total: 20640000, color: 'var(--price-emerald)', percent: 31 },
+        { method: 'TRANSFER', count: 62, total: 6640000, color: 'var(--owner-text)', percent: 10 },
       ],
       grossRevenue: 66800000,
       totalOrders: 750,
@@ -172,21 +172,21 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
           display: 'none',
           paddingBottom: '12px',
           marginBottom: '16px',
-          borderBottom: '2px solid #0f172a',
+          borderBottom: '2px solid var(--text)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0f172a' }}>
+            <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: 'var(--text)' }}>
               ALPHOS Store • Laporan Visual Analisis & Penjualan
             </h1>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#475569' }}>
+            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
               Rentang Waktu: {timeframe === 'today' ? 'Hari Ini' : timeframe === '7d' ? '7 Hari Terakhir' : timeframe === '30d' ? '30 Hari Terakhir' : 'Bulan Ini'} • Status: Terverifikasi
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#047857' }}>Smart Retail OS v1.5.1</span>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>Smart Retail OS v{APP_VERSION}</span>
+            <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '2px' }}>
               Dicetak: {formatDateTime(new Date().toISOString(), 'id')}
             </div>
           </div>
@@ -220,7 +220,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
               gap: '8px',
             }}
           >
-            <TrendingUp size={22} style={{ color: '#10B981' }} />
+            <TrendingUp size={22} style={{ color: 'var(--primary)' }} />
             <span>Visual Analytics & Insight Penjualan</span>
           </h2>
           <p style={{ margin: '3px 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
@@ -253,11 +253,11 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                     fontSize: '0.78rem',
                     fontWeight: isActive ? 700 : 500,
                     border: 'none',
-                    background: isActive ? '#10B981' : 'transparent',
-                    color: isActive ? '#ffffff' : 'var(--muted)',
+                    background: isActive ? 'var(--primary)' : 'transparent',
+                    color: isActive ? 'var(--on-primary)' : 'var(--muted)',
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    boxShadow: isActive ? '0 2px 6px rgba(16, 185, 129, 0.3)' : 'none',
+                    transition: 'background-color 150ms ease, color 150ms ease, box-shadow 150ms ease',
+                    boxShadow: isActive ? 'var(--shadow-xs)' : 'none',
                   }}
                 >
                   {tf === 'today' ? 'Hari Ini' : tf === '7d' ? '7 Hari' : tf === '30d' ? '30 Hari' : 'Bulan Ini'}
@@ -274,20 +274,20 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '38px',
-              height: '38px',
+              width: '44px',
+              height: '44px',
               borderRadius: '50%',
               background: 'var(--surface)',
               border: '1px solid var(--border)',
               color: 'var(--text-secondary)',
               cursor: 'pointer',
-              transition: 'all 0.15s ease',
+              transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease',
               boxShadow: 'var(--shadow-xs)',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = '#10B981';
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.borderColor = '#10B981';
+              e.currentTarget.style.background = 'var(--primary)';
+              e.currentTarget.style.color = 'var(--on-primary)';
+              e.currentTarget.style.borderColor = 'var(--primary)';
             }}
             onMouseLeave={e => {
               e.currentTarget.style.background = 'var(--surface)';
@@ -306,7 +306,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
           gap: '14px',
         }}
       >
@@ -322,12 +322,12 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Total Pendapatan Kotor</span>
-            <DollarSign size={16} style={{ color: '#10B981' }} />
+            <DollarSign size={16} style={{ color: 'var(--primary)' }} />
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
             {formatRupiah(data.grossRevenue)}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px', fontSize: '0.74rem', color: '#10B981', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px', fontSize: '0.74rem', color: 'var(--primary-text)', fontWeight: 600 }}>
             <ArrowUpRight size={14} />
             <span>+14.2% dibanding periode lalu</span>
           </div>
@@ -345,7 +345,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Jumlah Transaksi</span>
-            <ShoppingBag size={16} style={{ color: '#3B82F6' }} />
+            <ShoppingBag size={16} style={{ color: 'var(--price-blue)' }} />
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
             {data.totalOrders} <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--muted)' }}>Struk</span>
@@ -367,7 +367,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Average Order Value</span>
-            <TrendingUp size={16} style={{ color: '#8B5CF6' }} />
+            <TrendingUp size={16} style={{ color: 'var(--owner-text)' }} />
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
             {formatRupiah(data.avgOrderValue)}
@@ -389,7 +389,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontWeight: 600 }}>Estimasi Laba Bersih</span>
-            <CheckCircle size={16} style={{ color: '#10B981' }} />
+            <CheckCircle size={16} style={{ color: 'var(--primary)' }} />
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text)' }}>
             {formatRupiah(data.netProfit)}
@@ -436,9 +436,9 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                 gap: '8px',
               }}
             >
-              {chartType === 'line' && <LineIcon size={18} style={{ color: '#10B981' }} />}
-              {chartType === 'bar' && <BarChart3 size={18} style={{ color: '#10B981' }} />}
-              {chartType === 'pie' && <PieIcon size={18} style={{ color: '#10B981' }} />}
+              {chartType === 'line' && <LineIcon size={18} style={{ color: 'var(--primary)' }} />}
+              {chartType === 'bar' && <BarChart3 size={18} style={{ color: 'var(--primary)' }} />}
+              {chartType === 'pie' && <PieIcon size={18} style={{ color: 'var(--primary)' }} />}
               <span>
                 {chartType === 'line' && 'Kurva Pertumbuhan Omzet (Line Chart)'}
                 {chartType === 'bar' && 'Distribusi Omzet per Periode (Bar Chart)'}
@@ -476,15 +476,15 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '9px',
-                  border: chartType === 'line' ? '1.5px solid #10B981' : '1px solid transparent',
-                  background: chartType === 'line' ? '#10B981' : 'transparent',
-                  color: chartType === 'line' ? '#ffffff' : 'var(--muted)',
+                  border: chartType === 'line' ? '1.5px solid var(--primary)' : '1px solid transparent',
+                  background: chartType === 'line' ? 'var(--primary)' : 'transparent',
+                  color: chartType === 'line' ? 'var(--on-primary)' : 'var(--muted)',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  boxShadow: chartType === 'line' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                  transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease',
+                  boxShadow: chartType === 'line' ? 'var(--shadow-xs)' : 'none',
                 }}
                 onMouseEnter={e => {
                   if (chartType !== 'line') {
@@ -512,15 +512,15 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '9px',
-                  border: chartType === 'bar' ? '1.5px solid #10B981' : '1px solid transparent',
-                  background: chartType === 'bar' ? '#10B981' : 'transparent',
-                  color: chartType === 'bar' ? '#ffffff' : 'var(--muted)',
+                  border: chartType === 'bar' ? '1.5px solid var(--primary)' : '1px solid transparent',
+                  background: chartType === 'bar' ? 'var(--primary)' : 'transparent',
+                  color: chartType === 'bar' ? 'var(--on-primary)' : 'var(--muted)',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  boxShadow: chartType === 'bar' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                  transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease',
+                  boxShadow: chartType === 'bar' ? 'var(--shadow-xs)' : 'none',
                 }}
                 onMouseEnter={e => {
                   if (chartType !== 'bar') {
@@ -548,15 +548,15 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '36px',
-                  height: '36px',
+                  width: '44px',
+                  height: '44px',
                   borderRadius: '9px',
-                  border: chartType === 'pie' ? '1.5px solid #10B981' : '1px solid transparent',
-                  background: chartType === 'pie' ? '#10B981' : 'transparent',
-                  color: chartType === 'pie' ? '#ffffff' : 'var(--muted)',
+                  border: chartType === 'pie' ? '1.5px solid var(--primary)' : '1px solid transparent',
+                  background: chartType === 'pie' ? 'var(--primary)' : 'transparent',
+                  color: chartType === 'pie' ? 'var(--on-primary)' : 'var(--muted)',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  boxShadow: chartType === 'pie' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none',
+                  transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease',
+                  boxShadow: chartType === 'pie' ? 'var(--shadow-xs)' : 'none',
                 }}
                 onMouseEnter={e => {
                   if (chartType !== 'pie') {
@@ -577,7 +577,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
 
             <div style={{ textAlign: 'right', borderLeft: '1px solid var(--border)', paddingLeft: '12px' }}>
               <span style={{ fontSize: '0.68rem', color: 'var(--muted)', fontWeight: 600, display: 'block' }}>Puncak Omzet</span>
-              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#10B981' }}>{formatRupiah(maxRevenue)}</span>
+              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--primary-text)' }}>{formatRupiah(maxRevenue)}</span>
             </div>
           </div>
         </div>
@@ -591,8 +591,8 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             >
               <defs>
                 <linearGradient id="alphosLineGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.32" />
-                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                  <stop offset="0%" stopColor="var(--price-emerald)" stopOpacity="0.32" />
+                  <stop offset="100%" stopColor="var(--price-emerald)" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
 
@@ -631,7 +631,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
               <path
                 d={pathD}
                 fill="none"
-                stroke="#10B981"
+                stroke="var(--price-emerald)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -645,7 +645,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                     cy={p.y}
                     r="4"
                     fill="var(--surface)"
-                    stroke="#10B981"
+                    stroke="var(--price-emerald)"
                     strokeWidth="2.5"
                   />
                   <text
@@ -673,8 +673,8 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             >
               <defs>
                 <linearGradient id="alphosBarGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10B981" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#059669" stopOpacity="0.45" />
+                  <stop offset="0%" stopColor="var(--price-emerald)" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.45" />
                 </linearGradient>
               </defs>
 
@@ -718,7 +718,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                       x={x + barWidth / 2}
                       y={y - 5}
                       textAnchor="middle"
-                      fill="#059669"
+                      fill="var(--primary-text)"
                       fontSize="9"
                       fontWeight="700"
                     >
@@ -790,7 +790,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             </div>
 
             {/* Breakdown List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '240px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 'min(100%, 240px)' }}>
               {data.payments.map((p, idx) => (
                 <div
                   key={idx}
@@ -821,7 +821,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                     <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text)', display: 'block' }}>
                       {formatRupiah(p.total)}
                     </span>
-                    <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>{p.percent}%</span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--primary-text)', fontWeight: 700 }}>{p.percent}%</span>
                   </div>
                 </div>
               ))}
@@ -834,7 +834,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           gap: '16px',
         }}
       >
@@ -859,7 +859,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <PackageCheck size={18} style={{ color: '#10B981' }} />
+              <PackageCheck size={18} style={{ color: 'var(--primary)' }} />
               <strong style={{ fontSize: '0.9rem', color: 'var(--text)' }}>Top 5 Produk Terlaris</strong>
             </div>
             <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>Periode {timeframe === 'today' ? 'Hari Ini' : timeframe === '7d' ? '7 Hari' : '30 Hari'}</span>
@@ -883,8 +883,8 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
                       width: '20px',
                       height: '20px',
                       borderRadius: '50%',
-                      background: idx === 0 ? '#10B981' : 'var(--bg)',
-                      color: idx === 0 ? '#ffffff' : 'var(--muted)',
+                      background: idx === 0 ? 'var(--primary)' : 'var(--bg)',
+                      color: idx === 0 ? 'var(--on-primary)' : 'var(--muted)',
                       fontSize: '0.72rem',
                       fontWeight: 800,
                       display: 'flex',
@@ -932,10 +932,10 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <CreditCard size={18} style={{ color: '#3B82F6' }} />
+                <CreditCard size={18} style={{ color: 'var(--price-blue)' }} />
                 <strong style={{ fontSize: '0.9rem', color: 'var(--text)' }}>Kesehatan Arus Kasir</strong>
               </div>
-              <span style={{ fontSize: '0.72rem', color: '#10B981', fontWeight: 700 }}>Real-Time Data</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--primary-text)', fontWeight: 700 }}>Real-Time Data</span>
             </div>
 
             <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 14px' }}>
@@ -970,7 +970,7 @@ export function VisualAnalytics({ products: _products }: VisualAnalyticsProps) {
             }}
           >
             <span>Audit Finansial:</span>
-            <span style={{ color: '#10B981', fontWeight: 700 }}>100% Cocok Tanpa Selisih</span>
+            <span style={{ color: 'var(--primary-text)', fontWeight: 700 }}>100% Cocok Tanpa Selisih</span>
           </div>
         </div>
       </div>
