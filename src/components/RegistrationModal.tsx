@@ -125,12 +125,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
             customerName: fullName.trim(),
             email: email.trim().toLowerCase(),
             phone: phone.trim(),
+            finishUrl: window.location.origin + '/verify-account?status=success',
             itemDetails: [
               {
                 id: tier,
                 price: currentTierInfo.amount,
                 quantity: 1,
-                name: `Langganan ALPHOS ${currentTierInfo.name}`,
+                name: tier === 'gen_beta' ? 'Langganan Gen Beta' : 'Langganan Gen Gamma',
               },
             ],
           }),
@@ -138,7 +139,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
         const snapData = await snapRes.json();
         if (!snapRes.ok || !snapData.success || !snapData.redirectUrl) {
-          throw new Error(snapData.error || 'Gagal membuat sesi pembayaran Midtrans.');
+          throw new Error(snapData.error || 'Gagal membuat sesi pembayaran.');
         }
 
         const newRegistration: SubscriptionRegistration = {
@@ -163,7 +164,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
         return;
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
-        setErrorMsg(isEn ? `Failed to initiate payment: ${msg}` : `Gagal memulai pembayaran Midtrans: ${msg}`);
+        setErrorMsg(isEn ? `Failed to initiate payment: ${msg}` : `Gagal memulai pembayaran: ${msg}`);
         setSubmitting(false);
         return;
       }
@@ -570,13 +571,13 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
               </div>
             </div>
 
-            {/* MIDTRANS AUTOMATED PAYMENT SECTION (For Gen Beta & Gen Gamma) */}
+            {/* AUTOMATED PAYMENT SECTION (For Gen Beta & Gen Gamma) */}
             {!isFree && (
               <div className="reg-modal-flat-section">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                   <CreditCard size={18} className={`reg-tier-accent--${currentTierInfo.variant}`} aria-hidden="true" />
                   <span style={{ fontSize: '14.5px', fontWeight: 800, color: 'var(--text)' }}>
-                    {isEn ? 'Instant Online Payment (Midtrans Gateway): ' : 'Pembayaran Otomatis via Midtrans: '}
+                    {isEn ? 'Instant Online Payment: ' : 'Pembayaran Otomatis Online: '}
                     {currentTierInfo.priceText}
                   </span>
                 </div>
@@ -612,7 +613,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--muted)' }}>
                     <ShieldCheck size={14} style={{ color: '#10b981' }} />
-                    <span>Diproses resmi & aman oleh Midtrans (Bank Indonesia Licensed).</span>
+                    <span>{isEn ? 'Official & secure transaction licensed by Bank Indonesia.' : 'Diproses resmi & aman terverifikasi Bank Indonesia.'}</span>
                   </div>
                 </div>
               </div>
@@ -679,8 +680,8 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   <>
                     <span>
                       {isEn
-                        ? (isFree ? 'Register Store Now (Free)' : `Pay with Midtrans (${currentTierInfo.priceText})`)
-                        : (isFree ? 'Daftarkan Toko Sekarang (Gratis)' : `Bayar via Midtrans (${currentTierInfo.priceText})`)}
+                        ? (isFree ? 'Register Store Now (Free)' : `Pay Now (${currentTierInfo.priceText})`)
+                        : (isFree ? 'Daftarkan Toko Sekarang (Gratis)' : `Bayar Sekarang (${currentTierInfo.priceText})`)}
                     </span>
                     <ArrowRight size={16} />
                   </>

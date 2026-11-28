@@ -1664,7 +1664,7 @@ textarea.input {
   place-items: center;
   padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
   overflow-y: auto;
-  z-index: 60;
+  z-index: 1200;
 }
 
 .modal-card {

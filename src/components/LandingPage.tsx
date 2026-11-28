@@ -1168,24 +1168,26 @@ export default function LandingPage() {
         />
       )}
 
-      {/* Floating WhatsApp Support Widget */}
-      <a
-        href="https://wa.me/6281280004276"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="landing-wa-float"
-        aria-label={`${l.waTitle} - ${l.waSubtitle} (WhatsApp: 6281280004276)`}
-      >
-        <div className="landing-wa-icon-wrap">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M17.507 14.307l-.009.075c-.242.667-.84 1.15-1.536 1.282-.547.103-1.144.02-1.737-.123-1.341-.322-2.883-1.265-4.095-2.477-1.212-1.212-2.155-2.754-2.477-4.095-.143-.593-.226-1.19-.123-1.737.132-.696.615-1.294 1.282-1.536.216-.078.448-.118.683-.118.156 0 .313.018.467.054.341.08.625.308.746.626l.872 2.274c.108.281.066.598-.112.839l-.865 1.167c.383.743.957 1.393 1.666 1.895l1.242-.731c.256-.151.575-.164.843-.035l2.252 1.084c.321.154.521.467.521.823 0 .193-.05.385-.148.562zm4.493-2.307c0-5.514-4.486-10-10-10s-10 4.486-10 10c0 1.838.504 3.562 1.385 5.042l-1.385 4.958 5.127-1.345c1.428.808 3.076 1.345 4.873 1.345 5.514 0 10-4.486 10-10zm-2 0c0 4.411-3.589 8-8 8-1.503 0-2.909-.422-4.116-1.151l-.317-.191-2.923.767.781-2.795-.21-.334c-.799-1.269-1.215-2.71-1.215-4.296 0-4.411 3.589-8 8-8s8 3.589 8 8z" />
-          </svg>
-        </div>
-        <div className="landing-wa-text-box">
-          <span className="landing-wa-title">{l.waTitle}</span>
-          <span className="landing-wa-subtitle">{l.waSubtitle}</span>
-        </div>
-      </a>
+      {/* Floating WhatsApp Support Widget (Hidden when modal is open to prevent UI overlap) */}
+      {!selectedTier && (
+        <a
+          href="https://wa.me/6281280004276"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="landing-wa-float"
+          aria-label={`${l.waTitle} - ${l.waSubtitle} (WhatsApp: 6281280004276)`}
+        >
+          <div className="landing-wa-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.507 14.307l-.009.075c-.242.667-.84 1.15-1.536 1.282-.547.103-1.144.02-1.737-.123-1.341-.322-2.883-1.265-4.095-2.477-1.212-1.212-2.155-2.754-2.477-4.095-.143-.593-.226-1.19-.123-1.737.132-.696.615-1.294 1.282-1.536.216-.078.448-.118.683-.118.156 0 .313.018.467.054.341.08.625.308.746.626l.872 2.274c.108.281.066.598-.112.839l-.865 1.167c.383.743.957 1.393 1.666 1.895l1.242-.731c.256-.151.575-.164.843-.035l2.252 1.084c.321.154.521.467.521.823 0 .193-.05.385-.148.562zm4.493-2.307c0-5.514-4.486-10-10-10s-10 4.486-10 10c0 1.838.504 3.562 1.385 5.042l-1.385 4.958 5.127-1.345c1.428.808 3.076 1.345 4.873 1.345 5.514 0 10-4.486 10-10zm-2 0c0 4.411-3.589 8-8 8-1.503 0-2.909-.422-4.116-1.151l-.317-.191-2.923.767.781-2.795-.21-.334c-.799-1.269-1.215-2.71-1.215-4.296 0-4.411 3.589-8 8-8s8 3.589 8 8z" />
+            </svg>
+          </div>
+          <div className="landing-wa-text-box">
+            <span className="landing-wa-title">{l.waTitle}</span>
+            <span className="landing-wa-subtitle">{l.waSubtitle}</span>
+          </div>
+        </a>
+      )}
     </div>
   );
 }

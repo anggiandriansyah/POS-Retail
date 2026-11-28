@@ -14,6 +14,7 @@ export interface CreateSnapTransactionParams {
   customerName: string;
   email: string;
   phone?: string;
+  finishUrl?: string;
   itemDetails?: Array<{
     id: string;
     price: number;
@@ -91,16 +92,19 @@ export async function createSnapTransaction(params: CreateSnapTransactionParams)
       email: params.email,
       phone: params.phone || '081234567890',
     },
-    item_details: params.itemDetails || [
+    item_details: (params.itemDetails || [
       {
         id: params.orderId,
         price: Math.round(params.grossAmount),
         quantity: 1,
         name: 'Langganan ALPHOS POS',
       },
-    ],
+    ]).map((item) => ({
+      ...item,
+      name: (item.name || 'Langganan ALPHOS POS').substring(0, 45),
+    })),
     callbacks: {
-      finish: 'https://alphos-smartpos.vercel.app/verify-account?status=success',
+      finish: params.finishUrl || 'https://alphos-smartpos-dev.vercel.app/verify-account?status=success',
     },
   };
 

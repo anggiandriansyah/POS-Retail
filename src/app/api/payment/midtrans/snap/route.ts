@@ -4,7 +4,7 @@ import { createSnapTransaction } from '../../../../../lib/midtrans';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { orderId, grossAmount, customerName, email, phone, itemDetails } = body;
+    const { orderId, grossAmount, customerName, email, phone, itemDetails, finishUrl } = body;
 
     if (!orderId || !grossAmount || !customerName || !email) {
       return NextResponse.json(
@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
       customerName,
       email,
       phone,
+      finishUrl,
       itemDetails,
     });
 
