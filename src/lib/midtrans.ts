@@ -48,8 +48,8 @@ const SNAP_API_URL = IS_PRODUCTION
 
 export function getMidtransConfig() {
   return {
-    clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || 'SB-Mid-client-eyThab-od4pPeFcI',
-    serverKey: process.env.MIDTRANS_SERVER_KEY || 'SB-Mid-server-oH0VlYHzYRmtZqMCymUrava3',
+    clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '',
+    serverKey: process.env.MIDTRANS_SERVER_KEY || '',
     isProduction: IS_PRODUCTION,
   };
 }
