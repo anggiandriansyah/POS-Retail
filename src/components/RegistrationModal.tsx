@@ -381,7 +381,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                   fontSize: '14px',
                 }}
               >
-                <span>{isEn ? 'Cashier Login Page' : 'Halaman Login Kasir'}</span>
+                <span>{isEn ? 'Login Page' : 'Halaman Login'}</span>
               </a>
             </div>
           </div>
@@ -526,7 +526,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
 
               <div>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--text)' }}>
-                  {isEn ? 'POS Login Username' : 'Username Login Kasir'}
+                  {isEn ? 'Login Username' : 'Username Login'}
                 </label>
                 <input
                   type="text"
@@ -639,7 +639,7 @@ export default function RegistrationModal({ initialTier, onClose, onSuccess }: R
                 </span>{' '}
                 {isEn
                   ? 'No charges apply. Upon registering, your store account activates immediately.'
-                  : 'Anda tidak dikenakan biaya apa pun. Setelah mendaftar, akun toko Anda langsung aktif secara instan dan dapat langsung melayani transaksi kasir.'}
+                  : 'Anda tidak dikenakan biaya apa pun. Setelah mendaftar, akun toko Anda langsung aktif secara instan dan dapat langsung digunakan.'}
               </div>
             )}
 
